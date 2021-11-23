@@ -1,9 +1,5 @@
-from sql.user import User
-from sql.db import DB
 from core import *
-
-import random
-import json
+from tools import tests
 
 
 def main():
@@ -36,6 +32,8 @@ def main():
     q_02_a_01.is_end = True
 
     q_01.get_tree()
+
+    tests.test_quest_generator(100, 4)
 
 
 if __name__ == '__main__':
