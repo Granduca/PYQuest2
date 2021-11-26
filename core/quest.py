@@ -1,10 +1,6 @@
-from tools import Container
-
-
 class Quest:
     def __init__(self):
         self._title = ''
-        self.nodes = Container(self)
 
     @property
     def title(self):
