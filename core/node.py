@@ -12,11 +12,17 @@ class Network:
         self._connections = []
 
     def add_connection(self, connection):
-        self._connections.append(connection)
+        if connection not in self._connections:
+            self._connections.append(connection)
+        else:
+            logger.warning('This connection already exists')
 
     def remove_connection(self, connection):
-        self._connections.remove(connection)
-        del connection
+        if connection in self._connections:
+            self._connections.remove(connection)
+            del connection
+        else:
+            logger.warning('This connection was not found')
 
     def get_network(self):
         return self._connections
