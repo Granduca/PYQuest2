@@ -1,7 +1,6 @@
-__all__ = ["Quest", "Network", "GroupNode", "Node", "Question", "Answer"]
-from core.quest import Quest
-from core.node import Network
-from core.node import GroupNode
-from core.node import Node
+__all__ = ["Quest", "Network", "Connection", "GroupNode", "Node", "Question", "Answer"]
+from core.network import Network, Connection
+from core.node import GroupNode, Node
 from core.question import Question
 from core.answer import Answer
+from core.quest import Quest

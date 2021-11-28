@@ -7,8 +7,8 @@ def main():
     # db = DB(user)
     # db.create_base_tables()
 
-    n = Network()
-    tests.test_quest_generator(n, 200, 4)
+    q = Quest('Test Quest 01')
+    tests.test_quest_generator(q, 200, 4)
 
 
 if __name__ == '__main__':
