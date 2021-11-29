@@ -32,14 +32,14 @@ def test_quest_generator(quest: Quest, max_questions: int, max_answers_per_quest
     questions_sorter = questions_sorter[1:]
 
     for question in questions:
-        for i, answer in enumerate(question.get_childs()):
-            if len(question.get_childs()) <= len(questions_sorter):
+        for i, answer in enumerate(question.get_child()):
+            if len(question.get_child()) <= len(questions_sorter):
                 answer.set_child(questions_sorter[i])
-        questions_sorter = questions_sorter[len(question.get_childs()):]
+        questions_sorter = questions_sorter[len(question.get_child()):]
 
-    # for answer in answers:
-    #     for connection in answer.network:
-    #         if
-    #             answer.is_end = True
+    for answer in answers:
+        if not answer.get_child():
+            answer.set_depth()
+            answer.is_end = True
 
     questions[0].get_tree()

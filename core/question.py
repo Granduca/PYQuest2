@@ -8,6 +8,6 @@ logging.basicConfig(level=Preferences.logging_level_core)
 logger = logging.getLogger(f"{Preferences.app_name} Question")
 
 
-class Question(GroupNode, Node):
+class Question(GroupNode):
     def __init__(self):
         super().__init__()

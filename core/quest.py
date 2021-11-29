@@ -13,6 +13,14 @@ class Quest:
         self._title = title
         self._networks = []
 
+    @property
+    def title(self):
+        return self._title
+
+    @title.setter
+    def title(self, title: str):
+        self._title = title
+
     def add_network(self):
         n = Network()
         self._networks.append(n)
@@ -44,10 +52,3 @@ class Quest:
         a.text = text
         return a
 
-    @property
-    def title(self):
-        return self._title
-
-    @title.setter
-    def title(self, title: str):
-        self._title = title
