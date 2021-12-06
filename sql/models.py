@@ -14,7 +14,7 @@ class NodeType(enum. Enum):
 class Quest(Base):
     __tablename__ = "quests"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     title = Column(String, nullable=False)
 
 
@@ -25,7 +25,7 @@ class Network(Base):
     fk_quest_id = ForeignKey(Quest.id)
 
     # Columns
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     quest_id = Column(Integer, fk_quest_id)
     name = Column(String, nullable=False)
 
@@ -40,7 +40,7 @@ class Node(Base):
     fk_network_id = ForeignKey(Network.id)
 
     # Columns
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     network_id = Column(Integer, fk_network_id)
     text = Column(String)
     type = Column(Enum(NodeType))
