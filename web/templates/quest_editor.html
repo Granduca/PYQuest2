@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>PyQuest2 | Quest Editor v1.0</title>
+  <meta name="description" content="Node editor">
+</head>
+<body>
+  <script src="https://cdn.jsdelivr.net/gh/jerosoler/Drawflow/dist/drawflow.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jerosoler/Drawflow@0.0.48/dist/drawflow.min.css">
+  <link rel="stylesheet" type="text/css" href="static/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+  <script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+  <header>
+    <!-- <nav><a href="#">sign in</a> | <a href="#">register</a></nav> -->
+    <nav>
+      <script async src="https://telegram.org/js/telegram-widget.js?15" data-telegram-login="pyquest2_oauth_bot" data-size="medium" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
+      <script type="text/javascript">
+        function onTelegramAuth(user) {
+          alert('Logged in as ' + user.first_name + ' ' + user.last_name + ' (' + user.id + (user.username ? ', @' + user.username : '') + ')');
+        }
+      </script>
+    </nav>
+    {% if title %}
+    {% if editor_version %}
+    <h2><i class="fas fa-pen-nib"></i> {{title}} | Quest Editor v{{editor_version}}</h2>
+    {% else %}
+    <h2><i class="fas fa-pen-nib"></i> PyQuest2 | Quest Editor</h2>
+    {% endif %}
+    {% else %}
+    <h2><i class="fas fa-pen-nib"></i> PyQuest2 | Quest Editor</h2>
+    {% endif %}
+  </header>
+  <div class="wrapper">
+    <div class="col">
+      <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="question">
+        <i class="fas fa-question-circle"></i><span> Вопрос</span>
+      </div>
+      <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="answer">
+        <i class="fas fa-comment-dots"></i></i><span> Ответ</span>
+      </div>
+
+      <div class="hotkeys">
+          <br><br>
+          <i class="fas fa-trash-alt"></i><b> Delete</b> for remove selected<br>
+          <i class="fas fa-mouse"></i> Mouse Left Click == Move<br>
+          <i class="fas fa-times-circle"></i> Mouse Right == Delete Option<br>
+          <i class="fas fa-search"></i> Ctrl + Wheel == Zoom<br><br>
+          <i class="fas fa-mobile-alt"></i> Mobile support<br>
+      </div>
+
+
+    </div>
+    <div class="col-right">
+      <div class="menu">
+        <ul>
+          {% if quest_name %}
+          <li onclick="editor.changeModule('{{quest_name}}'); changeModule(event);" class="selected">{{quest_name}}</li>
+          {% else %}
+          <li onclick="editor.changeModule('New Quest'); changeModule(event);" class="selected">New Quest</li>
+          {% endif %}
+          <!-- <li onclick="editor.changeModule('Other'); changeModule(event);">Other Module</li> -->
+        </ul>
+      </div>
+      <div id="drawflow" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <div class="btn-export" onclick="$.ajax({url: 'data', method: 'POST', data: JSON.stringify(editor.export()), contentType: 'application/json;charset=UTF-8', success: function(data) {console.log(data);}});
+<!--        export_json_to_file(JSON.stringify(editor.export()), 'export.json', 'text/plain');-->
+        Swal.fire({ title: 'Export', html: '<textarea rows=&quot;30&quot; cols=&quot;50&quot;>'+JSON.stringify(editor.export(),null,4).replace(/<[^>]*>/g, '')+'</textarea>'})">
+        Сохранить</div>
+        <div class="btn-clear" onclick="editor.clearModuleSelected()">Очистить</div>
+        <div class="btn-lock">
+          <i id="lock" class="fas fa-lock" onclick="editor.editor_mode='fixed'; changeMode('lock');"></i>
+          <i id="unlock" class="fas fa-lock-open" onclick="editor.editor_mode='edit'; changeMode('unlock');" style="display:none;"></i>
+        </div>
+        <div class="bar-zoom">
+          <i class="fas fa-search-minus" onclick="editor.zoom_out()"></i>
+          <i class="fas fa-search" onclick="editor.zoom_reset()"></i>
+          <i class="fas fa-search-plus" onclick="editor.zoom_in()"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function export_json_to_file(data, filename, type) {
+      var file = new Blob([data], {type: type});
+      if (window.navigator.msSaveOrOpenBlob) // IE10+
+          window.navigator.msSaveOrOpenBlob(file, filename);
+      else { // Others
+          var a = document.createElement("a"),
+                  url = URL.createObjectURL(file);
+          a.href = url;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(function() {
+              document.body.removeChild(a);
+              window.URL.revokeObjectURL(url);  
+          }, 0); 
+      }
+  }
+  </script>
+
+  <script>
+    var id = document.getElementById("drawflow");
+    const editor = new Drawflow(id);
+    editor.reroute = true;
+    // const dataToImport = {"drawflow":{"Home":{"data":{"1":{"id":1,"name":"answer","data":{"template":"Введите ваш текст..."},"class":"answer","html":"\n          <div>\n            <div class=\"title-box\"><i class=\"fas fa-comment-dots\"></i> Ответ</div>\n            <div class=\"box\">\n              <textarea df-template></textarea>\n            </div>\n          </div>\n          ","typenode":false,"inputs":{"input_1":{"connections":[]}},"outputs":{"output_1":{"connections":[]}},"pos_x":317,"pos_y":198},"2":{"id":2,"name":"question","data":{"template":"Введите ваш текст..."},"class":"question","html":"\n            <div>\n              <div class=\"title-box\"><i class=\"fas fa-question-circle\"></i> Вопрос</div>\n              <div class=\"box\">\n                <textarea df-template></textarea>\n              </div>\n            </div>\n            ","typenode":false,"inputs":{"input_1":{"connections":[]}},"outputs":{"output_1":{"connections":[]}},"pos_x":638,"pos_y":114},"3":{"id":3,"name":"answer","data":{"template":"Введите ваш текст..."},"class":"answer","html":"\n          <div>\n            <div class=\"title-box\"><i class=\"fas fa-comment-dots\"></i> Ответ</div>\n            <div class=\"box\">\n              <textarea df-template></textarea>\n            </div>\n          </div>\n          ","typenode":false,"inputs":{"input_1":{"connections":[]}},"outputs":{"output_1":{"connections":[]}},"pos_x":331,"pos_y":558}}}}}
+    editor.start();
+    // editor.import(dataToImport);
+
+    // editor.addModule('Other');
+
+    // Events!
+    editor.on('nodeCreated', function(id) {
+      console.log("Node created " + id);
+    })
+
+    editor.on('nodeRemoved', function(id) {
+      console.log("Node removed " + id);
+    })
+
+    editor.on('nodeSelected', function(id) {
+      console.log("Node selected " + id);
+    })
+
+    editor.on('moduleCreated', function(name) {
+      console.log("Module Created " + name);
+    })
+
+    editor.on('moduleChanged', function(name) {
+      console.log("Module Changed " + name);
+    })
+
+    editor.on('connectionCreated', function(connection) {
+      console.log('Connection created');
+      console.log(connection);
+    })
+
+    editor.on('connectionRemoved', function(connection) {
+      console.log('Connection removed');
+      console.log(connection);
+    })
+
+    editor.on('mouseMove', function(position) {
+      console.log('Position mouse x:' + position.x + ' y:'+ position.y);
+    })
+
+    editor.on('nodeMoved', function(id) {
+      console.log("Node moved " + id);
+    })
+
+    editor.on('zoom', function(zoom) {
+      console.log('Zoom level ' + zoom);
+    })
+
+    editor.on('translate', function(position) {
+      console.log('Translate x:' + position.x + ' y:'+ position.y);
+    })
+
+    editor.on('addReroute', function(id) {
+      console.log("Reroute added " + id);
+    })
+
+    editor.on('removeReroute', function(id) {
+      console.log("Reroute removed " + id);
+    })
+
+    /* DRAG EVENT */
+
+    /* Mouse and Touch Actions */
+
+    var elements = document.getElementsByClassName('drag-drawflow');
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].addEventListener('touchend', drop, false);
+      elements[i].addEventListener('touchmove', positionMobile, false);
+      elements[i].addEventListener('touchstart', drag, false );
+    }
+
+    var mobile_item_selec = '';
+    var mobile_last_move = null;
+   function positionMobile(ev) {
+     mobile_last_move = ev;
+   }
+
+   function allowDrop(ev) {
+      ev.preventDefault();
+    }
+
+    function drag(ev) {
+      if (ev.type === "touchstart") {
+        mobile_item_selec = ev.target.closest(".drag-drawflow").getAttribute('data-node');
+      } else {
+      ev.dataTransfer.setData("node", ev.target.getAttribute('data-node'));
+      }
+    }
+
+    function drop(ev) {
+      if (ev.type === "touchend") {
+        var parentdrawflow = document.elementFromPoint( mobile_last_move.touches[0].clientX, mobile_last_move.touches[0].clientY).closest("#drawflow");
+        if(parentdrawflow != null) {
+          addNodeToDrawFlow(mobile_item_selec, mobile_last_move.touches[0].clientX, mobile_last_move.touches[0].clientY);
+        }
+        mobile_item_selec = '';
+      } else {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("node");
+        addNodeToDrawFlow(data, ev.clientX, ev.clientY);
+      }
+
+    }
+
+    function addNodeToDrawFlow(name, pos_x, pos_y) {
+      if(editor.editor_mode === 'fixed') {
+        return false;
+      }
+      pos_x = pos_x * ( editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)) - (editor.precanvas.getBoundingClientRect().x * ( editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)));
+      pos_y = pos_y * ( editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)) - (editor.precanvas.getBoundingClientRect().y * ( editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)));
+
+
+      switch (name) {
+          case 'question':
+            var question = `
+            <div>
+              <div class="title-box"><i class="fas fa-question-circle"></i> Вопрос</div>
+              <div class="box">
+                <textarea df-template></textarea>
+              </div>
+            </div>
+            `;
+            editor.addNode('question', 1, 1, pos_x, pos_y, 'question', { "template": 'Введите ваш текст...'}, question );
+            break;
+
+          case 'answer':
+          var answer = `
+          <div>
+            <div class="title-box"><i class="fas fa-comment-dots"></i> Ответ</div>
+            <div class="box">
+              <textarea df-template></textarea>
+            </div>
+          </div>
+          `;
+          editor.addNode('answer', 1, 1, pos_x, pos_y, 'answer', { "template": 'Введите ваш текст...'}, answer );
+          break;
+
+        default:
+      }
+    }
+
+  var transform = '';
+  function showpopup(e) {
+    e.target.closest(".drawflow-node").style.zIndex = "9999";
+    e.target.children[0].style.display = "block";
+    //document.getElementById("modalfix").style.display = "block";
+
+    //e.target.children[0].style.transform = 'translate('+translate.x+'px, '+translate.y+'px)';
+    transform = editor.precanvas.style.transform;
+    editor.precanvas.style.transform = '';
+    editor.precanvas.style.left = editor.canvas_x +'px';
+    editor.precanvas.style.top = editor.canvas_y +'px';
+    console.log(transform);
+
+    //e.target.children[0].style.top  =  -editor.canvas_y - editor.container.offsetTop +'px';
+    //e.target.children[0].style.left  =  -editor.canvas_x  - editor.container.offsetLeft +'px';
+    editor.editor_mode = "fixed";
+
+  }
+
+   function closemodal(e) {
+     e.target.closest(".drawflow-node").style.zIndex = "2";
+     e.target.parentElement.parentElement.style.display  ="none";
+     //document.getElementById("modalfix").style.display = "none";
+     editor.precanvas.style.transform = transform;
+       editor.precanvas.style.left = '0px';
+       editor.precanvas.style.top = '0px';
+      editor.editor_mode = "edit";
+   }
+
+    function changeModule(event) {
+      var all = document.querySelectorAll(".menu ul li");
+        for (var i = 0; i < all.length; i++) {
+          all[i].classList.remove('selected');
+        }
+      event.target.classList.add('selected');
+    }
+
+    function changeMode(option) {
+
+    //console.log(lock.id);
+      if(option == 'lock') {
+        lock.style.display = 'none';
+        unlock.style.display = 'block';
+      } else {
+        lock.style.display = 'block';
+        unlock.style.display = 'none';
+      }
+
+    }
+
+  </script>
+</body>
+</html>
