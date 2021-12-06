@@ -27,7 +27,6 @@ class Network(Base):
     # Columns
     id = Column(Integer, primary_key=True, autoincrement=True)
     quest_id = Column(Integer, fk_quest_id)
-    name = Column(String, nullable=False)
 
     # Relations
     quest = relationship(Quest, backref="networks")
@@ -41,7 +40,7 @@ class Node(Base):
 
     # Columns
     id = Column(Integer, primary_key=True, autoincrement=True)
-    network_id = Column(Integer, fk_network_id)
+    network_id = Column(Integer, fk_network_id, nullable=False)
     text = Column(String)
     type = Column(Enum(NodeType))
 
