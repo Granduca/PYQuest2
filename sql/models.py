@@ -49,6 +49,21 @@ class Node(Base):
     network = relationship(Network, backref="nodes")
 
 
+class NodeCoordinates(Base):
+    __tablename__ = "nodes_coordinates"
+
+    # Foreign
+    fk_node_id = ForeignKey(Node.id)
+
+    # Columns
+    id = Column(Integer, fk_node_id, primary_key=True)
+    x = Column(Integer, nullable=False)
+    y = Column(Integer, nullable=False)
+
+    # Relations
+    node = relationship(Node, backref="coordinates")
+
+
 class Connection(Base):
     __tablename__ = "connections"
 
