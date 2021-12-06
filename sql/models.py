@@ -81,6 +81,7 @@ class Connection(Base):
 
 
 if __name__ == "__main__":
+    """ Test database creation """
     from sql.alchemy import engine
     from sqlalchemy_utils import database_exists, create_database
 
@@ -88,3 +89,10 @@ if __name__ == "__main__":
         create_database(engine.url)
 
     Base.metadata.create_all(engine)
+
+    from sql.alchemy import Session
+    with Session.begin() as session:
+        quest = Quest(title="Первый квест")
+        session.add(quest)
+        session.flush()
+        assert quest.id == 1, "Quest id is not 1"
