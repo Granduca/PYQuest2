@@ -27,9 +27,10 @@ class Network(Base):
     # Columns
     id = Column(Integer, primary_key=True, autoincrement=True)
     quest_id = Column(Integer, fk_quest_id)
+    name = Column(String, nullable=False)
 
     # Relations
-    quest = relationship(Quest, backref="networks")
+    quest = relationship(Quest, foreign_keys=[quest_id], backref="networks")
 
 
 class Node(Base):
@@ -45,7 +46,7 @@ class Node(Base):
     type = Column(Enum(NodeType))
 
     # Relations
-    network = relationship(Network, backref="nodes")
+    network = relationship(Network, foreign_keys=[network_id], backref="nodes")
 
 
 class NodeCoordinates(Base):
@@ -60,7 +61,7 @@ class NodeCoordinates(Base):
     y = Column(Integer, nullable=False)
 
     # Relations
-    node = relationship(Node, backref="coordinates")
+    node = relationship(Node, foreign_keys=[id], backref="coordinates")
 
 
 class Connection(Base):
@@ -75,8 +76,8 @@ class Connection(Base):
     node_out_id = Column(Integer, fk_node_out_id, primary_key=True)
 
     # Relations
-    node_in = relationship(Node, foreign_keys=[fk_node_in_id], backref="connection_out")
-    node_out = relationship(Node, foreign_keys=[fk_node_out_id], backref="connection_in")
+    node_in = relationship(Node, foreign_keys=[node_in_id], backref="connection_out")
+    node_out = relationship(Node, foreign_keys=[node_out_id], backref="connection_in")
 
 
 if __name__ == "__main__":
