@@ -8,7 +8,7 @@ def main():
     # db.create_base_tables()
 
     q = Quest('Test Quest 01')
-    tests.test_quest_generator(q, 20, 3, generate_json=True)
+    tests.test_quest_generator(q, 200, 4)
 
 
 if __name__ == '__main__':

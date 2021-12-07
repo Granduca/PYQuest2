@@ -2,9 +2,6 @@ from pref import Preferences
 
 import logging
 
-import dash
-import dash_html_components as html
-import dash_cytoscape as cyto
 
 logging.basicConfig(level=Preferences.logging_level_core)
 logger = logging.getLogger(f"{Preferences.app_name} Network")
@@ -53,32 +50,3 @@ class Network:
     def print_network(self):
         for connection in self._connections:
             print(f'{connection.inputNode.text} - {connection.outputNode.text}')
-
-    def get_tree_json(self, **kwargs):
-        quest_title = 'Test page'
-        if 'quest_title' in kwargs:
-            quest_title = kwargs['quest_title']
-
-        elements = []
-        for connection in self._connections:
-            a = {'data': {'id': f'{connection.inputNode.id}', 'label': f'{connection.inputNode.text}'}}
-            b = {'data': {'id': f'{connection.outputNode.id}', 'label': f'{connection.outputNode.text}'}}
-            if a not in elements:
-                elements.append(a)
-            if b not in elements:
-                elements.append(b)
-            elements.append({'data': {'source': f'{connection.inputNode.id}', 'target': f'{connection.outputNode.id}'}})
-
-        app = dash.Dash(__name__)
-
-        app.layout = html.Div([
-            html.P(f"{quest_title}"),
-            cyto.Cytoscape(
-                id='cytoscape',
-                elements=elements,
-                layout={'name': 'breadthfirst'},
-                style={'width': '1920px', 'height': '1080px'}
-            )
-        ])
-
-        app.run_server(debug=True)

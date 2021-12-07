@@ -9,7 +9,7 @@ logging.basicConfig(level=Preferences.logging_level_core)
 logger = logging.getLogger(f"{Preferences.app_name} Test")
 
 
-def test_quest_generator(quest: Quest, max_questions: int, max_answers_per_question: int, generate_json=False):
+def test_quest_generator(quest: Quest, max_questions: int, max_answers_per_question: int):
 
     logger.info(f"Quest name: \"{quest.title}\"")
 
@@ -43,8 +43,3 @@ def test_quest_generator(quest: Quest, max_questions: int, max_answers_per_quest
             answer.is_end = True
 
     questions[0].get_tree()
-
-    if generate_json:
-        quest._networks[0].get_tree_json(quest_title=quest.title)
-
-
