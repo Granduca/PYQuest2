@@ -7,8 +7,11 @@ from sql.alchemy import Base
 
 
 class NodeType(enum. Enum):
-    question = "question"
-    answer = "answer"
+    question = "вопрос"
+    answer = "ответ"
+
+    def __str__(self):
+        return self.value
 
 
 class Quest(Base):
@@ -16,6 +19,9 @@ class Quest(Base):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     title = Column(String, nullable=False)
+
+    def __repr__(self):
+        return f"<Quest({self.id}) «{self.title}»>"
 
 
 class Network(Base):
@@ -31,6 +37,9 @@ class Network(Base):
 
     # Relations
     quest = relationship(Quest, foreign_keys=[quest_id], backref="networks")
+
+    def __repr__(self):
+        return f"<Network({self.id}) «{self.name}»>"
 
 
 class Node(Base):
@@ -49,6 +58,9 @@ class Node(Base):
     # Relations
     network = relationship(Network, foreign_keys=[network_id], backref="nodes")
 
+    def __repr__(self):
+        return f"<Node({self.id}) {self.type} «{self.text}»>"
+
 
 class NodeCoordinates(Base):
     __tablename__ = "nodes_coordinates"
@@ -63,6 +75,9 @@ class NodeCoordinates(Base):
 
     # Relations
     node = relationship(Node, foreign_keys=[id], backref="coordinates")
+
+    def __repr__(self):
+        return f"<Coordinates({self.id}): {self.x}, {self.y}>"
 
 
 class Connection(Base):
@@ -79,6 +94,9 @@ class Connection(Base):
     # Relations
     node_in = relationship(Node, foreign_keys=[node_in_id], backref="connection_out")
     node_out = relationship(Node, foreign_keys=[node_out_id], backref="connection_in")
+
+    def __repr__(self):
+        return f"<Connection: {self.node_in} -> {self.node_out}>"
 
 
 if __name__ == "__main__":
