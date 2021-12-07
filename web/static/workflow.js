@@ -1,18 +1,33 @@
 var id = document.getElementById("drawflow");
 const editor = new Drawflow(id);
 editor.reroute = true;
-// const dataToImport = {"drawflow":{"Home":{"data":{"1":{"id":1,"name":"answer","data":{"template":"Введите ваш текст..."},"class":"answer","html":"\n          <div>\n            <div class=\"title-box\"><i class=\"fas fa-comment-dots\"></i> Ответ</div>\n            <div class=\"box\">\n              <textarea df-template></textarea>\n            </div>\n          </div>\n          ","typenode":false,"inputs":{"input_1":{"connections":[]}},"outputs":{"output_1":{"connections":[]}},"pos_x":317,"pos_y":198},"2":{"id":2,"name":"question","data":{"template":"Введите ваш текст..."},"class":"question","html":"\n            <div>\n              <div class=\"title-box\"><i class=\"fas fa-question-circle\"></i> Вопрос</div>\n              <div class=\"box\">\n                <textarea df-template></textarea>\n              </div>\n            </div>\n            ","typenode":false,"inputs":{"input_1":{"connections":[]}},"outputs":{"output_1":{"connections":[]}},"pos_x":638,"pos_y":114},"3":{"id":3,"name":"answer","data":{"template":"Введите ваш текст..."},"class":"answer","html":"\n          <div>\n            <div class=\"title-box\"><i class=\"fas fa-comment-dots\"></i> Ответ</div>\n            <div class=\"box\">\n              <textarea df-template></textarea>\n            </div>\n          </div>\n          ","typenode":false,"inputs":{"input_1":{"connections":[]}},"outputs":{"output_1":{"connections":[]}},"pos_x":331,"pos_y":558}}}}}
+
+var retrievedObject = localStorage.getItem('user_workflow');
+
 editor.start();
+
 // editor.import(dataToImport);
+
+if (typeof retrievedObject !== 'undefined') {
+    if (retrievedObject != 'null') {
+        editor.import(JSON.parse(retrievedObject))
+        console.log(retrievedObject)
+    }else{
+        localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+        retrievedObject = localStorage.getItem('user_workflow');
+    }
+}
 
 // editor.addModule('Other');
 
 // Events!
 editor.on('nodeCreated', function(id) {
+  localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
   console.log("Node created " + id);
 })
 
 editor.on('nodeRemoved', function(id) {
+  localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
   console.log("Node removed " + id);
 })
 
@@ -29,20 +44,24 @@ editor.on('moduleChanged', function(name) {
 })
 
 editor.on('connectionCreated', function(connection) {
+  localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
   console.log('Connection created');
   console.log(connection);
 })
 
 editor.on('connectionRemoved', function(connection) {
+  localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
   console.log('Connection removed');
   console.log(connection);
 })
 
 editor.on('mouseMove', function(position) {
-  console.log('Position mouse x:' + position.x + ' y:'+ position.y);
+//  console.log('Position mouse x:' + position.x + ' y:'+ position.y);
+    //pass
 })
 
 editor.on('nodeMoved', function(id) {
+  localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
   console.log("Node moved " + id);
 })
 
@@ -51,14 +70,17 @@ editor.on('zoom', function(zoom) {
 })
 
 editor.on('translate', function(position) {
+  localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
   console.log('Translate x:' + position.x + ' y:'+ position.y);
 })
 
 editor.on('addReroute', function(id) {
+  localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
   console.log("Reroute added " + id);
 })
 
 editor.on('removeReroute', function(id) {
+  localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
   console.log("Reroute removed " + id);
 })
 
