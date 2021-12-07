@@ -44,6 +44,7 @@ class Node(Base):
     network_id = Column(Integer, fk_network_id, nullable=False)
     text = Column(String)
     type = Column(Enum(NodeType))
+    front_id = Column(Integer)
 
     # Relations
     network = relationship(Network, foreign_keys=[network_id], backref="nodes")
