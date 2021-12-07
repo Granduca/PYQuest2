@@ -9,7 +9,7 @@ editor.start();
 // editor.import(dataToImport);
 
 if (typeof retrievedObject !== 'undefined') {
-    if (retrievedObject != 'null') {
+    if (retrievedObject != null) {
         editor.import(JSON.parse(retrievedObject))
         console.log(retrievedObject)
     }else{
