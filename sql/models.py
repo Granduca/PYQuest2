@@ -94,5 +94,16 @@ if __name__ == "__main__":
     with Session.begin() as session:
         quest = Quest(title="Первый квест")
         session.add(quest)
+
+        network = Network(name="New", quest=quest)
+        session.add(network)
+        node = Node(network=network)
+        session.add(node)
         session.flush()
+        print(quest)
+        print(network)
+        print(node)
         assert quest.id == 1, "Quest id is not 1"
+        assert network.id == 1, "Network id is not 1"
+        assert node.id == 1, "Node id is not 1"
+        session.rollback()
