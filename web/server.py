@@ -23,7 +23,7 @@ def index():
 @app.route('/data', methods=['GET', 'POST'])
 def data_post():
     data = json.loads(request.data.decode('utf-8'))
-    logger.info(data)
+    # logger.info(data)
     quest = Quest('Test Quest 01')
     questions = []
     answers = []
