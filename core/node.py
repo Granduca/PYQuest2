@@ -1,6 +1,7 @@
 from . import Connection
 from pref import Preferences
 
+import uuid
 import logging
 
 
@@ -10,6 +11,7 @@ logger = logging.getLogger(f"{Preferences.app_name} Node")
 
 class Node:
     def __init__(self):
+        self.id = uuid.uuid4()
         self.is_start = False
         self.is_end = False
         self._network = None
