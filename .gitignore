@@ -218,3 +218,6 @@ web/web/
 
 #bot token
 tools/config/token.txt
+
+#Data
+data/
