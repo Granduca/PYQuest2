@@ -12,6 +12,7 @@ class Node:
     def __init__(self):
         self.is_start = False
         self.is_end = False
+        self.id = None
         self._network = None
         self._text = ''
         self._depth = 0
@@ -150,4 +151,3 @@ class GroupNode(Node):
                             if c.inputNode == connection.outputNode:
                                 self._network.remove_connection(c)
             self._network = None
-
