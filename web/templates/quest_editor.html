@@ -47,6 +47,12 @@
   </header>
   <div class="wrapper">
     <div class="col">
+      <div class="drag-drawflow start" draggable="true" ondragstart="drag(event)" data-node="start">
+        <i class="fas fa-play-circle"></i><span> Начало</span>
+      </div>
+      <div class="drag-drawflow finish" draggable="true" ondragstart="drag(event)" data-node="finish">
+        <i class="fas fa-stop-circle"></i><span> Конец</span>
+      </div>
       <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="question">
         <i class="fas fa-question-circle"></i><span> Вопрос</span>
       </div>
@@ -89,6 +95,7 @@
           <i id="unlock" class="fas fa-lock-open" onclick="editor.editor_mode='edit'; changeMode('unlock');" style="display:none;"></i>
         </div>
         <div class="bar-zoom">
+          <div class="bar-zoom text" id="bar-zoom text">100%</div>
           <i class="fas fa-search-minus" onclick="editor.zoom_out()"></i>
           <i class="fas fa-search" onclick="editor.zoom_reset()"></i>
           <i class="fas fa-search-plus" onclick="editor.zoom_in()"></i>

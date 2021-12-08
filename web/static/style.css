@@ -85,6 +85,17 @@ header nav a {
   cursor: move;
   user-select: none;
 }
+
+.drag-drawflow.start {
+    line-height: 25px;
+    background: #D2F7C6;
+}
+
+.drag-drawflow.finish {
+    line-height: 25px;
+    background: #F9CACA;
+}
+
 .menu {
   position: absolute;
   height: 40px;
@@ -180,6 +191,12 @@ cursor: pointer;
 }
 .bar-zoom svg:nth-child(1) {
   padding-left: 0px;
+}
+
+.bar-zoom.text {
+    bottom: 40px;
+    right: 0px;
+    font-size: 18px;
 }
 
 #drawflow {
@@ -279,9 +296,19 @@ cursor: pointer;
   border-radius: 4px 4px 0px 0px;
   padding-left: 10px;
 }
+
+.title-box.start {
+    background: #a5eb8e;
+}
+
+.title-box.finish {
+    background: #eb8e8e;
+}
+
 .drawflow .title-box svg {
   position: initial;
 }
+
 .drawflow-node .box {
   padding: 10px 20px 20px 20px;
   font-size: 14px;
