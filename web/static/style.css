@@ -305,6 +305,10 @@ cursor: pointer;
     background: #eb8e8e;
 }
 
+.title-box.not_connected {
+    background: #FAD83C;
+}
+
 .drawflow .title-box svg {
   position: initial;
 }
