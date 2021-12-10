@@ -4,43 +4,48 @@ editor.reroute = true;
 
 var retrievedObject = localStorage.getItem('user_workflow');
 
-var nodes_template = {
-    'start': `<div>` +
-                `<div class="title-box start" ondblclick="set_start(event)"><i class="fas fa-play-circle"></i> Начало</div>` +
-                    `<div class="box">` +
-                        `<textarea df-template placeholder='Введите ваш текст...'></textarea>` +
-                    `</div>` +
-                `</div>`,
-    'finish': `<div>` +
-                `<div class="title-box finish" ondblclick="set_finish(event)"><i class="fas fa-play-circle"></i> Конец</div>` +
-                    `<div class="box">` +
-                        `<textarea df-template placeholder='Введите ваш текст...'></textarea>` +
-                    `</div>` +
-                `</div>`,
-    'question': `<div>` +
-                    `<div class="title-box" ondblclick="set_start(event)"><i class="fas fa-question-circle"></i> Вопрос</div>` +
-                    `<div class="box">` +
-                        `<textarea df-template placeholder='Введите ваш текст...'></textarea>` +
-                    `</div>` +
-                `</div>`,
-    'question_not_connected': `<div>` +
-                    `<div class="title-box not_connected" ondblclick="set_start(event)"><i class="fas fa-question-circle"></i> Вопрос</div>` +
-                    `<div class="box">` +
-                        `<textarea df-template placeholder='Введите ваш текст...'></textarea>` +
-                    `</div>` +
-                `</div>`,
-    'answer': `<div>` +
-                    `<div class="title-box" ondblclick="set_finish(event)"><i class="fas fa-comment-dots"></i> Ответ</div>` +
-                    `<div class="box">` +
-                        `<textarea df-template placeholder='Введите ваш текст...'></textarea>` +
-                    `</div>` +
-                `</div>`,
-    'answer_not_connected': `<div>` +
-                    `<div class="title-box not_connected" ondblclick="set_finish(event)"><i class="fas fa-comment-dots"></i> Ответ</div>` +
-                    `<div class="box">` +
-                        `<textarea df-template placeholder='Введите ваш текст...'></textarea>` +
-                    `</div>` +
-                `</div>`,
+var textarea_template = 'Введите ваш текст...';
+
+function set_node_template(key, text='') {
+    var nodes_template = {
+        'start': `<div>` +
+                    `<div class="title-box start" ondblclick="set_start(event)"><i class="fas fa-play-circle"></i> Начало</div>` +
+                        `<div class="box">` + textarea_setter(text) +
+                        `</div>` +
+                    `</div>`,
+        'finish': `<div>` +
+                    `<div class="title-box finish" ondblclick="set_finish(event)"><i class="fas fa-play-circle"></i> Конец</div>` +
+                        `<div class="box">` + textarea_setter(text) +
+                        `</div>` +
+                    `</div>`,
+        'question': `<div>` +
+                        `<div class="title-box" ondblclick="set_start(event)"><i class="fas fa-question-circle"></i> Вопрос</div>` +
+                        `<div class="box">` + textarea_setter(text) +
+                        `</div>` +
+                    `</div>`,
+        'question_not_connected': `<div>` +
+                        `<div class="title-box not_connected" ondblclick="set_start(event)"><i class="fas fa-question-circle"></i> Вопрос</div>` +
+                        `<div class="box">` + textarea_setter(text) +
+                        `</div>` +
+                    `</div>`,
+        'answer': `<div>` +
+                        `<div class="title-box" ondblclick="set_finish(event)"><i class="fas fa-comment-dots"></i> Ответ</div>` +
+                        `<div class="box">` + textarea_setter(text) +
+                        `</div>` +
+                    `</div>`,
+        'answer_not_connected': `<div>` +
+                        `<div class="title-box not_connected" ondblclick="set_finish(event)"><i class="fas fa-comment-dots"></i> Ответ</div>` +
+                        `<div class="box">` + textarea_setter(text) +
+                        `</div>` +
+                    `</div>`,
+    }
+    return nodes_template[key];
+}
+
+function textarea_setter(t) {
+    text = '';
+    if (t != '') { text = t;}
+    return `<textarea df-template placeholder='${textarea_template}'>${text}</textarea>`;
 }
 
 editor.start();
@@ -64,7 +69,6 @@ var node_created_id = null;
 editor.on('nodeCreated', function(id) {
     node_created_id = id;
     console.log("Node created " + id);
-    check_connection(id);
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
 })
 
@@ -195,27 +199,27 @@ function addNodeToDrawFlow(name, pos_x, pos_y, data='', auto=false) {
 
     switch (name) {
         case 'start':
-            editor.addNode('start', 0, 1, pos_x, pos_y, 'start', { "template": data}, nodes_template['start']);
+            editor.addNode('start', 0, 1, pos_x, pos_y, 'start', { "template": data}, set_node_template('start'));
             break;
 
         case 'finish':
-            editor.addNode('finish', 1, 0, pos_x, pos_y, 'finish', { "template": data}, nodes_template['finish']);
+            editor.addNode('finish', 1, 0, pos_x, pos_y, 'finish', { "template": data}, set_node_template('finish'));
             break;
 
         case 'question':
-            editor.addNode('question', 1, 1, pos_x, pos_y, 'question', { "template": data}, nodes_template['question']);
+            editor.addNode('question', 1, 1, pos_x, pos_y, 'question', { "template": data}, set_node_template('question'));
             break;
 
         case 'question_not_connected':
-            editor.addNode('question_not_connected', 1, 1, pos_x, pos_y, 'question', { "template": data}, nodes_template['question']);
+            editor.addNode('question_not_connected', 1, 1, pos_x, pos_y, 'question_not_connected', { "template": data}, set_node_template('question_not_connected'));
             break;
 
         case 'answer':
-            editor.addNode('answer', 1, 1, pos_x, pos_y, 'answer', { "template": data}, nodes_template['answer']);
+            editor.addNode('answer', 1, 1, pos_x, pos_y, 'answer', { "template": data}, set_node_template('answer'));
             break;
 
         case 'answer_not_connected':
-            editor.addNode('answer_not_connected', 1, 1, pos_x, pos_y, 'answer', { "template": data}, nodes_template['answer']);
+            editor.addNode('answer_not_connected', 1, 1, pos_x, pos_y, 'answer_not_connected', { "template": data}, set_node_template('answer_not_connected'));
             break;
     }
 }
@@ -225,26 +229,30 @@ function check_connection(id) {
     let elem = document.getElementById("node-"+id).children[1];
     if (node.class.includes('question') == true) {
         if ((node.inputs['input_1']['connections'].length == 0) || (node.outputs['output_1']['connections'].length == 0)) {
-            elem.innerHTML = nodes_template['question_not_connected'];
-            editor.drawflow.drawflow.Home.data[id].html = nodes_template['question_not_connected'];
+            text = set_node_template('question_not_connected', node.data['template']);
+            elem.innerHTML = text;
+            editor.drawflow.drawflow.Home.data[id].html = text;
             editor.drawflow.drawflow.Home.data[id].class = 'question_not_connected';
         } else {
-            elem.innerHTML = nodes_template['question'];
-            editor.drawflow.drawflow.Home.data[id].html = nodes_template['question'];
+            text = set_node_template('question', node.data['template']);
+            elem.innerHTML = text;
+            editor.drawflow.drawflow.Home.data[id].html = text;
             editor.drawflow.drawflow.Home.data[id].class = 'question';
         }
     }else if (node.class.includes('answer') == true) {
         if ((node.inputs['input_1']['connections'].length == 0) || (node.outputs['output_1']['connections'].length == 0)) {
-            elem.innerHTML = nodes_template['answer_not_connected'];
-            editor.drawflow.drawflow.Home.data[id].html = nodes_template['answer_not_connected'];
+            text = set_node_template('answer_not_connected', node.data['template']);
+            elem.innerHTML = text;
+            editor.drawflow.drawflow.Home.data[id].html = text;
             editor.drawflow.drawflow.Home.data[id].class = 'answer_not_connected';
         } else {
-            elem.innerHTML = nodes_template['answer'];
-            editor.drawflow.drawflow.Home.data[id].html = nodes_template['answer'];
+            text = set_node_template('answer', node.data['template']);
+            elem.innerHTML = text;
+            editor.drawflow.drawflow.Home.data[id].html = text;
             editor.drawflow.drawflow.Home.data[id].class = 'answer';
         }
     }
-    editor.updateConnectionNodes("node-"+id);
+//    editor.updateConnectionNodes("node-"+id);
 }
 
 var start_indicated = false;
@@ -264,7 +272,7 @@ function set_start(e) {
         }
     } else if (node.class == 'start') {
         if (start_indicated == true) {
-            change_node_type(node_selected_id, 'question', 'output')
+            change_node_type(node_selected_id, 'question_not_connected', 'output')
             start_indicated = false;
             start_indicated_id = -1;
         }
@@ -277,7 +285,7 @@ function set_finish(e) {
     if (node.class.includes('answer') == true) {
         change_node_type(node_selected_id, 'finish', 'input')
     } else if (node.class == 'finish') {
-        change_node_type(node_selected_id, 'answer', 'input')
+        change_node_type(node_selected_id, 'answer_not_connected', 'input')
     }
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
 }
