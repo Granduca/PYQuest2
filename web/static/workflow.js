@@ -353,3 +353,13 @@ function changeMode(option) {
         unlock.style.display = 'none';
     }
 }
+
+Selectables.prototype.selectAll = function () {
+    var opt = this.options;
+    this.foreach(document.querySelector(opt.zone).querySelectorAll(opt.elements), function (el) {
+        if(!el.classList.contains(opt.selectedClass)){
+            el.classList.add(opt.selectedClass);
+            opt.onSelect && opt.onSelect(el);
+        }
+    });
+};

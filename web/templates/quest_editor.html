@@ -16,24 +16,24 @@
   <meta name="description" content="Node editor">
 </head>
 <body>
-  <script src="https://cdn.jsdelivr.net/gh/jerosoler/Drawflow/dist/drawflow.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jerosoler/Drawflow@0.0.48/dist/drawflow.min.css">
+  <script src="{{ url_for('static', filename='node_modules/drawflow/dist/drawflow.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='node_modules/@fortawesome/fontawesome-free/js/all.min.js')}}"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/drawflow/dist/drawflow.min.css')}}">
   <link rel="stylesheet" type="text/css" href="static/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-  <script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-
+  <script src="{{ url_for('static', filename='node_modules/sweetalert2/dist/sweetalert2.all.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='node_modules/micromodal/dist/micromodal.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='node_modules/jquery/dist/jquery.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='node_modules/selectables/selectables.js')}}"></script>
   <header>
     <nav>
-      <script async src="https://telegram.org/js/telegram-widget.js?15" data-telegram-login="pyquest2_oauth_bot" data-size="medium" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>
-      <script type="text/javascript">
-        function onTelegramAuth(user) {
-          alert('Logged in as ' + user.first_name + ' ' + user.last_name + ' (' + user.id + (user.username ? ', @' + user.username : '') + ')');
-        }
-      </script>
+<!--      <script async src="https://telegram.org/js/telegram-widget.js?15" data-telegram-login="pyquest2_oauth_bot" data-size="medium" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>-->
+<!--      <script type="text/javascript">-->
+<!--        function onTelegramAuth(user) {-->
+<!--          alert('Logged in as ' + user.first_name + ' ' + user.last_name + ' (' + user.id + (user.username ? ', @' + user.username : '') + ')');-->
+<!--        }-->
+<!--      </script>-->
     </nav>
     {% if title %}
     {% if editor_version %}
@@ -45,7 +45,7 @@
     <h2><i class="fas fa-pen-nib"></i> PyQuest2 | Quest Editor</h2>
     {% endif %}
   </header>
-  <div class="wrapper">
+  <div class="wrapper" id="wrapper">
     <div class="col">
 <!--      <div class="drag-drawflow start" draggable="true" ondragstart="drag(event)" data-node="start">-->
 <!--        <i class="fas fa-play-circle"></i><span> Начало</span>-->
@@ -104,7 +104,8 @@
     </div>
   </div>
 
-<script src="static/workflow.js" type="text/javascript"></script>
+  <script src="static/multiselect.js" type="text/javascript"></script>
+  <script src="static/workflow.js" type="text/javascript"></script>
 
 </body>
 </html>

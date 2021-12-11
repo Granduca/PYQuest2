@@ -37,6 +37,13 @@ header a {
   color: #999999;
 }
 
+#s-rectBox {
+    position: absolute;
+    z-index: 1090;
+    border:2px dashed #cbd3e3;
+    border-radius:0;
+}
+
 header nav {
   position: absolute;
   right: 20px;
