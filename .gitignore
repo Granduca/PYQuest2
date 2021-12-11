@@ -223,5 +223,4 @@ tools/config/token.txt
 data/
 
 #Node.js
-!/web/static/node_modules/
-!/web/static/node_modules/**/*
+web/static/node_modules/*/**
