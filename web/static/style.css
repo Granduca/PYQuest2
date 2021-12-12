@@ -44,6 +44,16 @@ header a {
     border-radius:0;
 }
 
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
 header nav {
   position: absolute;
   right: 20px;
@@ -314,6 +324,10 @@ cursor: pointer;
 
 .title-box.not_connected {
     background: #FAD83C;
+}
+
+.title-box.active {
+    background: #87CEFA;
 }
 
 .drawflow .title-box svg {

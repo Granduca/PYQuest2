@@ -1,41 +1,64 @@
+//drawflow init
 var id = document.getElementById("drawflow");
+
 const editor = new Drawflow(id);
+
 editor.reroute = true;
+editor.reroute_fix_curvature = true;
 
 var retrievedObject = localStorage.getItem('user_workflow');
 
+editor.start();
+
+// editor.import(dataToImport);
+// editor.addModule('Other');
+
+
+//local storage
+if (typeof retrievedObject !== 'undefined') {
+    if (retrievedObject != null) {
+        editor.import(JSON.parse(retrievedObject))
+        console.log(retrievedObject)
+    } else {
+        localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+        retrievedObject = localStorage.getItem('user_workflow');
+    }
+}
+
+
+//Templates
 var textarea_template = 'Введите ваш текст...';
 
 function set_node_template(key, text='') {
     var nodes_template = {
         'start': `<div>` +
-                    `<div class="title-box start" ondblclick="set_start(event)"><i class="fas fa-play-circle"></i> Начало</div>` +
-                        `<div class="box">` + textarea_setter(text) +
+                    `<div class="title-box start noselect" ondblclick="set_start(event)"><i class="fas fa-play-circle"></i> Начало</div>` +
+                        `<div class="box noselect">` + textarea_setter(text) +
                         `</div>` +
                     `</div>`,
         'finish': `<div>` +
-                    `<div class="title-box finish" ondblclick="set_finish(event)"><i class="fas fa-play-circle"></i> Конец</div>` +
-                        `<div class="box">` + textarea_setter(text) +
+                    `<div class="title-box finish noselect" ondblclick="set_finish(event)"><i class="fas fa-play-circle"></i> Конец</div>` +
+                        `<div class="box noselect">` + textarea_setter(text) +
                         `</div>` +
                     `</div>`,
         'question': `<div>` +
-                        `<div class="title-box" ondblclick="set_start(event)"><i class="fas fa-question-circle"></i> Вопрос</div>` +
-                        `<div class="box">` + textarea_setter(text) +
+                        `<div class="title-box noselect" ondblclick="set_start(event)"><i class="fas fa-question-circle"></i> Вопрос</div>` +
+                        `<div class="box noselect">` + textarea_setter(text) +
                         `</div>` +
                     `</div>`,
         'question_not_connected': `<div>` +
-                        `<div class="title-box not_connected" ondblclick="set_start(event)"><i class="fas fa-question-circle"></i> Вопрос</div>` +
-                        `<div class="box">` + textarea_setter(text) +
+                        `<div class="title-box not_connected noselect" ondblclick="set_start(event)"><i class="fas fa-question-circle"></i> Вопрос</div>` +
+                        `<div class="box noselect">` + textarea_setter(text) +
                         `</div>` +
                     `</div>`,
         'answer': `<div>` +
-                        `<div class="title-box" ondblclick="set_finish(event)"><i class="fas fa-comment-dots"></i> Ответ</div>` +
-                        `<div class="box">` + textarea_setter(text) +
+                        `<div class="title-box noselect" ondblclick="set_finish(event)"><i class="fas fa-comment-dots"></i> Ответ</div>` +
+                        `<div class="box noselect">` + textarea_setter(text) +
                         `</div>` +
                     `</div>`,
         'answer_not_connected': `<div>` +
-                        `<div class="title-box not_connected" ondblclick="set_finish(event)"><i class="fas fa-comment-dots"></i> Ответ</div>` +
-                        `<div class="box">` + textarea_setter(text) +
+                        `<div class="title-box not_connected noselect" ondblclick="set_finish(event)"><i class="fas fa-comment-dots"></i> Ответ</div>` +
+                        `<div class="box noselect">` + textarea_setter(text) +
                         `</div>` +
                     `</div>`,
     }
@@ -48,32 +71,19 @@ function textarea_setter(t) {
     return `<textarea df-template placeholder='${textarea_template}'>${text}</textarea>`;
 }
 
-editor.start();
-
-// editor.import(dataToImport);
-
-if (typeof retrievedObject !== 'undefined') {
-    if (retrievedObject != null) {
-        editor.import(JSON.parse(retrievedObject))
-        console.log(retrievedObject)
-    } else {
-        localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
-        retrievedObject = localStorage.getItem('user_workflow');
-    }
-}
-
-// editor.addModule('Other');
 
 // Events!
 var node_created_id = null;
 editor.on('nodeCreated', function(id) {
     node_created_id = id;
     console.log("Node created " + id);
+    dr.disable(); dr.enable();
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
 })
 
 editor.on('nodeRemoved', function(id) {
     console.log("Node removed " + id);
+    dr.disable(); dr.enable();
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
 })
 
@@ -86,6 +96,7 @@ editor.on('nodeSelected', function(id) {
 
 editor.on('nodeDataChanged', function(id) {
     console.log("Node value updated " + id);
+    dr.disable(); dr.enable();
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
 })
 
@@ -102,6 +113,7 @@ editor.on('connectionCreated', function(connection) {
     console.log(connection);
     check_connection(connection['input_id']);
     check_connection(connection['output_id']);
+    dr.disable(); dr.enable();
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
 })
 
@@ -110,6 +122,7 @@ editor.on('connectionRemoved', function(connection) {
     console.log(connection);
     check_connection(connection['input_id']);
     check_connection(connection['output_id']);
+    dr.disable(); dr.enable();
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
 })
 
@@ -118,7 +131,48 @@ editor.on('mouseMove', function(position) {
     //pass
 })
 
+//var multiselect_dict = {};
+//editor.on('click', (e) => {
+//    if (e.type === "mousedown") {
+//        for(value in e.path) {
+//            if(typeof e.path[value].children !== 'undefined'){
+//                if(e.path[value].children[0].id.includes('node-')) {
+//                    let str = e.path[value].children[0].id
+//                    let node = editor.getNodeFromId(str.charAt(str.length-1));
+//                    for (i=1; i<=editor.nodeId; i++) {
+//                        if(typeof editor.drawflow.drawflow.Home.data[i] !== "undefined") {
+//                            let elem = document.getElementById("node-"+i).children[1].children[0];
+//                            if(elem.className == 'active') {
+//                                multiselect_dict[i] = {'pos_x': node.pos_x - editor.drawflow.drawflow.Home.data[i].pos_x,
+//                                                       'pos_y': node.pos_y - editor.drawflow.drawflow.Home.data[i].pos_y,};
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+//})
+
 editor.on('nodeMoved', function(id) {
+//    if(document.getElementById("node-"+id).children[1].children[0].className == 'active') {
+//        for (i=1; i<=editor.nodeId; i++) {
+//            if(typeof editor.drawflow.drawflow.Home.data[i] !== "undefined") {
+//                let node = editor.getNodeFromId(id);
+//                let elem = document.getElementById("node-"+i).children[1].children[0];
+//                if(elem.className == 'active') {
+//                    pos_x = multiselect_dict[i]['pos_x'];
+//                    pos_y = multiselect_dict[i]['pos_y'];
+//                    editor.drawflow.drawflow.Home.data[i].pos_x = node.pos_x + pos_x;
+//                    editor.drawflow.drawflow.Home.data[i].pos_y = node.pos_y + pos_y;
+//                    document.getElementById(`node-${i}`).style.left = (node.pos_x + pos_x) + "px";
+//                    document.getElementById(`node-${i}`).style.top = (node.pos_x + pos_y) + "px";
+//                    editor.updateConnectionNodes(`node-${i}`);
+//                }
+//            }
+//        }
+//        multiselect_dict = {};
+//    }
     console.log("Node moved " + id);
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
 })
@@ -131,7 +185,6 @@ editor.on('zoom', function(zoom) {
 
 editor.on('translate', function(position) {
     //localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
-    //console.log('Translate x:' + position.x + ' y:'+ position.y);
     //pass
 })
 
@@ -344,7 +397,7 @@ function changeModule(event) {
 }
 
 function changeMode(option) {
-//console.log(lock.id);
+    //console.log(lock.id);
     if(option == 'lock') {
         lock.style.display = 'none';
         unlock.style.display = 'block';
@@ -354,12 +407,18 @@ function changeMode(option) {
     }
 }
 
-Selectables.prototype.selectAll = function () {
-    var opt = this.options;
-    this.foreach(document.querySelector(opt.zone).querySelectorAll(opt.elements), function (el) {
-        if(!el.classList.contains(opt.selectedClass)){
-            el.classList.add(opt.selectedClass);
-            opt.onSelect && opt.onSelect(el);
-        }
-    });
-};
+function export_json() {
+    $.ajax({url: 'data',
+            method: 'POST',
+            data: JSON.stringify(editor.export()),
+            contentType: 'application/json;charset=UTF-8',
+            success: function(data) {console.log(data);}});
+    localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+    Swal.fire({title: 'Export',
+               html: '<textarea rows="30" cols="50">'+JSON.stringify(editor.export(),null,4).replace(/<[^>]*>/g, '')+'</textarea>'})
+}
+
+function editor_clear() {
+    editor.clearModuleSelected();
+    localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+}

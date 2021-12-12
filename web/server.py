@@ -29,7 +29,7 @@ def data_post():
     answers = []
 
     for node in data['drawflow']['Home']['data'].values():
-        if node['class'] == 'question':
+        if node['class'] == 'question' or node['class'] == 'question_not_connected':
             inputs = []
             outputs = []
             q = quest.add_question(text=node['data']['template'])
@@ -49,7 +49,7 @@ def data_post():
             }
             questions.append(question)
 
-        if node['class'] == 'answer':
+        if node['class'] == 'answer' or node['class'] == 'answers_not_connected':
             inputs = []
             outputs = []
             a = quest.add_answer(text=node['data']['template'])
