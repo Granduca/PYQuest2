@@ -127,53 +127,29 @@ editor.on('connectionRemoved', function(connection) {
 })
 
 editor.on('mouseMove', function(position) {
+    if(drag_start == true) {
+        for (i of mult_arr) {
+            if(i != active_node_id) {
+                if(typeof editor.drawflow.drawflow.Home.data[i] !== "undefined") {
+                    let node = editor.getNodeFromId(active_node_id);
+                    let elem = document.getElementById("node-"+i).children[1].children[0];
+                    let pos_x = multiselect_dict[i]['pos_x'];
+                    let pos_y = multiselect_dict[i]['pos_y'];
+                    editor.drawflow.drawflow.Home.data[i].pos_x = node.pos_x + pos_x;
+                    editor.drawflow.drawflow.Home.data[i].pos_y = node.pos_y + pos_y;
+                    document.getElementById(`node-${i}`).style.left = (node.pos_x + pos_x) + "px";
+                    document.getElementById(`node-${i}`).style.top = (node.pos_y + pos_y) + "px";
+                    editor.updateConnectionNodes(`node-${i}`);
+                }
+            }
+        }
+    }
     //console.log('Position mouse x:' + position.x + ' y:'+ position.y);
     //pass
 })
 
-//var multiselect_dict = {};
-//editor.on('click', (e) => {
-//    if (e.type === "mousedown") {
-//        for(value in e.path) {
-//            if(typeof e.path[value].children !== 'undefined'){
-//                if(e.path[value].children[0].id.includes('node-')) {
-//                    let str = e.path[value].children[0].id
-//                    let node = editor.getNodeFromId(str.charAt(str.length-1));
-//                    for (i=1; i<=editor.nodeId; i++) {
-//                        if(typeof editor.drawflow.drawflow.Home.data[i] !== "undefined") {
-//                            let elem = document.getElementById("node-"+i).children[1].children[0];
-//                            if(elem.className == 'active') {
-//                                multiselect_dict[i] = {'pos_x': node.pos_x - editor.drawflow.drawflow.Home.data[i].pos_x,
-//                                                       'pos_y': node.pos_y - editor.drawflow.drawflow.Home.data[i].pos_y,};
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//})
-
 editor.on('nodeMoved', function(id) {
-//    if(document.getElementById("node-"+id).children[1].children[0].className == 'active') {
-//        for (i=1; i<=editor.nodeId; i++) {
-//            if(typeof editor.drawflow.drawflow.Home.data[i] !== "undefined") {
-//                let node = editor.getNodeFromId(id);
-//                let elem = document.getElementById("node-"+i).children[1].children[0];
-//                if(elem.className == 'active') {
-//                    pos_x = multiselect_dict[i]['pos_x'];
-//                    pos_y = multiselect_dict[i]['pos_y'];
-//                    editor.drawflow.drawflow.Home.data[i].pos_x = node.pos_x + pos_x;
-//                    editor.drawflow.drawflow.Home.data[i].pos_y = node.pos_y + pos_y;
-//                    document.getElementById(`node-${i}`).style.left = (node.pos_x + pos_x) + "px";
-//                    document.getElementById(`node-${i}`).style.top = (node.pos_x + pos_y) + "px";
-//                    editor.updateConnectionNodes(`node-${i}`);
-//                }
-//            }
-//        }
-//        multiselect_dict = {};
-//    }
-    console.log("Node moved " + id);
+//    console.log("Node moved " + id);
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
 })
 
