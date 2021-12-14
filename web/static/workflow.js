@@ -174,6 +174,14 @@ editor.on('removeReroute', function(id) {
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
 })
 
+document.getElementById('drawflow').addEventListener('dblclick', clear_selection, false);
+function clear_selection(e) {       //TODO: доделать отмену селекшна при клике на пустом месте
+    console.log(dr.items);
+    dr.foreach(dr.items, function (el) {
+        el.classList.remove(dr.options.selectedClass);      //TODO: нужно удалить листенры
+    });
+}
+
 /* DRAG EVENT */
 
 /* Mouse and Touch Actions */
@@ -287,6 +295,7 @@ function check_connection(id) {
 var start_indicated = false;
 var start_indicated_id = -1;
 function set_start(e) {
+    e.stopPropagation();
     node = editor.getNodeFromId(node_selected_id)
     if (node.class.includes('question') == true) {
         if (start_indicated == false) {
@@ -310,6 +319,7 @@ function set_start(e) {
 }
 
 function set_finish(e) {
+    e.stopPropagation();
     node = editor.getNodeFromId(node_selected_id)
     if (node.class.includes('answer') == true) {
         change_node_type(node_selected_id, 'finish', 'input')

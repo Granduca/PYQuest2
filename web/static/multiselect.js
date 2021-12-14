@@ -58,9 +58,6 @@ dr = new Selectables({
 //        console.log('ondeselect', el);
     },
 
-    //rectOpen: function (el) {},   // переписать этот метод?
-    //TODO: сделать отмену слекшна при клики в пустом месте
-
     enabled: true
 });
 
