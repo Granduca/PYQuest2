@@ -7,11 +7,12 @@ var active_node_id = null;
 
 dr = new Selectables({
     zone:'#drawflow',
-    elements: 'div',
+    elements: ['.drawflow-node', '.title-box'],
 
     selectedClass: 'active',
 
     key: 'altKey',
+    moreUsing: 'altKey',
 
     start: function (e) {
         if (e.altKey) {
@@ -35,26 +36,33 @@ dr = new Selectables({
             document.getElementById("node-"+id).addEventListener('mouseup', node_mouseup, false);
             mult_arr.push(id);
         }
-//        console.log(mult_arr);
-        //pass
         //console.log(el)
-//        console.log('onselect', el);
+        console.log('onselect', el);
     },
 
-    onDeselect: function (el) {     //TODO: Не работает! Обязательно пофиксить! Иначе будут плодиться листнеры.
-        editor.editor_selected = true;
-        is_multiselect = false;
-        for(value of mult_arr) {
-            document.getElementById("node-"+value).removeEventListener('mousedown', node_mousedown, false);
-            document.getElementById("node-"+value).removeEventListener('mouseup', node_mouseup, false);
+    onDeselect: function (el) {
+        if(el.id.includes('node-') == true) {
+            let temp_arr = [];
+            for(value of mult_arr) {
+                let id = parseInt(el.id.charAt(el.id.length-1));
+                if(value == id) {
+                    document.getElementById("node-"+value).removeEventListener('mousedown', node_mousedown, false);
+                    document.getElementById("node-"+value).removeEventListener('mouseup', node_mouseup, false);
+                    temp_arr.push(value);
+                }
+            }
+            for(value of temp_arr) {
+                mult_arr = mult_arr.filter(function(ele){return ele != value;});
+            }
         }
-        mult_arr = [];
 //        console.log('ondeselect', el);
     },
 
+    //rectOpen: function (el) {},   // переписать этот метод?
+    //TODO: сделать отмену слекшна при клики в пустом месте
+
     enabled: true
 });
-
 
 function node_mousedown(e) {
     if(e.type === 'mousedown') {
