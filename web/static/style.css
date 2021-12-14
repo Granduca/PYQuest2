@@ -54,6 +54,10 @@ header a {
                                   supported by Chrome, Edge, Opera and Firefox */
 }
 
+.vertical {
+    resize: vertical;
+}
+
 header nav {
   position: absolute;
   right: 20px;

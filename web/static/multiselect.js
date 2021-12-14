@@ -26,7 +26,7 @@ dr = new Selectables({
     stop: function (e) {
         editor.editor_mode='edit';
         is_multiselect = false;
-//        console.log('Finished selecting   ' + this.elements + ' in ' + this.zone);
+        //console.log('Finished selecting   ' + this.elements + ' in ' + this.zone);
     },
 
     onSelect: function (el) {
@@ -36,30 +36,33 @@ dr = new Selectables({
             document.getElementById("node-"+id).addEventListener('mouseup', node_mouseup, false);
             mult_arr.push(id);
         }
-        //console.log(el)
-        console.log('onselect', el);
+        //console.log('onselect', el);
     },
 
     onDeselect: function (el) {
-        if(el.id.includes('node-') == true) {
-            let temp_arr = [];
-            for(value of mult_arr) {
-                let id = parseInt(el.id.charAt(el.id.length-1));
-                if(value == id) {
-                    document.getElementById("node-"+value).removeEventListener('mousedown', node_mousedown, false);
-                    document.getElementById("node-"+value).removeEventListener('mouseup', node_mouseup, false);
-                    temp_arr.push(value);
-                }
-            }
-            for(value of temp_arr) {
-                mult_arr = mult_arr.filter(function(ele){return ele != value;});
-            }
-        }
-//        console.log('ondeselect', el);
+        node_remove_listener(el);
+        //console.log('ondeselect', el);
     },
 
     enabled: true
 });
+
+function node_remove_listener(el) {
+    if(el.id.includes('node-') == true) {
+        let temp_arr = [];
+        for(value of mult_arr) {
+            let id = parseInt(el.id.charAt(el.id.length-1));
+            if(value == id) {
+                document.getElementById("node-"+value).removeEventListener('mousedown', node_mousedown, false);
+                document.getElementById("node-"+value).removeEventListener('mouseup', node_mouseup, false);
+                temp_arr.push(value);
+            }
+        }
+        for(value of temp_arr) {
+            mult_arr = mult_arr.filter(function(ele){return ele != value;});
+        }
+    }
+}
 
 function node_mousedown(e) {
     if(e.type === 'mousedown') {

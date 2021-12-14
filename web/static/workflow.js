@@ -29,73 +29,104 @@ if (typeof retrievedObject !== 'undefined') {
 //Templates
 var textarea_template = 'Введите ваш текст...';
 
-function set_node_template(key, text='') {
+function set_node_template(key, text='', height='100') {
     var nodes_template = {
         'start': `<div>` +
                     `<div class="title-box start noselect" ondblclick="set_start(event)"><i class="fas fa-play-circle"></i> Начало</div>` +
-                        `<div class="box noselect">` + textarea_setter(text) +
+                        `<div class="box noselect">` + textarea_setter(text, height) +
                         `</div>` +
                     `</div>`,
         'finish': `<div>` +
                     `<div class="title-box finish noselect" ondblclick="set_finish(event)"><i class="fas fa-play-circle"></i> Конец</div>` +
-                        `<div class="box noselect">` + textarea_setter(text) +
+                        `<div class="box noselect">` + textarea_setter(text, height) +
                         `</div>` +
                     `</div>`,
         'question': `<div>` +
                         `<div class="title-box noselect" ondblclick="set_start(event)"><i class="fas fa-question-circle"></i> Вопрос</div>` +
-                        `<div class="box noselect">` + textarea_setter(text) +
+                        `<div class="box noselect">` + textarea_setter(text, height) +
                         `</div>` +
                     `</div>`,
         'question_not_connected': `<div>` +
                         `<div class="title-box not_connected noselect" ondblclick="set_start(event)"><i class="fas fa-question-circle"></i> Вопрос</div>` +
-                        `<div class="box noselect">` + textarea_setter(text) +
+                        `<div class="box noselect">` + textarea_setter(text, height) +
                         `</div>` +
                     `</div>`,
         'answer': `<div>` +
                         `<div class="title-box noselect" ondblclick="set_finish(event)"><i class="fas fa-comment-dots"></i> Ответ</div>` +
-                        `<div class="box noselect">` + textarea_setter(text) +
+                        `<div class="box noselect">` + textarea_setter(text, height) +
                         `</div>` +
                     `</div>`,
         'answer_not_connected': `<div>` +
                         `<div class="title-box not_connected noselect" ondblclick="set_finish(event)"><i class="fas fa-comment-dots"></i> Ответ</div>` +
-                        `<div class="box noselect">` + textarea_setter(text) +
+                        `<div class="box noselect">` + textarea_setter(text, height) +
                         `</div>` +
                     `</div>`,
     }
     return nodes_template[key];
 }
 
-function textarea_setter(t) {
+function textarea_setter(t, h) {
     text = '';
     if (t != '') { text = t;}
-    return `<textarea df-template placeholder='${textarea_template}'>${text}</textarea>`;
+    return `<textarea df-template class="vertical" style="height:${h}px;" placeholder="${textarea_template}">${text}</textarea>`;
 }
 
 
 // Events!
+const observer = new ResizeObserver(observerCallback, { threshold: 1.0 });
+
+function observerCallback(entries, observer) {
+  for (let entry of entries) {
+    const height = Math.floor(entry.contentRect.height);
+    //console.log(height);
+    if(height == 0) {
+        observer.unobserve(entry.target);
+        break;
+    }
+    let parent_id = getParentNode(entry.target, 4).id;
+    let id = parent_id.charAt(parent_id.length-1);
+    let node = editor.getNodeFromId(id);
+    text = set_node_template(node.name, node.data['template'], height);
+    editor.drawflow.drawflow.Home.data[id].html = text;
+    editor.updateConnectionNodes(`node-${id}`);     //TODO: не всегда срабатывает - проверить
+  }
+  localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+}
+
+function update_resize_observers() {
+    let textareas = document.querySelectorAll('.vertical');
+    textareas.forEach(ta => {
+        observer.observe(ta);
+    });
+}
+update_resize_observers();
+
 var node_created_id = null;
 editor.on('nodeCreated', function(id) {
     node_created_id = id;
-    console.log("Node created " + id);
+    //console.log("Node created " + id);
     dr.disable(); dr.enable();
+    update_resize_observers();
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
 })
 
 editor.on('nodeRemoved', function(id) {
-    console.log("Node removed " + id);
+    //console.log("Node removed " + id);
     dr.disable(); dr.enable();
+    let textareas = document.querySelectorAll('.vertical');
+    update_resize_observers();
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
 })
 
 var node_selected_id = null;
 editor.on('nodeSelected', function(id) {
     node_selected_id = id;
-    console.log("Node selected " + id);
+    //console.log("Node selected " + id);
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
 })
 
 editor.on('nodeDataChanged', function(id) {
-    console.log("Node value updated " + id);
+    //console.log("Node value updated " + id);
     dr.disable(); dr.enable();
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
 })
@@ -109,8 +140,8 @@ editor.on('moduleChanged', function(name) {
 })
 
 editor.on('connectionCreated', function(connection) {
-    console.log('Connection created');
-    console.log(connection);
+    //console.log('Connection created');
+    //console.log(connection);
     check_connection(connection['input_id']);
     check_connection(connection['output_id']);
     dr.disable(); dr.enable();
@@ -175,12 +206,25 @@ editor.on('removeReroute', function(id) {
 })
 
 document.getElementById('drawflow').addEventListener('dblclick', clear_selection, false);
-function clear_selection(e) {       //TODO: доделать отмену селекшна при клике на пустом месте
-    console.log(dr.items);
+function clear_selection(e) {
     dr.foreach(dr.items, function (el) {
-        el.classList.remove(dr.options.selectedClass);      //TODO: нужно удалить листенры
+        el.classList.remove(dr.options.selectedClass);
+        node_remove_listener(el);
     });
 }
+
+var textarea_is_selected = false;
+editor.on('click', (e) => {
+    if(e.target.tagName == 'TEXTAREA') {
+        textarea_is_selected = true;
+        editor.editor_mode='fixed';
+    } else {
+        if(textarea_is_selected == true) {
+            textarea_is_selected = false;
+            editor.editor_mode='edit';
+        }
+    }
+})
 
 /* DRAG EVENT */
 
@@ -266,6 +310,7 @@ function check_connection(id) {
     let elem = document.getElementById("node-"+id).children[1];
     if (node.class.includes('question') == true) {
         if ((node.inputs['input_1']['connections'].length == 0) || (node.outputs['output_1']['connections'].length == 0)) {
+            //TODO: передавать высоту textarea
             text = set_node_template('question_not_connected', node.data['template']);
             elem.innerHTML = text;
             editor.drawflow.drawflow.Home.data[id].html = text;
@@ -289,7 +334,7 @@ function check_connection(id) {
             editor.drawflow.drawflow.Home.data[id].class = 'answer';
         }
     }
-//    editor.updateConnectionNodes("node-"+id);
+    //editor.updateConnectionNodes("node-"+id);
 }
 
 var start_indicated = false;
@@ -333,7 +378,7 @@ function change_node_type(old_id, node_class, side) {
     node = editor.getNodeFromId(old_id);
     addNodeToDrawFlow(node_class, node.pos_x, node.pos_y, node.data['template'], true);
     if (side == 'input') {
-        console.log(node.inputs['input_1']['connections']);
+        //console.log(node.inputs['input_1']['connections']);
         for (let value of node.inputs['input_1']['connections']) {
             editor.addConnection(value['node'], node_created_id, 'output_1', 'input_1');
         }
@@ -407,4 +452,12 @@ function export_json() {
 function editor_clear() {
     editor.clearModuleSelected();
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+}
+
+function getParentNode(element, level = 1) {
+    while (level-- > 0) {
+      element = element.parentNode;
+      if (!element) return null;
+    }
+    return element;
 }
