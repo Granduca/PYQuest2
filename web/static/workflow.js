@@ -76,21 +76,24 @@ function textarea_setter(t, h) {
 const observer = new ResizeObserver(observerCallback, { threshold: 1.0 });
 
 function observerCallback(entries, observer) {
-  for (let entry of entries) {
-    const height = Math.floor(entry.contentRect.height);
-    //console.log(height);
-    if(height == 0) {
-        observer.unobserve(entry.target);
-        break;
+    for (let entry of entries) {
+        const height = Math.floor(entry.contentRect.height);
+        //console.log(height);
+        if(height == 0) {
+            observer.unobserve(entry.target);
+            update_resize_observers();
+            break;
+        }
+        let parent_id = getParentNode(entry.target, 4).id;
+        let id = parent_id.split('-')[1];
+        if(typeof editor.drawflow.drawflow.Home.data[id] !== "undefined") {
+            let node = editor.getNodeFromId(id);
+            text = set_node_template(node.name, node.data['template'], height);
+            editor.drawflow.drawflow.Home.data[id].html = text;
+            editor.updateConnectionNodes(`node-${id}`);     //TODO: не всегда срабатывает - проверить
+        }
     }
-    let parent_id = getParentNode(entry.target, 4).id;
-    let id = parent_id.charAt(parent_id.length-1);
-    let node = editor.getNodeFromId(id);
-    text = set_node_template(node.name, node.data['template'], height);
-    editor.drawflow.drawflow.Home.data[id].html = text;
-    editor.updateConnectionNodes(`node-${id}`);     //TODO: не всегда срабатывает - проверить
-  }
-  localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+    localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
 }
 
 function update_resize_observers() {
@@ -145,6 +148,7 @@ editor.on('connectionCreated', function(connection) {
     check_connection(connection['input_id']);
     check_connection(connection['output_id']);
     dr.disable(); dr.enable();
+//    update_resize_observers();
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
 })
 
@@ -154,6 +158,7 @@ editor.on('connectionRemoved', function(connection) {
     check_connection(connection['input_id']);
     check_connection(connection['output_id']);
     dr.disable(); dr.enable();
+//    update_resize_observers();
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
 })
 
@@ -308,33 +313,34 @@ function addNodeToDrawFlow(name, pos_x, pos_y, data='', auto=false) {
 function check_connection(id) {
     node = editor.getNodeFromId(id);
     let elem = document.getElementById("node-"+id).children[1];
+    let height = parseInt(elem.querySelector('.vertical').style.height);
     if (node.class.includes('question') == true) {
         if ((node.inputs['input_1']['connections'].length == 0) || (node.outputs['output_1']['connections'].length == 0)) {
             //TODO: передавать высоту textarea
-            text = set_node_template('question_not_connected', node.data['template']);
+            text = set_node_template('question_not_connected', node.data['template'], height);
             elem.innerHTML = text;
             editor.drawflow.drawflow.Home.data[id].html = text;
             editor.drawflow.drawflow.Home.data[id].class = 'question_not_connected';
         } else {
-            text = set_node_template('question', node.data['template']);
+            text = set_node_template('question', node.data['template'], height);
             elem.innerHTML = text;
             editor.drawflow.drawflow.Home.data[id].html = text;
             editor.drawflow.drawflow.Home.data[id].class = 'question';
         }
     }else if (node.class.includes('answer') == true) {
         if ((node.inputs['input_1']['connections'].length == 0) || (node.outputs['output_1']['connections'].length == 0)) {
-            text = set_node_template('answer_not_connected', node.data['template']);
+            text = set_node_template('answer_not_connected', node.data['template'], height);
             elem.innerHTML = text;
             editor.drawflow.drawflow.Home.data[id].html = text;
             editor.drawflow.drawflow.Home.data[id].class = 'answer_not_connected';
         } else {
-            text = set_node_template('answer', node.data['template']);
+            text = set_node_template('answer', node.data['template'], height);
             elem.innerHTML = text;
             editor.drawflow.drawflow.Home.data[id].html = text;
             editor.drawflow.drawflow.Home.data[id].class = 'answer';
         }
     }
-    //editor.updateConnectionNodes("node-"+id);
+    editor.updateConnectionNodes("node-"+id);
 }
 
 var start_indicated = false;
@@ -377,6 +383,18 @@ function set_finish(e) {
 function change_node_type(old_id, node_class, side) {
     node = editor.getNodeFromId(old_id);
     addNodeToDrawFlow(node_class, node.pos_x, node.pos_y, node.data['template'], true);
+
+    let elem = document.getElementById("node-"+old_id).children[1];
+    let new_elem = document.getElementById("node-"+node_created_id).children[1];
+
+    let height = parseInt(elem.querySelector('.vertical').style.height);
+
+    let new_node = editor.getNodeFromId(node_created_id);
+    text = set_node_template(new_node.class, new_node.data['template'], height);
+
+    new_elem.innerHTML = text;
+    editor.drawflow.drawflow.Home.data[node_created_id].html = text;
+
     if (side == 'input') {
         //console.log(node.inputs['input_1']['connections']);
         for (let value of node.inputs['input_1']['connections']) {

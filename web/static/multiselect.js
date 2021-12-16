@@ -51,7 +51,7 @@ function node_remove_listener(el) {
     if(el.id.includes('node-') == true) {
         let temp_arr = [];
         for(value of mult_arr) {
-            let id = parseInt(el.id.charAt(el.id.length-1));
+            let id = parseInt(el.id.split('-')[1]);
             if(value == id) {
                 document.getElementById("node-"+value).removeEventListener('mousedown', node_mousedown, false);
                 document.getElementById("node-"+value).removeEventListener('mouseup', node_mouseup, false);
