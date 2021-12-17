@@ -6,15 +6,29 @@ const editor = new Drawflow(id);
 editor.reroute = true;
 editor.reroute_fix_curvature = true;
 
-var retrievedObject = localStorage.getItem('user_workflow');
+var node_created_id = null;
+var node_selected_id = null;
 
+var start_indicated = false;
+var start_indicated_id = -1;
+
+var textarea_is_selected = false;
+
+var mobile_item_selec = '';
+var mobile_last_move = null;
+var transform = '';
+
+var bar_zoom_text = document.getElementById("bar-zoom text");
+
+//editor init
 editor.start();
 
 // editor.import(dataToImport);
 // editor.addModule('Other');
 
+//Local storage
+var retrievedObject = localStorage.getItem('user_workflow');
 
-//local storage
 if (typeof retrievedObject !== 'undefined') {
     if (retrievedObject != null) {
         editor.import(JSON.parse(retrievedObject))
@@ -25,44 +39,28 @@ if (typeof retrievedObject !== 'undefined') {
     }
 }
 
-
 //Templates
 var textarea_template = 'Введите ваш текст...';
 
 function set_node_template(key, text='', height='100') {
     var nodes_template = {
-        'start': `<div>` +
-                    `<div class="title-box start noselect" ondblclick="set_start(event)"><i class="fas fa-play-circle"></i> Начало</div>` +
-                        `<div class="box noselect">` + textarea_setter(text, height) +
-                        `</div>` +
-                    `</div>`,
-        'finish': `<div>` +
-                    `<div class="title-box finish noselect" ondblclick="set_finish(event)"><i class="fas fa-play-circle"></i> Конец</div>` +
-                        `<div class="box noselect">` + textarea_setter(text, height) +
-                        `</div>` +
-                    `</div>`,
-        'question': `<div>` +
-                        `<div class="title-box noselect" ondblclick="set_start(event)"><i class="fas fa-question-circle"></i> Вопрос</div>` +
-                        `<div class="box noselect">` + textarea_setter(text, height) +
-                        `</div>` +
-                    `</div>`,
-        'question_not_connected': `<div>` +
-                        `<div class="title-box not_connected noselect" ondblclick="set_start(event)"><i class="fas fa-question-circle"></i> Вопрос</div>` +
-                        `<div class="box noselect">` + textarea_setter(text, height) +
-                        `</div>` +
-                    `</div>`,
-        'answer': `<div>` +
-                        `<div class="title-box noselect" ondblclick="set_finish(event)"><i class="fas fa-comment-dots"></i> Ответ</div>` +
-                        `<div class="box noselect">` + textarea_setter(text, height) +
-                        `</div>` +
-                    `</div>`,
-        'answer_not_connected': `<div>` +
-                        `<div class="title-box not_connected noselect" ondblclick="set_finish(event)"><i class="fas fa-comment-dots"></i> Ответ</div>` +
-                        `<div class="box noselect">` + textarea_setter(text, height) +
-                        `</div>` +
-                    `</div>`,
+        'start': node_html_setter("title-box start noselect", "set_start(event)", "fas fa-play-circle", "Начало", text, height),
+        'finish': node_html_setter("title-box finish noselect", "set_finish(event)", "fas fa-stop-circle", "Конец", text, height),
+        'question': node_html_setter("title-box noselect", "set_start(event)", "fas fa-question-circle", "Вопрос", text, height),
+        'question_not_connected': node_html_setter("title-box not_connected noselect", "set_start(event)", "fas fa-question-circle", "Вопрос", text, height),
+        'answer': node_html_setter("title-box noselect", "set_finish(event)", "fas fa-comment-dots", "Ответ", text, height),
+        'answer_not_connected': node_html_setter("title-box not_connected noselect", "set_finish(event)", "fas fa-comment-dots", "Ответ", text, height),
     }
     return nodes_template[key];
+}
+
+function node_html_setter(node_class, node_func, node_icon, node_text, text, height) {
+    let template = `<div>` +
+                        `<div class="${node_class}" ondblclick="${node_func}"><i class="${node_icon}"></i> ${node_text}</div>` +
+                        `<div class="box noselect">` + textarea_setter(text, height) +
+                        `</div>` +
+                    `</div>`;
+    return template;
 }
 
 function textarea_setter(t, h) {
@@ -104,7 +102,6 @@ function update_resize_observers() {
 }
 update_resize_observers();
 
-var node_created_id = null;
 editor.on('nodeCreated', function(id) {
     node_created_id = id;
     //console.log("Node created " + id);
@@ -121,7 +118,6 @@ editor.on('nodeRemoved', function(id) {
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
 })
 
-var node_selected_id = null;
 editor.on('nodeSelected', function(id) {
     node_selected_id = id;
     //console.log("Node selected " + id);
@@ -189,7 +185,6 @@ editor.on('nodeMoved', function(id) {
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
 })
 
-var bar_zoom_text = document.getElementById("bar-zoom text");
 editor.on('zoom', function(zoom) {
     //console.log('Zoom level ' + zoom);
     bar_zoom_text.innerHTML = 100 * Math.floor(zoom*10)/10 + '%';
@@ -218,7 +213,6 @@ function clear_selection(e) {
     });
 }
 
-var textarea_is_selected = false;
 editor.on('click', (e) => {
     if(e.target.tagName == 'TEXTAREA') {
         textarea_is_selected = true;
@@ -242,8 +236,6 @@ for (var i = 0; i < elements.length; i++) {
     elements[i].addEventListener('touchstart', drag, false );
 }
 
-var mobile_item_selec = '';
-var mobile_last_move = null;
 function positionMobile(ev) {
     mobile_last_move = ev;
 }
@@ -310,6 +302,7 @@ function addNodeToDrawFlow(name, pos_x, pos_y, data='', auto=false) {
     }
 }
 
+//MISC
 function check_connection(id) {
     node = editor.getNodeFromId(id);
     let elem = document.getElementById("node-"+id).children[1];
@@ -343,8 +336,6 @@ function check_connection(id) {
     editor.updateConnectionNodes("node-"+id);
 }
 
-var start_indicated = false;
-var start_indicated_id = -1;
 function set_start(e) {
     e.stopPropagation();
     node = editor.getNodeFromId(node_selected_id)
@@ -409,7 +400,6 @@ function change_node_type(old_id, node_class, side) {
     editor.removeNodeId('node-' + old_id);
 }
 
-var transform = '';
 function showpopup(e) {
     e.target.closest(".drawflow-node").style.zIndex = "9999";
     e.target.children[0].style.display = "block";
