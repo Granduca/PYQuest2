@@ -326,6 +326,14 @@ cursor: pointer;
     background: #eb8e8e;
 }
 
+.title-box.link {
+    background: #797ef6;
+}
+
+.title-box.link.not_connected {
+    background: #FAD83C;
+}
+
 .title-box.not_connected {
     background: #FAD83C;
 }

@@ -50,16 +50,16 @@ function set_node_template(key, text='', height='100') {
         'question_not_connected': node_html_setter("title-box not_connected noselect", "set_start(event)", "fas fa-question-circle", "Вопрос", text, height),
         'answer': node_html_setter("title-box noselect", "set_finish(event)", "fas fa-comment-dots", "Ответ", text, height),
         'answer_not_connected': node_html_setter("title-box not_connected noselect", "set_finish(event)", "fas fa-comment-dots", "Ответ", text, height),
+        'link': node_html_setter("title-box link not_connected noselect", "", "fas fa-link", "Переход", text, height),
     }
     return nodes_template[key];
 }
 
-function node_html_setter(node_class, node_func, node_icon, node_text, text, height) {
-    let template = `<div>` +
-                        `<div class="${node_class}" ondblclick="${node_func}"><i class="${node_icon}"></i> ${node_text}</div>` +
-                        `<div class="box noselect">` + textarea_setter(text, height) +
-                        `</div>` +
-                    `</div>`;
+function node_html_setter(title_box, node_func, node_icon, node_text, text, height) {
+    let header = `<div class="${title_box}" ondblclick="${node_func}"><i class="${node_icon}"></i> ${node_text}</div>`;
+    let body = `<div class="box noselect">` + textarea_setter(text, height) + `</div>`;
+    if(title_box.includes('link') == true) {body = `<div class="box" ondblclick="${node_func}">Двойной клик, чтобы назначить переход...</div>`;}
+    let template = `<div>` + header + body + `</div>`;
     return template;
 }
 
@@ -88,7 +88,7 @@ function observerCallback(entries, observer) {
             let node = editor.getNodeFromId(id);
             text = set_node_template(node.name, node.data['template'], height);
             editor.drawflow.drawflow.Home.data[id].html = text;
-            editor.updateConnectionNodes(`node-${id}`);     //TODO: не всегда срабатывает - проверить
+            editor.updateConnectionNodes(`node-${id}`);
         }
     }
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
@@ -299,6 +299,10 @@ function addNodeToDrawFlow(name, pos_x, pos_y, data='', auto=false) {
         case 'answer_not_connected':
             editor.addNode('answer_not_connected', 1, 1, pos_x, pos_y, 'answer_not_connected', { "template": data}, set_node_template('answer_not_connected'));
             break;
+
+        case 'link':
+            editor.addNode('link', 1, 0, pos_x, pos_y, 'link', { "template": data}, set_node_template('link'));
+            break;
     }
 }
 
@@ -306,10 +310,12 @@ function addNodeToDrawFlow(name, pos_x, pos_y, data='', auto=false) {
 function check_connection(id) {
     node = editor.getNodeFromId(id);
     let elem = document.getElementById("node-"+id).children[1];
-    let height = parseInt(elem.querySelector('.vertical').style.height);
+    let height = null;
+    if(!elem.parentElement.classList.contains('link')) {
+        height = parseInt(elem.querySelector('.vertical').style.height);
+    }
     if (node.class.includes('question') == true) {
         if ((node.inputs['input_1']['connections'].length == 0) || (node.outputs['output_1']['connections'].length == 0)) {
-            //TODO: передавать высоту textarea
             text = set_node_template('question_not_connected', node.data['template'], height);
             elem.innerHTML = text;
             editor.drawflow.drawflow.Home.data[id].html = text;
@@ -331,6 +337,16 @@ function check_connection(id) {
             elem.innerHTML = text;
             editor.drawflow.drawflow.Home.data[id].html = text;
             editor.drawflow.drawflow.Home.data[id].class = 'answer';
+        }
+    }else if (node.class.includes('link') == true) {
+        if (node.inputs['input_1']['connections'].length == 0) {
+            if(!elem.children[0].children[0].classList.contains('not_connected')) {
+                elem.children[0].children[0].classList.add('not_connected');    //TODO: добавить режим выбора
+            }
+        } else {
+            if(elem.children[0].children[0].classList.contains('not_connected')) {
+                elem.children[0].children[0].classList.remove('not_connected');
+            }
         }
     }
     editor.updateConnectionNodes("node-"+id);
