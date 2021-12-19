@@ -7,7 +7,7 @@ var active_node_id = null;
 
 dr = new Selectables({
     zone:'#drawflow',
-    elements: ['.drawflow-node', '.title-box'],
+    elements: '.title-box',
 
     selectedClass: 'active',
 
@@ -16,6 +16,7 @@ dr = new Selectables({
 
     start: function (e) {
         if (e.altKey) {
+            drag_start = false;
             is_multiselect = true;
             editor.editor_selected = false;
             editor.editor_mode = 'fixed';
@@ -29,18 +30,21 @@ dr = new Selectables({
         //console.log('Finished selecting   ' + this.elements + ' in ' + this.zone);
     },
 
-    onSelect: function (el) {
-        if(el.id.includes('node-') == true) {
-            let id = parseInt(el.id.charAt(el.id.length-1));
+    onSelect: function (el) {      //TODO: пофиксить странности при переселектах
+        let node = el.closest('.drawflow-node');
+        let id = parseInt(node.id.split('-')[1]);
+        if(!mult_arr.includes(id)) {
             document.getElementById("node-"+id).addEventListener('mousedown', node_mousedown, false);
             document.getElementById("node-"+id).addEventListener('mouseup', node_mouseup, false);
             mult_arr.push(id);
         }
+        multiselect_dict = {};
         //console.log('onselect', el);
     },
 
     onDeselect: function (el) {
         node_remove_listener(el);
+        multiselect_dict = {};
         //console.log('ondeselect', el);
     },
 
@@ -48,26 +52,18 @@ dr = new Selectables({
 });
 
 function node_remove_listener(el) {
-    if(el.id.includes('node-') == true) {
-        let temp_arr = [];
-        for(value of mult_arr) {
-            let id = parseInt(el.id.split('-')[1]);
-            if(value == id) {
-                document.getElementById("node-"+value).removeEventListener('mousedown', node_mousedown, false);
-                document.getElementById("node-"+value).removeEventListener('mouseup', node_mouseup, false);
-                temp_arr.push(value);
-            }
-        }
-        for(value of temp_arr) {
-            mult_arr = mult_arr.filter(function(ele){return ele != value;});
-        }
-    }
+    let node = el.closest('.drawflow-node');
+    let id = parseInt(node.id.split('-')[1]);
+    document.getElementById("node-" + id).removeEventListener('mousedown', node_mousedown, false);
+    document.getElementById("node-" + id).removeEventListener('mouseup', node_mouseup, false);
+    let arr_index = mult_arr.indexOf(id);
+    mult_arr.splice(arr_index, 1);
 }
 
 function node_mousedown(e) {
     if(e.type === 'mousedown') {
         drag_start = true;
-        active_node_id = parseInt(e.currentTarget.id.charAt(e.currentTarget.id.length-1));
+        active_node_id = parseInt(e.currentTarget.id.split('-')[1]);
         for (i=1; i<=editor.nodeId; i++) {
             if(typeof editor.drawflow.drawflow.Home.data[i] !== "undefined") {
                 let node = editor.getNodeFromId(active_node_id);

@@ -342,6 +342,10 @@ cursor: pointer;
     background: #87CEFA;
 }
 
+.title-box.link.active {
+    background: #87CEFA;
+}
+
 .drawflow .title-box svg {
   position: initial;
 }
