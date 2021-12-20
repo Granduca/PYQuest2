@@ -30,7 +30,7 @@ var dr = new Selectables({
         //console.log('Finished selecting   ' + this.elements + ' in ' + this.zone);
     },
 
-    onSelect: function (el) {      //TODO: пофиксить странности при переселектах
+    onSelect: function (el) {
         let node = el.closest('.drawflow-node');
         let id = parseInt(node.id.split('-')[1]);
         if(!mult_arr.includes(id)) {
@@ -106,9 +106,9 @@ function node_mousedown(e) {
     if(e.type === 'mousedown') {
         drag_start = true;
         active_node_id = parseInt(e.currentTarget.id.split('-')[1]);
+        let node = editor.getNodeFromId(active_node_id);
         for (i=1; i<=editor.nodeId; i++) {
             if(typeof editor.drawflow.drawflow.Home.data[i] !== "undefined") {
-                let node = editor.getNodeFromId(active_node_id);
                 multiselect_dict[i] = {'pos_x': editor.drawflow.drawflow.Home.data[i].pos_x - node.pos_x,
                                         'pos_y': editor.drawflow.drawflow.Home.data[i].pos_y - node.pos_y,};
             }
