@@ -51,22 +51,22 @@ var dr = new Selectables({
     enabled: true
 });
 
-var rb = function () {
+let rb = function () {
     return document.getElementById('s-rectBox');
 };
 
-var cross = function (a, b) {
-    var aTop = offset(a).top, aLeft = offset(a).left, bTop = offset(b).top, bLeft = offset(b).left;
+let cross = function (a, b) {
+    let aTop = offset(a).top, aLeft = offset(a).left, bTop = offset(b).top, bLeft = offset(b).left;
     return !(((aTop + a.offsetHeight) < (bTop)) || (aTop > (bTop + b.offsetHeight * editor.zoom)) || ((aLeft + a.offsetWidth) < bLeft) || (aLeft > (bLeft + b.offsetWidth * editor.zoom)));
 };
 
-var offset = function (el) {
-    var r = el.getBoundingClientRect();
+let offset = function (el) {
+    let r = el.getBoundingClientRect();
     return {top: r.top + document.body.scrollTop, left: r.left + document.body.scrollLeft}
 };
 
 dr.select = function (e) {
-    var a = rb();
+    let a = rb();
     if (!a) {
         return;
     }
@@ -74,7 +74,7 @@ dr.select = function (e) {
     document.body.classList.remove('s-noselect');
     document.body.removeEventListener('mousemove', dr.rectDraw);
     window.removeEventListener('mouseup', dr.select);
-    var s = dr.options.selectedClass;
+    let s = dr.options.selectedClass;
     dr.foreach(dr.items, function (el) {
         if (cross(a, el) === true) {
             if (el.classList.contains(s)) {
@@ -107,7 +107,7 @@ function node_mousedown(e) {
         drag_start = true;
         active_node_id = parseInt(e.currentTarget.id.split('-')[1]);
         let node = editor.getNodeFromId(active_node_id);
-        for (i=1; i<=editor.nodeId; i++) {
+        for (let i = 1; i <= editor.nodeId; i++) {
             if(typeof editor.drawflow.drawflow.Home.data[i] !== "undefined") {
                 multiselect_dict[i] = {'pos_x': editor.drawflow.drawflow.Home.data[i].pos_x - node.pos_x,
                                         'pos_y': editor.drawflow.drawflow.Home.data[i].pos_y - node.pos_y,};

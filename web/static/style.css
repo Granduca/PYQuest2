@@ -247,6 +247,18 @@ cursor: pointer;
 
 
 /* Editing Drawflow */
+.drawflow-node.link-mode{
+  outline: 4px dashed rgb(143, 221, 252);
+  box-shadow: 0 0 0 4px #4688d3;
+  animation: 1s animateBorder infinite;
+}
+
+@keyframes animateBorder {
+  to {
+    outline-color: #4688d3;
+    box-shadow: 0 0 0 4px rgb(143, 221, 252);
+  }
+}
 
 .drawflow .drawflow-node {
   background: var(--background-color);

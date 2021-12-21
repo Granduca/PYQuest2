@@ -3,6 +3,7 @@ var id = document.getElementById("drawflow");
 
 const editor = new Drawflow(id);
 
+editor.zoom_min = 0.2;
 editor.reroute = true;
 editor.reroute_fix_curvature = true;
 
@@ -13,6 +14,9 @@ var start_indicated = false;
 var start_indicated_id = -1;
 
 var textarea_is_selected = false;
+
+var active_link_node = null;
+var link_mode = false;
 
 var mobile_item_selec = '';
 var mobile_last_move = null;
@@ -26,13 +30,17 @@ editor.start();
 // editor.import(dataToImport);
 // editor.addModule('Other');
 
-//Local storage
+//Local storage and import
+editor.on('import', function(msg){
+    console.log('Successful ' + msg);
+})
+
 var retrievedObject = localStorage.getItem('user_workflow');
 
 if (typeof retrievedObject !== 'undefined') {
     if (retrievedObject != null) {
-        editor.import(JSON.parse(retrievedObject))
-        console.log(retrievedObject)
+        editor.import(JSON.parse(retrievedObject));
+        console.log(retrievedObject);
     } else {
         localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
         retrievedObject = localStorage.getItem('user_workflow');
@@ -41,16 +49,19 @@ if (typeof retrievedObject !== 'undefined') {
 
 //Templates
 var textarea_template = 'Введите ваш текст...';
+var link_template = 'Двойной клик, чтобы назначить переход...';
 
 function set_node_template(key, text='', height='100') {
-    var nodes_template = {
+    let link_status = ' not_connected';
+    if(key == 'link'){if(text != ''){text = 'node-' + text; link_status = '';}else{text = link_template;}}
+    let nodes_template = {
         'start': node_html_setter("title-box start noselect", "set_start(event)", "fas fa-play-circle", "Начало", text, height),
         'finish': node_html_setter("title-box finish noselect", "set_finish(event)", "fas fa-stop-circle", "Конец", text, height),
         'question': node_html_setter("title-box noselect", "set_start(event)", "fas fa-question-circle", "Вопрос", text, height),
         'question_not_connected': node_html_setter("title-box not_connected noselect", "set_start(event)", "fas fa-question-circle", "Вопрос", text, height),
         'answer': node_html_setter("title-box noselect", "set_finish(event)", "fas fa-comment-dots", "Ответ", text, height),
         'answer_not_connected': node_html_setter("title-box not_connected noselect", "set_finish(event)", "fas fa-comment-dots", "Ответ", text, height),
-        'link': node_html_setter("title-box link not_connected noselect", "", "fas fa-link", "Переход", text, height),
+        'link': node_html_setter("title-box link" + link_status + " noselect", "set_link(event)", "fas fa-link", "Переход", text, height),
     }
     return nodes_template[key];
 }
@@ -58,13 +69,13 @@ function set_node_template(key, text='', height='100') {
 function node_html_setter(title_box, node_func, node_icon, node_text, text, height) {
     let header = `<div class="${title_box}" ondblclick="${node_func}"><i class="${node_icon}"></i> ${node_text}</div>`;
     let body = `<div class="box noselect">` + textarea_setter(text, height) + `</div>`;
-    if(title_box.includes('link') == true) {body = `<div class="box" ondblclick="${node_func}">Двойной клик, чтобы назначить переход...</div>`;}
+    if(title_box.includes('link') == true) {body = `<div class="box noselect">${text}</div>`;}
     let template = `<div>` + header + body + `</div>`;
     return template;
 }
 
 function textarea_setter(t, h) {
-    text = '';
+    let text = '';
     if (t != '') { text = t;}
     return `<textarea df-template class="vertical" style="height:${h}px;" placeholder="${textarea_template}">${text}</textarea>`;
 }
@@ -86,7 +97,7 @@ function observerCallback(entries, observer) {
         let id = parent_id.split('-')[1];
         if(typeof editor.drawflow.drawflow.Home.data[id] !== "undefined") {
             let node = editor.getNodeFromId(id);
-            text = set_node_template(node.name, node.data['template'], height);
+            let text = set_node_template(node.name, node.data['template'], height);
             editor.drawflow.drawflow.Home.data[id].html = text;
             editor.updateConnectionNodes(`node-${id}`);
         }
@@ -104,16 +115,22 @@ update_resize_observers();
 
 editor.on('nodeCreated', function(id) {
     node_created_id = id;
-    //console.log("Node created " + id);
+    // console.log("Node created " + id);
     dr.disable(); dr.enable();
     update_resize_observers();
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
 })
 
 editor.on('nodeRemoved', function(id) {
+    if(id == active_link_node) {
+        active_link_node = null;
+        if(link_mode == true) {
+            link_mode = false;
+        }
+    }
     //console.log("Node removed " + id);
     dr.disable(); dr.enable();
-    let textareas = document.querySelectorAll('.vertical');
+    // let textareas = document.querySelectorAll('.vertical');
     update_resize_observers();
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
 })
@@ -144,7 +161,7 @@ editor.on('connectionCreated', function(connection) {
     check_connection(connection['input_id']);
     check_connection(connection['output_id']);
     dr.disable(); dr.enable();
-//    update_resize_observers();
+    //update_resize_observers();
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
 })
 
@@ -154,17 +171,17 @@ editor.on('connectionRemoved', function(connection) {
     check_connection(connection['input_id']);
     check_connection(connection['output_id']);
     dr.disable(); dr.enable();
-//    update_resize_observers();
+    //update_resize_observers();
     localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
 })
 
 editor.on('mouseMove', function(position) {
     if(drag_start == true) {
-        for (i of mult_arr) {
+        for (let i of mult_arr) {
             if(i != active_node_id) {
                 if(typeof editor.drawflow.drawflow.Home.data[i] !== "undefined") {
                     let node = editor.getNodeFromId(active_node_id);
-                    let elem = document.getElementById("node-"+i).children[1].children[0];
+                    // let elem = document.getElementById("node-"+i).children[1].children[0];
                     let pos_x = multiselect_dict[i]['pos_x'];
                     let pos_y = multiselect_dict[i]['pos_y'];
                     editor.drawflow.drawflow.Home.data[i].pos_x = node.pos_x + pos_x;
@@ -191,6 +208,7 @@ editor.on('zoom', function(zoom) {
 })
 
 editor.on('translate', function(position) {
+    document.querySelector('.parent-drawflow').style.backgroundPosition = position.x + 'px ' + position.y + 'px';
     //localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
     //pass
 })
@@ -207,20 +225,70 @@ editor.on('removeReroute', function(id) {
 
 document.getElementById('drawflow').addEventListener('dblclick', clear_selection, false);
 function clear_selection(e) {
-    dr.foreach(dr.items, function (el) {
-        el.classList.remove(dr.options.selectedClass);
-        node_remove_listener(el);
-    });
+    if(link_mode == true) {
+        cancel_link_mode();
+    }
+    if(mult_arr != null) {
+        dr.foreach(dr.items, function (el) {
+            el.classList.remove(dr.options.selectedClass);
+            node_remove_listener(el);
+        });
+        mult_arr = [];
+    }
 }
 
-editor.on('click', (e) => {
-    if(e.target.tagName == 'TEXTAREA') {
-        textarea_is_selected = true;
-        editor.editor_mode='fixed';
+document.onkeydown = function(evt) {
+    evt = evt || window.event;
+    var isEscape = false;
+    if ("key" in evt) {
+        isEscape = (evt.key === "Escape" || evt.key === "Esc");
     } else {
-        if(textarea_is_selected == true) {
-            textarea_is_selected = false;
-            editor.editor_mode='edit';
+        isEscape = (evt.keyCode === 27);
+    }
+    if (isEscape) {
+        if(link_mode == true) {
+            cancel_link_mode();
+        }   
+    }
+};
+
+  function cancel_link_mode() {
+    document.getElementById("node-" + active_link_node).classList.remove('link-mode');
+    active_link_node = null;
+    link_mode = false;
+    dr.disable(); dr.enable();
+  }
+
+editor.on('click', (e) => {
+    if(link_mode != true) {
+        if(e.target.tagName == 'TEXTAREA') {
+            textarea_is_selected = true;
+            editor.editor_mode='fixed';
+        } else {
+            if(textarea_is_selected == true) {
+                textarea_is_selected = false;
+                editor.editor_mode='edit';
+            }
+        }
+    } else {
+        let target = e.target.closest('.drawflow-node');
+        if(target != null) {
+            let node = editor.getNodeFromId(active_link_node);
+            let id = parseInt(target.id.split('-')[1]);
+            if(id != active_link_node && !target.classList.contains('link')) {
+                node.data['template'] = id;
+                editor.drawflow.drawflow.Home.data[active_link_node].data['template'] = id;
+                console.log('node-' + node.id + ' link setted as ' + 'node-' + node.data['template']);
+                // document.querySelector('.parent-drawflow').style.filter = "saturate(1)";
+                let text = set_node_template('link', node.data['template']);
+                document.getElementById(`node-${active_link_node}`).children[1].innerHTML = text;
+                editor.drawflow.drawflow.Home.data[active_link_node].html = text;
+                document.getElementById("node-" + active_link_node).classList.remove('link-mode');
+                active_link_node = null;
+                link_mode = false;
+                dr.disable(); dr.enable();
+                localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+            }
         }
     }
 })
@@ -229,8 +297,8 @@ editor.on('click', (e) => {
 
 /* Mouse and Touch Actions */
 
-var elements = document.getElementsByClassName('drag-drawflow');
-for (var i = 0; i < elements.length; i++) {
+let elements = document.getElementsByClassName('drag-drawflow');
+for (let i = 0; i < elements.length; i++) {
     elements[i].addEventListener('touchend', drop, false);
     elements[i].addEventListener('touchmove', positionMobile, false);
     elements[i].addEventListener('touchstart', drag, false );
@@ -254,14 +322,14 @@ function drag(ev) {
 
 function drop(ev) {
     if (ev.type === "touchend") {
-        var parentdrawflow = document.elementFromPoint( mobile_last_move.touches[0].clientX, mobile_last_move.touches[0].clientY).closest("#drawflow");
+        let parentdrawflow = document.elementFromPoint( mobile_last_move.touches[0].clientX, mobile_last_move.touches[0].clientY).closest("#drawflow");
         if(parentdrawflow != null) {
             addNodeToDrawFlow(mobile_item_selec, mobile_last_move.touches[0].clientX, mobile_last_move.touches[0].clientY);
         }
         mobile_item_selec = '';
     } else {
         ev.preventDefault();
-        var data = ev.dataTransfer.getData("node");
+        let data = ev.dataTransfer.getData("node");
         addNodeToDrawFlow(data, ev.clientX, ev.clientY);
     }
 }
@@ -308,7 +376,7 @@ function addNodeToDrawFlow(name, pos_x, pos_y, data='', auto=false) {
 
 //MISC
 function check_connection(id) {
-    node = editor.getNodeFromId(id);
+    let node = editor.getNodeFromId(id);
     let elem = document.getElementById("node-"+id).children[1];
     let height = null;
     if(!elem.parentElement.classList.contains('link')) {
@@ -316,45 +384,49 @@ function check_connection(id) {
     }
     if (node.class.includes('question') == true) {
         if ((node.inputs['input_1']['connections'].length == 0) || (node.outputs['output_1']['connections'].length == 0)) {
-            text = set_node_template('question_not_connected', node.data['template'], height);
+            let text = set_node_template('question_not_connected', node.data['template'], height);
             elem.innerHTML = text;
             editor.drawflow.drawflow.Home.data[id].html = text;
             editor.drawflow.drawflow.Home.data[id].class = 'question_not_connected';
         } else {
-            text = set_node_template('question', node.data['template'], height);
+            let text = set_node_template('question', node.data['template'], height);
             elem.innerHTML = text;
             editor.drawflow.drawflow.Home.data[id].html = text;
             editor.drawflow.drawflow.Home.data[id].class = 'question';
         }
     }else if (node.class.includes('answer') == true) {
         if ((node.inputs['input_1']['connections'].length == 0) || (node.outputs['output_1']['connections'].length == 0)) {
-            text = set_node_template('answer_not_connected', node.data['template'], height);
+            let text = set_node_template('answer_not_connected', node.data['template'], height);
             elem.innerHTML = text;
             editor.drawflow.drawflow.Home.data[id].html = text;
             editor.drawflow.drawflow.Home.data[id].class = 'answer_not_connected';
         } else {
-            text = set_node_template('answer', node.data['template'], height);
+            let text = set_node_template('answer', node.data['template'], height);
             elem.innerHTML = text;
             editor.drawflow.drawflow.Home.data[id].html = text;
             editor.drawflow.drawflow.Home.data[id].class = 'answer';
-        }
-    }else if (node.class.includes('link') == true) {
-        if (node.inputs['input_1']['connections'].length == 0) {
-            if(!elem.children[0].children[0].classList.contains('not_connected')) {
-                elem.children[0].children[0].classList.add('not_connected');    //TODO: добавить режим выбора
-            }
-        } else {
-            if(elem.children[0].children[0].classList.contains('not_connected')) {
-                elem.children[0].children[0].classList.remove('not_connected');
-            }
         }
     }
     editor.updateConnectionNodes("node-"+id);
 }
 
+function set_link(e) {
+    e.stopPropagation();
+    if(link_mode != true) {
+        link_mode = true;
+        let target = e.target.closest('.drawflow-node');
+        active_link_node = parseInt(target.id.split('-')[1]);
+        // document.querySelector('.parent-drawflow').style.filter = "saturate(20%)";
+        let text = set_node_template('link');
+        document.getElementById(`node-${active_link_node}`).children[1].innerHTML = text;
+        editor.drawflow.drawflow.Home.data[active_link_node].html = text;
+        target.classList.add('link-mode');
+    }
+}
+
 function set_start(e) {
     e.stopPropagation();
-    node = editor.getNodeFromId(node_selected_id)
+    let node = editor.getNodeFromId(node_selected_id)
     if (node.class.includes('question') == true) {
         if (start_indicated == false) {
             change_node_type(node_selected_id, 'start', 'output')
@@ -378,7 +450,7 @@ function set_start(e) {
 
 function set_finish(e) {
     e.stopPropagation();
-    node = editor.getNodeFromId(node_selected_id)
+    let node = editor.getNodeFromId(node_selected_id)
     if (node.class.includes('answer') == true) {
         change_node_type(node_selected_id, 'finish', 'input')
     } else if (node.class == 'finish') {
@@ -388,16 +460,16 @@ function set_finish(e) {
 }
 
 function change_node_type(old_id, node_class, side) {
-    node = editor.getNodeFromId(old_id);
+    let node = editor.getNodeFromId(old_id);
     addNodeToDrawFlow(node_class, node.pos_x, node.pos_y, node.data['template'], true);
 
-    let elem = document.getElementById("node-"+old_id).children[1];
-    let new_elem = document.getElementById("node-"+node_created_id).children[1];
+    let elem = document.getElementById("node-" + old_id).children[1];
+    let new_elem = document.getElementById("node-" + node_created_id).children[1];
 
     let height = parseInt(elem.querySelector('.vertical').style.height);
 
     let new_node = editor.getNodeFromId(node_created_id);
-    text = set_node_template(new_node.class, new_node.data['template'], height);
+    let text = set_node_template(new_node.class, new_node.data['template'], height);
 
     new_elem.innerHTML = text;
     editor.drawflow.drawflow.Home.data[node_created_id].html = text;
@@ -444,8 +516,8 @@ function closemodal(e) {
 }
 
 function changeModule(event) {
-    var all = document.querySelectorAll(".menu ul li");
-    for (var i = 0; i < all.length; i++) {
+    let all = document.querySelectorAll(".menu ul li");
+    for (let i = 0; i < all.length; i++) {
         all[i].classList.remove('selected');
     }
     event.target.classList.add('selected');
@@ -480,8 +552,8 @@ function editor_clear() {
 
 function getParentNode(element, level = 1) {
     while (level-- > 0) {
-      element = element.parentNode;
-      if (!element) return null;
+        element = element.parentNode;
+        if (!element) return null;
     }
     return element;
 }
