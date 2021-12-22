@@ -3,7 +3,7 @@ import enum
 from sqlalchemy import Column, Integer, String, ForeignKey, Enum
 from sqlalchemy.orm import relationship
 
-from sql.alchemy import Base
+from sql.database import Base
 
 
 class NodeType(enum. Enum):
@@ -101,16 +101,17 @@ class Connection(Base):
 
 if __name__ == "__main__":
     """ Test database creation """
-    from sql.alchemy import engine
+    from sql.database import engine, init_db
     from sqlalchemy_utils import database_exists, create_database
 
     if not database_exists(engine.url):
         create_database(engine.url)
 
     # Create database
-    Base.metadata.create_all(engine)
+    init_db()
+    # Base.metadata.create_all(engine)
 
-    from sql.alchemy import Session
+    from sql.database import Session
     with Session.begin() as session:
         # Open session transaction
 
