@@ -20,14 +20,14 @@ var dr = new Selectables({
             is_multiselect = true;
             editor.editor_selected = false;
             editor.editor_mode = 'fixed';
-            //console.log('Starting selection on ' + this.elements + ' in ' + this.zone);
+            //pyq_console.log('Starting selection on ' + this.elements + ' in ' + this.zone);
        }
     },
 
     stop: function (e) {
         editor.editor_mode='edit';
         is_multiselect = false;
-        //console.log('Finished selecting   ' + this.elements + ' in ' + this.zone);
+        //pyq_console.log('Finished selecting   ' + this.elements + ' in ' + this.zone);
     },
 
     onSelect: function (el) {
@@ -39,13 +39,13 @@ var dr = new Selectables({
             mult_arr.push(id);
         }
         multiselect_dict = {};
-        //console.log('onselect', el);
+        //pyq_console.log('onselect', el);
     },
 
     onDeselect: function (el) {
         node_remove_listener(el);
         multiselect_dict = {};
-        //console.log('ondeselect', el);
+        //pyq_console.log('ondeselect', el);
     },
 
     enabled: true

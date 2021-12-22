@@ -26,24 +26,25 @@ var bar_zoom_text = document.getElementById("bar-zoom text");
 
 //editor init
 editor.start();
+var pyq_console = new Console('PyQuest2 console:', 'user_workflow');
 
 // editor.import(dataToImport);
 // editor.addModule('Other');
 
 //Local storage and import
 editor.on('import', function(msg){
-    console.log('Successful ' + msg);
+    pyq_console.import();
 })
 
-var retrievedObject = localStorage.getItem('user_workflow');
+var retrievedObject = localStorage.getItem(pyq_console.local_storage_var);
 
 if (typeof retrievedObject !== 'undefined') {
     if (retrievedObject != null) {
         editor.import(JSON.parse(retrievedObject));
-        console.log(retrievedObject);
+        pyq_console.log(retrievedObject);
     } else {
-        localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
-        retrievedObject = localStorage.getItem('user_workflow');
+        pyq_console.save();
+        retrievedObject = localStorage.getItem(pyq_console.local_storage_var);
     }
 }
 
@@ -87,7 +88,7 @@ const observer = new ResizeObserver(observerCallback, { threshold: 1.0 });
 function observerCallback(entries, observer) {
     for (let entry of entries) {
         const height = Math.floor(entry.contentRect.height);
-        //console.log(height);
+        //pyq_console.log(height);
         if(height == 0) {
             observer.unobserve(entry.target);
             update_resize_observers();
@@ -102,7 +103,7 @@ function observerCallback(entries, observer) {
             editor.updateConnectionNodes(`node-${id}`);
         }
     }
-    localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+    pyq_console.save();
 }
 
 function update_resize_observers() {
@@ -115,10 +116,10 @@ update_resize_observers();
 
 editor.on('nodeCreated', function(id) {
     node_created_id = id;
-    // console.log("Node created " + id);
+    // pyq_console.log("Node created " + id);
     dr.disable(); dr.enable();
     update_resize_observers();
-    localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+    pyq_console.save();
 })
 
 editor.on('nodeRemoved', function(id) {
@@ -128,51 +129,51 @@ editor.on('nodeRemoved', function(id) {
             link_mode = false;
         }
     }
-    //console.log("Node removed " + id);
+    //pyq_console.log("Node removed " + id);
     dr.disable(); dr.enable();
     // let textareas = document.querySelectorAll('.vertical');
     update_resize_observers();
-    localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+    pyq_console.save();
 })
 
 editor.on('nodeSelected', function(id) {
     node_selected_id = id;
-    //console.log("Node selected " + id);
-    localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+    //pyq_console.log("Node selected " + id);
+    pyq_console.save();
 })
 
 editor.on('nodeDataChanged', function(id) {
-    //console.log("Node value updated " + id);
+    //pyq_console.log("Node value updated " + id);
     dr.disable(); dr.enable();
-    localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+    pyq_console.save();
 })
 
 editor.on('moduleCreated', function(name) {
-    console.log("Module Created " + name);
+    pyq_console.log("Module Created " + name);
 })
 
 editor.on('moduleChanged', function(name) {
-    console.log("Module Changed " + name);
+    pyq_console.log("Module Changed " + name);
 })
 
 editor.on('connectionCreated', function(connection) {
-    //console.log('Connection created');
-    //console.log(connection);
+    //pyq_console.log('Connection created');
+    //pyq_console.log(connection);
     check_connection(connection['input_id']);
     check_connection(connection['output_id']);
     dr.disable(); dr.enable();
     //update_resize_observers();
-    localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+    pyq_console.save();
 })
 
 editor.on('connectionRemoved', function(connection) {
-    console.log('Connection removed');
-    console.log(connection);
+    pyq_console.log('Connection removed');
+    pyq_console.log(connection);
     check_connection(connection['input_id']);
     check_connection(connection['output_id']);
     dr.disable(); dr.enable();
     //update_resize_observers();
-    localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+    pyq_console.save();
 })
 
 editor.on('mouseMove', function(position) {
@@ -193,34 +194,34 @@ editor.on('mouseMove', function(position) {
             }
         }
     }
-    //console.log('Position mouse x:' + position.x + ' y:'+ position.y);
+    //pyq_console.log('Position mouse x:' + position.x + ' y:'+ position.y);
     //pass
 })
 
 editor.on('nodeMoved', function(id) {
-//    console.log("Node moved " + id);
-    localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+//    pyq_console.log("Node moved " + id);
+    pyq_console.save();
 })
 
 editor.on('zoom', function(zoom) {
-    //console.log('Zoom level ' + zoom);
+    //pyq_console.log('Zoom level ' + zoom);
     bar_zoom_text.innerHTML = 100 * Math.floor(zoom*10)/10 + '%';
 })
 
 editor.on('translate', function(position) {
     document.querySelector('.parent-drawflow').style.backgroundPosition = position.x + 'px ' + position.y + 'px';
-    //localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+    //pyq_console.save();
     //pass
 })
 
 editor.on('addReroute', function(id) {
-    console.log("Reroute added " + id);
-    localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+    pyq_console.log("Reroute added " + id);
+    pyq_console.save();
 })
 
 editor.on('removeReroute', function(id) {
-    console.log("Reroute removed " + id);
-    localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+    pyq_console.log("Reroute removed " + id);
+    pyq_console.save();
 })
 
 document.getElementById('drawflow').addEventListener('dblclick', clear_selection, false);
@@ -278,7 +279,7 @@ editor.on('click', (e) => {
             if(id != active_link_node && !target.classList.contains('link')) {
                 node.data['template'] = id;
                 editor.drawflow.drawflow.Home.data[active_link_node].data['template'] = id;
-                console.log('node-' + node.id + ' link setted as ' + 'node-' + node.data['template']);
+                pyq_console.log('node-' + node.id + ' link setted as ' + 'node-' + node.data['template']);
                 // document.querySelector('.parent-drawflow').style.filter = "saturate(1)";
                 let text = set_node_template('link', node.data['template']);
                 document.getElementById(`node-${active_link_node}`).children[1].innerHTML = text;
@@ -287,7 +288,7 @@ editor.on('click', (e) => {
                 active_link_node = null;
                 link_mode = false;
                 dr.disable(); dr.enable();
-                localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+                pyq_console.save();
             }
         }
     }
@@ -445,7 +446,7 @@ function set_start(e) {
             start_indicated_id = -1;
         }
     }
-    localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+    pyq_console.save();
 }
 
 function set_finish(e) {
@@ -456,7 +457,7 @@ function set_finish(e) {
     } else if (node.class == 'finish') {
         change_node_type(node_selected_id, 'answer_not_connected', 'input')
     }
-    localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+    pyq_console.save();
 }
 
 function change_node_type(old_id, node_class, side) {
@@ -475,7 +476,7 @@ function change_node_type(old_id, node_class, side) {
     editor.drawflow.drawflow.Home.data[node_created_id].html = text;
 
     if (side == 'input') {
-        //console.log(node.inputs['input_1']['connections']);
+        //pyq_console.log(node.inputs['input_1']['connections']);
         for (let value of node.inputs['input_1']['connections']) {
             editor.addConnection(value['node'], node_created_id, 'output_1', 'input_1');
         }
@@ -498,7 +499,7 @@ function showpopup(e) {
     editor.precanvas.style.transform = '';
     editor.precanvas.style.left = editor.canvas_x +'px';
     editor.precanvas.style.top = editor.canvas_y +'px';
-    console.log(transform);
+    pyq_console.log(transform);
 
     //e.target.children[0].style.top  =  -editor.canvas_y - editor.container.offsetTop +'px';
     //e.target.children[0].style.left  =  -editor.canvas_x  - editor.container.offsetLeft +'px';
@@ -524,7 +525,7 @@ function changeModule(event) {
 }
 
 function changeMode(option) {
-    //console.log(lock.id);
+    //pyq_console.log(lock.id);
     if(option == 'lock') {
         lock.style.display = 'none';
         unlock.style.display = 'block';
@@ -539,15 +540,14 @@ function export_json() {
             method: 'POST',
             data: JSON.stringify(editor.export()),
             contentType: 'application/json;charset=UTF-8',
-            success: function(data) {console.log(data);}});
-    localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+            success: function(data) {pyq_console.log(data);}});
+    pyq_console.save();
     Swal.fire({title: 'Export',
                html: '<textarea rows="30" cols="50">'+JSON.stringify(editor.export(),null,4).replace(/<[^>]*>/g, '')+'</textarea>'})
 }
 
 function editor_clear() {
-    editor.clearModuleSelected();
-    localStorage.setItem('user_workflow', JSON.stringify(editor.export()));
+    pyq_console.clear();
 }
 
 function getParentNode(element, level = 1) {

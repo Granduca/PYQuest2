@@ -206,6 +206,7 @@ cursor: pointer;
   border-right: 1px solid var(--border-color);
   z-index: 5;
 }
+
 .bar-zoom svg {
   cursor: pointer;
   padding-left: 10px;
