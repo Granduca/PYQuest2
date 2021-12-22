@@ -541,7 +541,7 @@ function export_json() {
             data: JSON.stringify(editor.export()),
             contentType: 'application/json;charset=UTF-8',
             success: function(data) {pyq_console.log(data);}});
-    pyq_console.save();
+    pyq_console.save(true);
     Swal.fire({title: 'Export',
                html: '<textarea rows="30" cols="50">'+JSON.stringify(editor.export(),null,4).replace(/<[^>]*>/g, '')+'</textarea>'})
 }

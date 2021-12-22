@@ -10,7 +10,10 @@ class Console {
     save(logging=false) {
         localStorage.setItem(this.local_storage_var, JSON.stringify(editor.export()));
         if(logging === true) {
-            this.log('saved');
+            iziToast.success({
+                title: 'Сохранение',
+                message: 'Квест успешно сохранен!',
+            });
         }
     }
 
@@ -34,19 +37,21 @@ class Console {
             position: 'center',
             buttons: [
                 ['<button>ДА</button>', function (instance, toast) {
-                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'btn_accept');
                     editor.clearModuleSelected();
                     pyq_console.save();
                 }, true],
                 ['<button><b>НЕТ</b></button>', function (instance, toast) {
-                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    instance.hide({ transitionOut: 'fadeOut' }, toast, 'btn_cancel');
                 }],
             ],
             onClosing: function(instance, toast, closedBy){
-                iziToast.success({
-                    title: 'Очистка',
-                    message: 'Редактор успешно очищен!',
-                });
+                if(closedBy == 'btn_accept') {
+                    iziToast.success({
+                        title: 'Очистка',
+                        message: 'Редактор успешно очищен!',
+                    });
+                }
             }
         });
     }
