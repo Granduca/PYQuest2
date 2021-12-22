@@ -23,4 +23,9 @@ Session = sessionmaker(bind=engine)
 
 def init_db():
     """Initialize database"""
+    # noinspection PyUnresolvedReferences
+
+    # Importing models
+    import sql.models
+
     metadata.create_all(bind=engine)
