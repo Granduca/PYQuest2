@@ -1,6 +1,6 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "http://example.com/example.json",
+    "$schema": "",
+    "$id": "",
     "type": "object",
     "title": "The root schema",
     "description": "The root schema comprises the entire JSON document.",
@@ -12,18 +12,18 @@
                     "data": {
                         "1": {
                             "id": 1,
-                            "name": "",
+                            "name": "question",
                             "data": {
-                                "template": ""
+                                "template": "Текст вопроса..."
                             },
-                            "class": "",
-                            "html": "",
+                            "class": "question",
+                            "html": "<div>...</div>",
                             "typenode": false,
                             "inputs": {
                                 "input_1": {
                                     "connections": [
                                         {
-                                            "node": "",
+                                            "node": "2",
                                             "input": "output_1"
                                         }
                                     ]
@@ -33,7 +33,7 @@
                                 "output_1": {
                                     "connections": [
                                         {
-                                            "node": "",
+                                            "node": "3",
                                             "output": "input_1"
                                         }
                                     ]
@@ -298,8 +298,8 @@
                                         },
                                         "class": {
                                             "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/class",
-                                            "default": "node class (start, finish, question, question_not_connected, answer, answer_not_connected, link)",
-                                            "description": "An explanation about the purpose of this instance.",
+                                            "default": "",
+                                            "description": "node class (start, finish, question, question_not_connected, answer, answer_not_connected, link)",
                                             "examples": [
                                                 "question"
                                             ],
