@@ -2,11 +2,7 @@
 
 if __name__ == "__main__":
     """ Test database creation """
-    from sql.database import Session, engine, init_db
-    from sqlalchemy_utils import database_exists, create_database
-
-    if not database_exists(engine.url):
-        create_database(engine.url)
+    from sql.database import Session, init_db
 
     # Create database
     init_db()

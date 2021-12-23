@@ -23,9 +23,18 @@ Session = sessionmaker(bind=engine)
 
 def init_db():
     """Initialize database"""
-    # noinspection PyUnresolvedReferences
+    import os.path
+    from sqlalchemy_utils import database_exists, create_database
+
+    engine_url = engine.url
+    engine_path = engine_url.database
+    if not os.path.exists(os.path.dirname(engine_path)):
+        os.mkdir(os.path.dirname(engine_path))
+    if not database_exists(engine_url):
+        create_database(engine_url)
 
     # Importing models
+    # noinspection PyUnresolvedReferences
     import sql.models
 
     metadata.create_all(bind=engine)
