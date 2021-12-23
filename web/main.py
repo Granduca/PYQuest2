@@ -3,6 +3,7 @@ from core import *
 from web.server.rsp import ServerResponse
 
 from flask import Flask, render_template, request
+from jsonschema import Draft7Validator
 import json
 import logging
 
@@ -25,6 +26,10 @@ def index():
 @app.route('/data', methods=['GET', 'POST'])
 def data_post():
     data = json.loads(request.data.decode('utf-8'))
+
+    if not validate_json(data):
+        return server_response.response('error', 'bad_request', msg='JSON data validation failed')
+
     # logger.info(data)
     quest = Quest('Test Quest 01')
     questions = []
@@ -101,6 +106,21 @@ def data_post():
         return server_response.internal_server_error(msg="Failed to assign start node")
 
     return server_response.response('success', 'ok', msg='The quest has been successfully saved')
+
+
+def validate_json(data):
+    with open('schema.json', encoding='utf-8') as f:
+        schema = json.load(f)
+    try:
+        errors = Draft7Validator(schema).iter_errors(data)
+    except Exception as e:
+        logger.warning(f' JSON error -> {e}')
+        return False
+    validated = True
+    for error in errors:
+        logger.warning(f' JSON error -> {error.message}')
+        validated = False
+    return validated
 
 
 if __name__ == '__main__':

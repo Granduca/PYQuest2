@@ -22,3 +22,4 @@ tzdata==2021.5
 tzlocal==4.1
 Werkzeug==2.0.2
 zipp==3.6.0
+jsonschema~=4.3.2
