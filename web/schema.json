@@ -1,0 +1,585 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/example.json",
+    "type": "object",
+    "title": "The root schema",
+    "description": "The root schema comprises the entire JSON document.",
+    "default": {},
+    "examples": [
+        {
+            "drawflow": {
+                "Home": {
+                    "data": {
+                        "1": {
+                            "id": 1,
+                            "name": "",
+                            "data": {
+                                "template": ""
+                            },
+                            "class": "",
+                            "html": "",
+                            "typenode": false,
+                            "inputs": {
+                                "input_1": {
+                                    "connections": [
+                                        {
+                                            "node": "",
+                                            "input": "output_1"
+                                        }
+                                    ]
+                                }
+                            },
+                            "outputs": {
+                                "output_1": {
+                                    "connections": [
+                                        {
+                                            "node": "",
+                                            "output": "input_1"
+                                        }
+                                    ]
+                                }
+                            },
+                            "pos_x": 100,
+                            "pos_y": 100
+                        }
+                    }
+                }
+            }
+        }
+    ],
+    "required": [
+        "drawflow"
+    ],
+    "properties": {
+        "drawflow": {
+            "$id": "#/properties/drawflow",
+            "type": "object",
+            "title": "The drawflow schema",
+            "description": "An explanation about the purpose of this instance.",
+            "default": {},
+            "examples": [
+                {
+                    "Home": {
+                        "data": {
+                            "1": {
+                                "id": 1,
+                                "name": "",
+                                "data": {
+                                    "template": ""
+                                },
+                                "class": "",
+                                "html": "",
+                                "typenode": false,
+                                "inputs": {
+                                    "input_1": {
+                                        "connections": [
+                                            {
+                                                "node": "",
+                                                "input": "output_1"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "outputs": {
+                                    "output_1": {
+                                        "connections": [
+                                            {
+                                                "node": "",
+                                                "output": "input_1"
+                                            }
+                                        ]
+                                    }
+                                },
+                                "pos_x": 100,
+                                "pos_y": 100
+                            }
+                        }
+                    }
+                }
+            ],
+            "required": [
+                "Home"
+            ],
+            "properties": {
+                "Home": {
+                    "$id": "#/properties/drawflow/properties/Home",
+                    "type": "object",
+                    "title": "The Home schema",
+                    "description": "An explanation about the purpose of this instance.",
+                    "default": {},
+                    "examples": [
+                        {
+                            "data": {
+                                "1": {
+                                    "id": 1,
+                                    "name": "",
+                                    "data": {
+                                        "template": ""
+                                    },
+                                    "class": "",
+                                    "html": "",
+                                    "typenode": false,
+                                    "inputs": {
+                                        "input_1": {
+                                            "connections": [
+                                                {
+                                                    "node": "",
+                                                    "input": "output_1"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "outputs": {
+                                        "output_1": {
+                                            "connections": [
+                                                {
+                                                    "node": "",
+                                                    "output": "input_1"
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "pos_x": 100,
+                                    "pos_y": 100
+                                }
+                            }
+                        }
+                    ],
+                    "required": [
+                        "data"
+                    ],
+                    "properties": {
+                        "data": {
+                            "$id": "#/properties/drawflow/properties/Home/properties/data",
+                            "type": "object",
+                            "title": "The data schema",
+                            "description": "An explanation about the purpose of this instance.",
+                            "default": {},
+                            "examples": [
+                                {
+                                    "1": {
+                                        "id": 1,
+                                        "name": "",
+                                        "data": {
+                                            "template": ""
+                                        },
+                                        "class": "",
+                                        "html": "",
+                                        "typenode": false,
+                                        "inputs": {
+                                            "input_1": {
+                                                "connections": [
+                                                    {
+                                                        "node": "",
+                                                        "input": "output_1"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "outputs": {
+                                            "output_1": {
+                                                "connections": [
+                                                    {
+                                                        "node": "",
+                                                        "output": "input_1"
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "pos_x": 100,
+                                        "pos_y": 100
+                                    }
+                                }
+                            ],
+                            "required": [
+                                "1"
+                            ],
+                            "properties": {
+                                "1": {
+                                    "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1",
+                                    "default": {},
+                                    "description": "node ID",
+                                    "examples": [
+                                        {
+                                            "id": 1,
+                                            "name": "",
+                                            "data": {
+                                                "template": ""
+                                            },
+                                            "class": "",
+                                            "html": "",
+                                            "typenode": false,
+                                            "inputs": {
+                                                "input_1": {
+                                                    "connections": [
+                                                        {
+                                                            "node": "",
+                                                            "input": "output_1"
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            "outputs": {
+                                                "output_1": {
+                                                    "connections": [
+                                                        {
+                                                            "node": "",
+                                                            "output": "input_1"
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            "pos_x": 100,
+                                            "pos_y": 100
+                                        }
+                                    ],
+                                    "required": [
+                                        "id",
+                                        "name",
+                                        "data",
+                                        "class",
+                                        "html",
+                                        "typenode",
+                                        "inputs",
+                                        "outputs",
+                                        "pos_x",
+                                        "pos_y"
+                                    ],
+                                    "title": "The 1 schema",
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/id",
+                                            "default": 0,
+                                            "description": "node ID",
+                                            "examples": [
+                                                1
+                                            ],
+                                            "title": "The id schema",
+                                            "type": "integer"
+                                        },
+                                        "name": {
+                                            "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/name",
+                                            "default": "",
+                                            "description": "node class",
+                                            "examples": [
+                                                "question"
+                                            ],
+                                            "title": "The name schema",
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/data",
+                                            "type": "object",
+                                            "title": "The data schema",
+                                            "description": "An explanation about the purpose of this instance.",
+                                            "default": {},
+                                            "examples": [
+                                                {
+                                                    "template": ""
+                                                }
+                                            ],
+                                            "required": [
+                                                "template"
+                                            ],
+                                            "properties": {
+                                                "template": {
+                                                    "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/data/properties/template",
+                                                    "default": "node data (text, links)",
+                                                    "description": "An explanation about the purpose of this instance.",
+                                                    "examples": [
+                                                        "Это тестовый текст"
+                                                    ],
+                                                    "title": "The template schema",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "additionalProperties": true
+                                        },
+                                        "class": {
+                                            "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/class",
+                                            "default": "node class (start, finish, question, question_not_connected, answer, answer_not_connected, link)",
+                                            "description": "An explanation about the purpose of this instance.",
+                                            "examples": [
+                                                "question"
+                                            ],
+                                            "title": "The class schema",
+                                            "type": "string"
+                                        },
+                                        "html": {
+                                            "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/html",
+                                            "default": "",
+                                            "description": "node HTML code",
+                                            "examples": [
+                                                ""
+                                            ],
+                                            "title": "The html schema",
+                                            "type": "string"
+                                        },
+                                        "typenode": {
+                                            "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/typenode",
+                                            "type": "boolean",
+                                            "title": "The typenode schema",
+                                            "description": "An explanation about the purpose of this instance.",
+                                            "default": false,
+                                            "examples": [
+                                                false
+                                            ]
+                                        },
+                                        "inputs": {
+                                            "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/inputs",
+                                            "type": "object",
+                                            "title": "The inputs schema",
+                                            "description": "An explanation about the purpose of this instance.",
+                                            "default": {},
+                                            "examples": [
+                                                {
+                                                    "input_1": {
+                                                        "connections": [
+                                                            {
+                                                                "node": "",
+                                                                "input": "output_1"
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            ],
+                                            "required": [
+                                                "input_1"
+                                            ],
+                                            "properties": {
+                                                "input_1": {
+                                                    "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/inputs/properties/input_1",
+                                                    "type": "object",
+                                                    "title": "The input_1 schema",
+                                                    "description": "An explanation about the purpose of this instance.",
+                                                    "default": {},
+                                                    "examples": [
+                                                        {
+                                                            "connections": [
+                                                                {
+                                                                    "node": "",
+                                                                    "input": "output_1"
+                                                                }
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "required": [
+                                                        "connections"
+                                                    ],
+                                                    "properties": {
+                                                        "connections": {
+                                                            "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/inputs/properties/input_1/properties/connections",
+                                                            "type": "array",
+                                                            "title": "The connections schema",
+                                                            "description": "An explanation about the purpose of this instance.",
+                                                            "default": [],
+                                                            "examples": [
+                                                                [
+                                                                    {
+                                                                        "node": "",
+                                                                        "input": "output_1"
+                                                                    }
+                                                                ]
+                                                            ],
+                                                            "additionalItems": true,
+                                                            "items": {
+                                                                "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/inputs/properties/input_1/properties/connections/items",
+                                                                "description": "the field can be empty",
+                                                                "type": [],
+                                                                "anyOf": [
+                                                                    {
+                                                                        "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/inputs/properties/input_1/properties/connections/items/anyOf/0",
+                                                                        "type": "object",
+                                                                        "title": "The first anyOf schema",
+                                                                        "description": "An explanation about the purpose of this instance.",
+                                                                        "default": {},
+                                                                        "examples": [
+                                                                            {
+                                                                                "node": "",
+                                                                                "input": "output_1"
+                                                                            }
+                                                                        ],
+                                                                        "required": [
+                                                                            "node",
+                                                                            "input"
+                                                                        ],
+                                                                        "properties": {
+                                                                            "node": {
+                                                                                "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/inputs/properties/input_1/properties/connections/items/anyOf/0/properties/node",
+                                                                                "default": "",
+                                                                                "description": "output node ID",
+                                                                                "examples": [
+                                                                                    "2"
+                                                                                ],
+                                                                                "title": "The node schema",
+                                                                                "type": "string"
+                                                                            },
+                                                                            "input": {
+                                                                                "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/inputs/properties/input_1/properties/connections/items/anyOf/0/properties/input",
+                                                                                "default": "output_1",
+                                                                                "description": "input port link",
+                                                                                "examples": [
+                                                                                    "output_1"
+                                                                                ],
+                                                                                "title": "The input schema",
+                                                                                "type": "string"
+                                                                            }
+                                                                        },
+                                                                        "additionalProperties": true
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "additionalProperties": true
+                                                }
+                                            },
+                                            "additionalProperties": true
+                                        },
+                                        "outputs": {
+                                            "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/outputs",
+                                            "type": "object",
+                                            "title": "The outputs schema",
+                                            "description": "An explanation about the purpose of this instance.",
+                                            "default": {},
+                                            "examples": [
+                                                {
+                                                    "output_1": {
+                                                        "connections": [
+                                                            {
+                                                                "node": "",
+                                                                "output": "input_1"
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            ],
+                                            "required": [
+                                                "output_1"
+                                            ],
+                                            "properties": {
+                                                "output_1": {
+                                                    "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/outputs/properties/output_1",
+                                                    "type": "object",
+                                                    "title": "The output_1 schema",
+                                                    "description": "An explanation about the purpose of this instance.",
+                                                    "default": {},
+                                                    "examples": [
+                                                        {
+                                                            "connections": [
+                                                                {
+                                                                    "node": "",
+                                                                    "output": "input_1"
+                                                                }
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "required": [
+                                                        "connections"
+                                                    ],
+                                                    "properties": {
+                                                        "connections": {
+                                                            "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/outputs/properties/output_1/properties/connections",
+                                                            "type": "array",
+                                                            "title": "The connections schema",
+                                                            "description": "An explanation about the purpose of this instance.",
+                                                            "default": [],
+                                                            "examples": [
+                                                                [
+                                                                    {
+                                                                        "node": "",
+                                                                        "output": "input_1"
+                                                                    }
+                                                                ]
+                                                            ],
+                                                            "additionalItems": true,
+                                                            "items": {
+                                                                "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/outputs/properties/output_1/properties/connections/items",
+                                                                "description": "the field can be empty",
+                                                                "type": [],
+                                                                "anyOf": [
+                                                                    {
+                                                                        "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/outputs/properties/output_1/properties/connections/items/anyOf/0",
+                                                                        "type": "object",
+                                                                        "title": "The first anyOf schema",
+                                                                        "description": "An explanation about the purpose of this instance.",
+                                                                        "default": {},
+                                                                        "examples": [
+                                                                            {
+                                                                                "node": "",
+                                                                                "output": "input_1"
+                                                                            }
+                                                                        ],
+                                                                        "required": [
+                                                                            "node",
+                                                                            "output"
+                                                                        ],
+                                                                        "properties": {
+                                                                            "node": {
+                                                                                "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/outputs/properties/output_1/properties/connections/items/anyOf/0/properties/node",
+                                                                                "default": "",
+                                                                                "description": "output node ID",
+                                                                                "examples": [
+                                                                                    "2"
+                                                                                ],
+                                                                                "title": "The node schema",
+                                                                                "type": "string"
+                                                                            },
+                                                                            "output": {
+                                                                                "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/outputs/properties/output_1/properties/connections/items/anyOf/0/properties/output",
+                                                                                "default": "input_1",
+                                                                                "description": "output port link",
+                                                                                "examples": [
+                                                                                    "input_1"
+                                                                                ],
+                                                                                "title": "The output schema",
+                                                                                "type": "string"
+                                                                            }
+                                                                        },
+                                                                        "additionalProperties": true
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "additionalProperties": true
+                                                }
+                                            },
+                                            "additionalProperties": true
+                                        },
+                                        "pos_x": {
+                                            "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/pos_x",
+                                            "default": 0,
+                                            "description": "Node x-position (editor)",
+                                            "examples": [
+                                                100
+                                            ],
+                                            "title": "The pos_x schema",
+                                            "type": "integer"
+                                        },
+                                        "pos_y": {
+                                            "$id": "#/properties/drawflow/properties/Home/properties/data/properties/1/properties/pos_y",
+                                            "default": 0,
+                                            "description": "Node y-position (editor)",
+                                            "examples": [
+                                                100
+                                            ],
+                                            "title": "The pos_y schema",
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "additionalProperties": true
+                                }
+                            },
+                            "additionalProperties": true
+                        }
+                    },
+                    "additionalProperties": true
+                }
+            },
+            "additionalProperties": true
+        }
+    },
+    "additionalProperties": true
+}
