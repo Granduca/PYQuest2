@@ -56,6 +56,16 @@ class Console {
         });
     }
 
+    error(msg="Undefined error") {
+        iziToast.error({
+            title: 'Ошибка',
+            message: msg,
+            overlay: true,
+            position: 'center',
+            timeout: 10000
+        });
+    }  
+
     log(msg) {
         console.log(this.prefix + ' ' + msg);
     }

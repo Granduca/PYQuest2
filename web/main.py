@@ -1,5 +1,6 @@
 from pref import Preferences
 from core import *
+from web.server.rsp import ServerResponse
 
 from flask import Flask, render_template, request
 import json
@@ -10,6 +11,7 @@ logging.basicConfig(level=Preferences.logging_level_core)
 logger = logging.getLogger(f"{Preferences.app_name} Flask")
 
 app = Flask(f"{Preferences.app_name} Editor")
+server_response = ServerResponse()
 
 
 @app.route('/')
@@ -93,9 +95,12 @@ def data_post():
         if not question['inputs']:
             first = question['node']
 
-    first.get_tree()
+    if first:
+        first.get_tree()
+    else:
+        return server_response.internal_server_error(msg="Failed to assign start node")
 
-    return "ok"
+    return server_response.response('success', 'ok', msg='The quest has been successfully saved')
 
 
 if __name__ == '__main__':

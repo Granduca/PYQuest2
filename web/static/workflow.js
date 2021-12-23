@@ -540,10 +540,18 @@ function export_json() {
             method: 'POST',
             data: JSON.stringify(editor.export()),
             contentType: 'application/json;charset=UTF-8',
-            success: function(data) {pyq_console.log(data);}});
-    pyq_console.save(true);
-    Swal.fire({title: 'Export',
-               html: '<textarea rows="30" cols="50">'+JSON.stringify(editor.export(),null,4).replace(/<[^>]*>/g, '')+'</textarea>'})
+            success: function(response) {
+                pyq_console.log(response.category.toUpperCase() + ' [' + response.status + ']: ' + response.message);
+                if(response.status == 200) {
+                    pyq_console.save(true);
+                    Swal.fire({title: 'Export',
+                               html: '<textarea rows="30" cols="50">'+JSON.stringify(editor.export(),null,4).replace(/<[^>]*>/g, '')+'</textarea>'})
+                } else if(response.status == 500) {
+                    pyq_console.error(response.category.toUpperCase() + ' [' + response.status + ']: ' + response.message);
+                } else {
+                    pyq_console.error(response.category.toUpperCase() + ' [' + response.status + ']: ' + response.message);
+                }
+            }});
 }
 
 function editor_clear() {
