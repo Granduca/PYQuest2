@@ -48,6 +48,20 @@ if (typeof retrievedObject !== 'undefined') {
     }
 }
 
+function check_start_node() {
+    for (let i = 1; i <= editor.nodeId; i++) {
+        let node = editor.drawflow.drawflow.Home.data[i]
+        if(typeof node !== "undefined") {
+            if(node.class == 'start') {
+                start_indicated = true;
+                start_indicated_id = node.id;
+                break;
+            }
+        }
+    }
+}
+check_start_node();
+
 //Templates
 var textarea_template = 'Введите ваш текст...';
 var link_template = 'Двойной клик, чтобы назначить переход...';
@@ -128,6 +142,10 @@ editor.on('nodeRemoved', function(id) {
         if(link_mode == true) {
             link_mode = false;
         }
+    }
+    if(id == start_indicated_id) {
+        start_indicated_id = -1;
+        start_indicated = false;
     }
     //pyq_console.log("Node removed " + id);
     dr.disable(); dr.enable();
@@ -434,7 +452,7 @@ function set_start(e) {
             start_indicated = true;
             start_indicated_id = node_created_id;
         } else {
-            change_node_type(start_indicated_id, 'question', 'output')
+            change_node_type(start_indicated_id, 'question_not_connected', 'output')
             change_node_type(node_selected_id, 'start', 'output')
             start_indicated = true;
             start_indicated_id = node_created_id;

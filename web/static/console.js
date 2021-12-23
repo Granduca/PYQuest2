@@ -67,6 +67,11 @@ class Console {
     }  
 
     log(msg) {
-        console.log(this.prefix + ' ' + msg);
+        if(typeof msg === 'string') {
+            console.log(this.prefix + ' ' + msg);
+        } else {
+            console.log(this.prefix);
+            console.log(msg);
+        }
     }
 }
