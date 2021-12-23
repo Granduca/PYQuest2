@@ -1,5 +1,12 @@
 from pref import Preferences
 
+from .base import DatabaseObject
+
+from sql.models import Network as NetworkDB
+from sql.models import Connection as ConnectionDB
+
+from sql.database import Session
+
 import logging
 
 
@@ -7,7 +14,9 @@ logging.basicConfig(level=Preferences.logging_level_core)
 logger = logging.getLogger(f"{Preferences.app_name} Network")
 
 
-class Connection:
+class Connection(DatabaseObject):
+    db_object = ConnectionDB
+
     def __init__(self):
         self.inputNode = None
         self.outputNode = None
@@ -21,9 +30,14 @@ class Connection:
         self.outputNode = b
 
 
-class Network:
-    def __init__(self):
-        self._connections = []
+class Network(DatabaseObject):
+    db_object = NetworkDB
+
+    def __init__(self, quest_id: int, name: str = "Default", network_id: int = None):
+        self.id = network_id
+        self.quest_id = quest_id
+        self.name = name
+        self._connections = list()
 
     def add_connection(self, connection: Connection):
         if connection not in self._connections:
@@ -50,3 +64,21 @@ class Network:
     def print_network(self):
         for connection in self._connections:
             print(f'{connection.inputNode.text} - {connection.outputNode.text}')
+
+    def save(self):
+        save_object = self.db_object(name=self.name, quest_id=self.quest_id)
+        with Session() as session:
+            session.add(save_object)
+            session.commit()
+
+        self.id = save_object.id
+
+    def update(self):
+        pass
+
+    @classmethod
+    def load(cls, network_id: int):
+        with Session as session:
+            network_db = session.query(cls.db_object).filter_by(id=network_id).one()
+
+        return cls(network_db.id)
