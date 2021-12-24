@@ -21,6 +21,7 @@ def index():
     editor_version = '1.0'
     quest_name = 'New Quest 01'
     return render_template('quest_editor.html', title=title, editor_version=editor_version, quest_name=quest_name)
+    # return render_template('index.html', title=title, editor_version=editor_version)
 
 
 @app.route('/data', methods=['GET', 'POST'])
