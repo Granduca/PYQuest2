@@ -19,9 +19,15 @@ server_response = ServerResponse()
 def index():
     title = Preferences.app_name
     editor_version = '1.0'
+    return render_template('index.html', title=title, editor_version=editor_version)
+
+
+@app.route('/quest_editor')
+def quest_editor():
+    title = Preferences.app_name
+    editor_version = '1.0'
     quest_name = 'New Quest 01'
     return render_template('quest_editor.html', title=title, editor_version=editor_version, quest_name=quest_name)
-    # return render_template('index.html', title=title, editor_version=editor_version)
 
 
 @app.route('/data', methods=['GET', 'POST'])
@@ -107,6 +113,16 @@ def data_post():
         return server_response.internal_server_error(msg="Failed to assign start node")
 
     return server_response.response('success', 'ok', msg='The quest has been successfully saved')
+
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+
+@app.errorhandler(500)
+def page_not_found(e):
+    return render_template('404.html'), 500
 
 
 def validate_json(data):

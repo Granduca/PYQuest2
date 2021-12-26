@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{{ url_for('static', filename='node_modules/jquery/dist/jquery.min.js')}}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.min.css')}}">
+    <script src="{{ url_for('static', filename='node_modules/@popperjs/core/dist/umd/popper.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='node_modules/bootstrap/dist/js/bootstrap.min.js')}}"></script>
     <script src="{{ url_for('static', filename='node_modules/@fortawesome/fontawesome-free/js/all.min.js')}}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/@fortawesome/fontawesome-free/css/all.min.css')}}">
     {% if title %}
     {% if editor_version %}
     <title>{{title}} | Quest Editor v{{editor_version}}</title>
@@ -13,43 +18,66 @@
     {% else %}
     <title>PyQuest2 | Quest Editor</title>
     {% endif %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='login.css')}}">
 </head>
 <body>
-    <main class="container">
-        <h2>Войти</h2>
-        <form action="">
-            <div class="input-field">
-                <input type="text" name="username" id="username"
-                    placeholder="Введите имя пользователя">
-                <div class="underline"></div>
-            </div>
-            <div class="input-field">
-                <input type="password" name="password" id="password"
-                    placeholder="Введите пароль">
-                <div class="underline"></div>
-            </div>
-
-            <input type="submit" value="Продолжить">
-        </form>
-
-        <div class="footer">
-            <span></span>
-            <div class="social-fields">
-                <div class="social-field telegram">
-                    <a href="#">
-                        <i class="fab fa-telegram-plane"></i>
-                        Войти через Telegram
-                    </a>
-                </div>
-                <div class="social-field facebook">
-                    <a href="#">
-                        <i class="fab fa-facebook-f"></i>
-                        Войти через Facebook
-                    </a>
+<section class="pt-5 pb-5 mt-0 align-items-center d-flex" style="min-height: 100vh; background-size: cover; background-color: #f8f8f8!important;">
+    <div class="container-fluid">
+        <div class="row  justify-content-center align-items-center d-flex-row text-center h-100">
+            <div class="col-12 col-md-4 col-lg-3   h-50 ">
+                <div class="card shadow">
+                    <div class="card-body mx-auto">
+                        {% if title %}
+                        <h4 class="card-title mt-3 text-center">{{title}} | Quest Editor</h4>
+                        {% else %}
+                        <h4 class="card-title mt-3 text-center">PyQuest2 | Quest Editor</h4>
+                        {% endif %}
+                        <p class="text-center">Войти через социальные сети</p>
+                        <p>
+                            <a href="{{ url_for('quest_editor') }}" class="btn btn-block" style="color: #ffffff!important; background-color: #0088cc!important;">
+                                <i class="fab fa-telegram-plane mr-2"></i>Войти через Telegram</a>
+                            <a href="{{ url_for('quest_editor') }}" class="btn btn-block" style="color: #ffffff!important; background-color: #DB4437!important;">
+                                <i class="fab fa-google mr-2"></i>Войти через Google</a>
+                        </p>
+                        <p class="text-muted font-weight-bold ">
+                            <span>ИЛИ</span>
+                        </p>
+                        <form>
+                            <div class="form-group input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                                </div>
+                                <input name="" class="form-control" placeholder="Имя пользователя" type="text">
+                            </div>
+                            <div class="form-group input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+                                </div>
+                                <input name="" class="form-control" placeholder="Email адрес" type="email">
+                            </div>
+                            <div class="form-group input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                                </div>
+                                <input class="form-control" placeholder="Придумайте пароль" type="password">
+                            </div>
+                            <div class="form-group input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                                </div>
+                                <input class="form-control" placeholder="Повторите пароль" type="password">
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary btn-block"> Создать аккаунт </button>
+                            </div>
+                            <p class="text-center">Уже есть акаунт?
+                                <a href="">Войти</a>
+                            </p>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
+</section>
 </body>
 </html>
