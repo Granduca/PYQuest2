@@ -61,14 +61,12 @@ def quest_editor():
     editor_version = '1.0'
     quest_name = 'New Quest 01'
     if session:
-        if not session['google_uname']:
-            google_uname = ""
-        else:
+        if 'google_uname' in session and 'google_upic' in session:
             google_uname = session['google_uname']
-        if not session['google_upic']:
-            google_upic = ""
-        else:
             google_upic = session['google_upic']
+        else:
+            google_uname = ""
+            google_upic = ""
     else:
         google_uname = ""
         google_upic = ""
@@ -197,12 +195,6 @@ def callback():
 def logout():
     session.clear()
     return redirect("/")
-
-
-# @app.route("/protected_area")
-# @login_is_required
-# def protected_area():
-#     return f"Hello {session['name']}! <br/> <a href='/logout'><button>Logout</button></a>"
 
 
 @app.errorhandler(404)
