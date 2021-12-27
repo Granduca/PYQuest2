@@ -9,6 +9,7 @@ import logging
 
 import os
 import pathlib
+from functools import wraps
 
 import requests
 from google.oauth2 import id_token
@@ -35,6 +36,17 @@ flow = Flow.from_client_secrets_file(
 )
 
 
+def login_is_required(function):
+    @wraps(function)
+    def wrapper(*args, **kwargs):
+        if "google_id" not in session:
+            return redirect("/")  # Authorization required
+        else:
+            return function()
+
+    return wrapper
+
+
 @app.route('/')
 def index():
     title = Preferences.app_name
@@ -43,6 +55,7 @@ def index():
 
 
 @app.route('/quest_editor')
+@login_is_required
 def quest_editor():
     title = Preferences.app_name
     editor_version = '1.0'
@@ -145,16 +158,6 @@ def data_post():
         return server_response.internal_server_error(msg="Failed to assign start node")
 
     return server_response.response('success', 'ok', msg='The quest has been successfully saved')
-
-
-def login_is_required(function):
-    def wrapper(*args, **kwargs):
-        if "google_id" not in session:
-            return abort(401)  # Authorization required
-        else:
-            return function()
-
-    return wrapper
 
 
 @app.route("/login")
