@@ -486,3 +486,29 @@ cursor: pointer;
     width: 80%;
   }
 }
+
+.Header-item {
+    display: flex;
+    align-self: stretch;
+    align-items: center;
+    flex-wrap: nowrap;
+}
+
+.google-hello {
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    position: relative;
+    padding-right: 8px;
+}
+
+.google-user-pic {
+    border-radius: 50%;
+    width: 32px;
+}
+
+.google-logout {
+    font-family: 'Roboto', sans-serif;
+    font-size: 10px;
+    position: absolute;
+    padding-top: 32px;
+}

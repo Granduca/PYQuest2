@@ -224,3 +224,6 @@ data/
 
 #Node.js
 web/static/node_modules/*
+
+#oauth secret
+web/secret/*

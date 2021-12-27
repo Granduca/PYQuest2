@@ -31,12 +31,21 @@
     <link rel="stylesheet" type="text/css" href="static/style.css" />
     <header>
         <nav>
-            <!--      <script async src="https://telegram.org/js/telegram-widget.js?15" data-telegram-login="pyquest2_oauth_bot" data-size="medium" data-onauth="onTelegramAuth(user)" data-request-access="write"></script>-->
-            <!--      <script type="text/javascript">-->
-            <!--        function onTelegramAuth(user) {-->
-            <!--          alert('Logged in as ' + user.first_name + ' ' + user.last_name + ' (' + user.id + (user.username ? ', @' + user.username : '') + ')');-->
-            <!--        }-->
-            <!--      </script>-->
+            {% if google_uname %}
+            {% if google_upic %}
+            <div class="Header-item">
+                <div class="Header-item google-hello"><b>{{google_uname}}</b></div>
+                <div class="Header-item">
+                    <img class="google-user-pic" src="{{google_upic}}">
+                    <div class="Header-item google-logout"><a href="{{ url_for('logout') }}">Выйти</a></div>
+                </div>
+            </div>
+            {% else %}
+            Ошибка авторизации
+            {% endif %}
+            {% else %}
+            Ошибка авторизации
+            {% endif %}
         </nav>
         {% if title %}
         {% if editor_version %}

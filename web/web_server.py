@@ -2,17 +2,37 @@ from pref import Preferences
 from core import *
 from web.server.rsp import ServerResponse
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, session, abort, redirect, request
 from jsonschema import Draft7Validator
 import json
 import logging
+
+import os
+import pathlib
+
+import requests
+from google.oauth2 import id_token
+from google_auth_oauthlib.flow import Flow
+from pip._vendor import cachecontrol
+import google.auth.transport.requests
 
 
 logging.basicConfig(level=Preferences.logging_level_core)
 logger = logging.getLogger(f"{Preferences.app_name} Flask")
 
 app = Flask(f"{Preferences.app_name} Editor")
+app.secret_key = "PyQuest2"
 server_response = ServerResponse()
+
+os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
+
+client_secrets_file = os.path.join(pathlib.Path(__file__).parent, "secret/client_secret.json")
+
+flow = Flow.from_client_secrets_file(
+    client_secrets_file=client_secrets_file,
+    scopes=["https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email", "openid"],
+    redirect_uri="http://127.0.0.1:5000/callback"
+)
 
 
 @app.route('/')
@@ -27,7 +47,19 @@ def quest_editor():
     title = Preferences.app_name
     editor_version = '1.0'
     quest_name = 'New Quest 01'
-    return render_template('quest_editor.html', title=title, editor_version=editor_version, quest_name=quest_name)
+    if session:
+        if not session['google_uname']:
+            google_uname = ""
+        else:
+            google_uname = session['google_uname']
+        if not session['google_upic']:
+            google_upic = ""
+        else:
+            google_upic = session['google_upic']
+    else:
+        google_uname = ""
+        google_upic = ""
+    return render_template('quest_editor.html', title=title, editor_version=editor_version, quest_name=quest_name, google_uname=google_uname, google_upic=google_upic)
 
 
 @app.route('/data', methods=['GET', 'POST'])
@@ -115,6 +147,61 @@ def data_post():
     return server_response.response('success', 'ok', msg='The quest has been successfully saved')
 
 
+def login_is_required(function):
+    def wrapper(*args, **kwargs):
+        if "google_id" not in session:
+            return abort(401)  # Authorization required
+        else:
+            return function()
+
+    return wrapper
+
+
+@app.route("/login")
+def login():
+    authorization_url, state = flow.authorization_url()
+    session["state"] = state
+    return redirect(authorization_url)
+
+
+@app.route("/callback")
+def callback():
+    flow.fetch_token(authorization_response=request.url)
+
+    if not session["state"] == request.args["state"]:
+        abort(500)  # State does not match!
+
+    credentials = flow.credentials
+    request_session = requests.session()
+    cached_session = cachecontrol.CacheControl(request_session)
+    token_request = google.auth.transport.requests.Request(session=cached_session)
+    with open(client_secrets_file, encoding='utf-8') as f:
+        client_id = json.load(f)['web']['client_id']
+
+    id_info = id_token.verify_oauth2_token(
+        id_token=credentials._id_token,
+        request=token_request,
+        audience=client_id
+    )
+
+    session["google_id"] = id_info.get("sub")
+    session["google_uname"] = id_info.get("name")
+    session["google_upic"] = id_info.get("picture")
+    return redirect("/quest_editor")
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")
+
+
+# @app.route("/protected_area")
+# @login_is_required
+# def protected_area():
+#     return f"Hello {session['name']}! <br/> <a href='/logout'><button>Logout</button></a>"
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
@@ -126,7 +213,7 @@ def page_not_found(e):
 
 
 def validate_json(data):
-    with open('schema.json', encoding='utf-8') as f:
+    with open('schema/schema.json', encoding='utf-8') as f:
         schema = json.load(f)
     try:
         errors = Draft7Validator(schema).iter_errors(data)
