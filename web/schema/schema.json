@@ -1,14 +1,16 @@
 {
-    "$id": "",
     "$schema": "http://json-schema.org/draft-07/schema",
-    "default": {},
+    "$id": "",
+    "type": "object",
+    "title": "The root schema",
     "description": "The root schema comprises the entire JSON document.",
+    "default": {},
     "examples": [
         {
             "quest": "Home",
             "description": "",
-            "nodes": {
-                "node": {
+            "nodes": [
+                {
                     "id": 2,
                     "class": "question",
                     "connections": {
@@ -40,19 +42,17 @@
                     "x": 100.1,
                     "y": 100.1
                 }
-            }
+            ]
         }
     ],
     "required": [
         "quest",
         "nodes"
     ],
-    "title": "The root schema",
-    "type": "object",
     "properties": {
         "quest": {
             "$id": "#/properties/quest",
-            "default": "Home",
+            "default": "",
             "description": "Quest name.",
             "examples": [
                 "Home"
@@ -72,11 +72,11 @@
         },
         "nodes": {
             "$id": "#/properties/nodes",
-            "default": {},
-            "description": "Contains a list of all nodes.",
+            "default": [],
+            "description": "List of nodes.",
             "examples": [
-                {
-                    "node": {
+                [
+                    {
                         "id": 2,
                         "class": "question",
                         "connections": {
@@ -108,88 +108,25 @@
                         "x": 100.1,
                         "y": 100.1
                     }
-                }
-            ],
-            "required": [
-                "node"
+                ]
             ],
             "title": "The nodes schema",
-            "type": "object",
-            "properties": {
-                "node": {
-                    "$id": "#/properties/nodes/properties/node",
-                    "default": {},
-                    "description": "Contains a list of all properties of the node.",
-                    "examples": [
-                        {
-                            "id": 2,
-                            "class": "question",
-                            "connections": {
-                                "input": [
-                                    {
-                                        "node": 1,
-                                        "points": [
-                                            {
-                                                "x": 100.1,
-                                                "y": 100.1
-                                            }
-                                        ]
-                                    }
-                                ],
-                                "output": [
-                                    {
-                                        "node": 3,
-                                        "points": [
-                                            {
-                                                "x": 100.1,
-                                                "y": 100.1
-                                            }
-                                        ]
-                                    }
-                                ]
-                            },
-                            "data": "Текст ноды",
-                            "link": 1,
-                            "x": 100.1,
-                            "y": 100.1
-                        }
-                    ],
-                    "required": [
-                        "id",
-                        "class",
-                        "connections",
-                        "x",
-                        "y"
-                    ],
-                    "title": "The node schema",
-                    "type": "object",
-                    "properties": {
-                        "id": {
-                            "$id": "#/properties/nodes/properties/node/properties/id",
-                            "default": 0,
-                            "description": "Node ID.",
-                            "examples": [
-                                2
-                            ],
-                            "title": "The id schema",
-                            "type": "integer"
-                        },
-                        "class": {
-                            "$id": "#/properties/nodes/properties/node/properties/class",
-                            "default": "",
-                            "description": "Node class (start, finish, question, question_not_connected, answer, answer_not_connected, link).",
-                            "examples": [
-                                "question"
-                            ],
-                            "title": "The class schema",
-                            "type": "string"
-                        },
-                        "connections": {
-                            "$id": "#/properties/nodes/properties/node/properties/connections",
-                            "default": {},
-                            "description": "Contains a list of all the connections of the node.",
-                            "examples": [
-                                {
+            "type": "array",
+            "additionalItems": true,
+            "items": {
+                "$id": "#/properties/nodes/items",
+                "anyOf": [
+                    {
+                        "$id": "#/properties/nodes/items/anyOf/0",
+                        "type": "object",
+                        "title": "The first anyOf schema",
+                        "description": "An explanation about the purpose of this instance.",
+                        "default": {},
+                        "examples": [
+                            {
+                                "id": 2,
+                                "class": "question",
+                                "connections": {
                                     "input": [
                                         {
                                             "node": 1,
@@ -212,21 +149,48 @@
                                             ]
                                         }
                                     ]
-                                }
-                            ],
-                            "required": [
-                                "input",
-                                "output"
-                            ],
-                            "title": "The connections schema",
-                            "type": "object",
-                            "properties": {
-                                "input": {
-                                    "$id": "#/properties/nodes/properties/node/properties/connections/properties/input",
-                                    "default": [],
-                                    "description": "Contains a list of all incoming connections for the node.",
-                                    "examples": [
-                                        [
+                                },
+                                "data": "Текст ноды",
+                                "link": 1,
+                                "x": 100.1,
+                                "y": 100.1
+                            }
+                        ],
+                        "required": [
+                            "id",
+                            "class",
+                            "connections",
+                            "x",
+                            "y"
+                        ],
+                        "properties": {
+                            "id": {
+                                "$id": "#/properties/nodes/items/anyOf/0/properties/id",
+                                "default": 0,
+                                "description": "Node ID.",
+                                "examples": [
+                                    2
+                                ],
+                                "title": "The id schema",
+                                "type": "integer"
+                            },
+                            "class": {
+                                "$id": "#/properties/nodes/items/anyOf/0/properties/class",
+                                "default": "",
+                                "description": "Node class (start, finish, question, question_not_connected, answer, answer_not_connected, link).",
+                                "examples": [
+                                    "question"
+                                ],
+                                "title": "The class schema",
+                                "type": "string"
+                            },
+                            "connections": {
+                                "$id": "#/properties/nodes/items/anyOf/0/properties/connections",
+                                "default": {},
+                                "description": "Contains a list of all the connections of the node.",
+                                "examples": [
+                                    {
+                                        "input": [
                                             {
                                                 "node": 1,
                                                 "points": [
@@ -236,118 +200,8 @@
                                                     }
                                                 ]
                                             }
-                                        ]
-                                    ],
-                                    "title": "The input schema",
-                                    "type": "array",
-                                    "additionalItems": false,
-                                    "items": {
-                                        "$id": "#/properties/nodes/properties/node/properties/connections/properties/input/items",
-                                        "anyOf": [
-                                            {
-                                                "$id": "#/properties/nodes/properties/node/properties/connections/properties/input/items/anyOf/0",
-                                                "type": "object",
-                                                "title": "The first anyOf schema",
-                                                "description": "An explanation about the purpose of this instance.",
-                                                "default": {},
-                                                "examples": [
-                                                    {
-                                                        "node": 1,
-                                                        "points": [
-                                                            {
-                                                                "x": 100.1,
-                                                                "y": 100.1
-                                                            }
-                                                        ]
-                                                    }
-                                                ],
-                                                "required": [
-                                                    "node"
-                                                ],
-                                                "properties": {
-                                                    "node": {
-                                                        "$id": "#/properties/nodes/properties/node/properties/connections/properties/input/items/anyOf/0/properties/node",
-                                                        "default": 0,
-                                                        "description": "Input node ID.",
-                                                        "examples": [
-                                                            1
-                                                        ],
-                                                        "title": "The node schema",
-                                                        "type": "integer"
-                                                    },
-                                                    "points": {
-                                                        "$id": "#/properties/nodes/properties/node/properties/connections/properties/input/items/anyOf/0/properties/points",
-                                                        "default": [],
-                                                        "description": "Contains a list of all auxiliary connection points.",
-                                                        "examples": [
-                                                            [
-                                                                {
-                                                                    "x": 100.1,
-                                                                    "y": 100.1
-                                                                }
-                                                            ]
-                                                        ],
-                                                        "title": "The points schema",
-                                                        "type": "array",
-                                                        "additionalItems": false,
-                                                        "items": {
-                                                            "$id": "#/properties/nodes/properties/node/properties/connections/properties/input/items/anyOf/0/properties/points/items",
-                                                            "anyOf": [
-                                                                {
-                                                                    "$id": "#/properties/nodes/properties/node/properties/connections/properties/input/items/anyOf/0/properties/points/items/anyOf/0",
-                                                                    "type": "object",
-                                                                    "title": "The first anyOf schema",
-                                                                    "description": "An explanation about the purpose of this instance.",
-                                                                    "default": {},
-                                                                    "examples": [
-                                                                        {
-                                                                            "x": 100.1,
-                                                                            "y": 100.1
-                                                                        }
-                                                                    ],
-                                                                    "required": [
-                                                                        "x",
-                                                                        "y"
-                                                                    ],
-                                                                    "properties": {
-                                                                        "x": {
-                                                                            "$id": "#/properties/nodes/properties/node/properties/connections/properties/input/items/anyOf/0/properties/points/items/anyOf/0/properties/x",
-                                                                            "default": 0.0,
-                                                                            "description": "Auxiliary point x-position.",
-                                                                            "examples": [
-                                                                                100.1
-                                                                            ],
-                                                                            "title": "The x schema",
-                                                                            "type": "number"
-                                                                        },
-                                                                        "y": {
-                                                                            "$id": "#/properties/nodes/properties/node/properties/connections/properties/input/items/anyOf/0/properties/points/items/anyOf/0/properties/y",
-                                                                            "default": 0.0,
-                                                                            "description": "Auxiliary point y-position.",
-                                                                            "examples": [
-                                                                                100.1
-                                                                            ],
-                                                                            "title": "The y schema",
-                                                                            "type": "number"
-                                                                        }
-                                                                    },
-                                                                    "additionalProperties": false
-                                                                }
-                                                            ]
-                                                        }
-                                                    }
-                                                },
-                                                "additionalProperties": false
-                                            }
-                                        ]
-                                    }
-                                },
-                                "output": {
-                                    "$id": "#/properties/nodes/properties/node/properties/connections/properties/output",
-                                    "default": [],
-                                    "description": "Contains a list of all outgoing connections for the node.",
-                                    "examples": [
-                                        [
+                                        ],
+                                        "output": [
                                             {
                                                 "node": 3,
                                                 "points": [
@@ -358,157 +212,305 @@
                                                 ]
                                             }
                                         ]
-                                    ],
-                                    "title": "The output schema",
-                                    "type": "array",
-                                    "additionalItems": false,
-                                    "items": {
-                                        "$id": "#/properties/nodes/properties/node/properties/connections/properties/output/items",
-                                        "anyOf": [
-                                            {
-                                                "$id": "#/properties/nodes/properties/node/properties/connections/properties/output/items/anyOf/0",
-                                                "type": "object",
-                                                "title": "The first anyOf schema",
-                                                "description": "An explanation about the purpose of this instance.",
-                                                "default": {},
-                                                "examples": [
-                                                    {
-                                                        "node": 3,
-                                                        "points": [
-                                                            {
-                                                                "x": 100.1,
-                                                                "y": 100.1
-                                                            }
-                                                        ]
-                                                    }
-                                                ],
-                                                "required": [
-                                                    "node"
-                                                ],
-                                                "properties": {
-                                                    "node": {
-                                                        "$id": "#/properties/nodes/properties/node/properties/connections/properties/output/items/anyOf/0/properties/node",
-                                                        "default": 0,
-                                                        "description": "Output node ID.",
-                                                        "examples": [
-                                                            3
-                                                        ],
-                                                        "title": "The node schema",
-                                                        "type": "integer"
-                                                    },
-                                                    "points": {
-                                                        "$id": "#/properties/nodes/properties/node/properties/connections/properties/output/items/anyOf/0/properties/points",
-                                                        "default": [],
-                                                        "description": "Contains a list of all auxiliary connection points.",
-                                                        "examples": [
-                                                            [
+                                    }
+                                ],
+                                "required": [
+                                    "input",
+                                    "output"
+                                ],
+                                "title": "The connections schema",
+                                "type": "object",
+                                "properties": {
+                                    "input": {
+                                        "$id": "#/properties/nodes/items/anyOf/0/properties/connections/properties/input",
+                                        "default": [],
+                                        "description": "Contains a list of all incoming connections for the node.",
+                                        "examples": [
+                                            [
+                                                {
+                                                    "node": 1,
+                                                    "points": [
+                                                        {
+                                                            "x": 100.1,
+                                                            "y": 100.1
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        ],
+                                        "title": "The input schema",
+                                        "type": "array",
+                                        "additionalItems": true,
+                                        "items": {
+                                            "$id": "#/properties/nodes/items/anyOf/0/properties/connections/properties/input/items",
+                                            "anyOf": [
+                                                {
+                                                    "$id": "#/properties/nodes/items/anyOf/0/properties/connections/properties/input/items/anyOf/0",
+                                                    "type": "object",
+                                                    "title": "The first anyOf schema",
+                                                    "description": "An explanation about the purpose of this instance.",
+                                                    "default": {},
+                                                    "examples": [
+                                                        {
+                                                            "node": 1,
+                                                            "points": [
                                                                 {
                                                                     "x": 100.1,
                                                                     "y": 100.1
                                                                 }
                                                             ]
-                                                        ],
-                                                        "title": "The points schema",
-                                                        "type": "array",
-                                                        "additionalItems": false,
-                                                        "items": {
-                                                            "$id": "#/properties/nodes/properties/node/properties/connections/properties/output/items/anyOf/0/properties/points/items",
-                                                            "anyOf": [
-                                                                {
-                                                                    "$id": "#/properties/nodes/properties/node/properties/connections/properties/output/items/anyOf/0/properties/points/items/anyOf/0",
-                                                                    "type": "object",
-                                                                    "title": "The first anyOf schema",
-                                                                    "description": "An explanation about the purpose of this instance.",
-                                                                    "default": {},
-                                                                    "examples": [
-                                                                        {
-                                                                            "x": 100.1,
-                                                                            "y": 100.1
-                                                                        }
-                                                                    ],
-                                                                    "required": [
-                                                                        "x",
-                                                                        "y"
-                                                                    ],
-                                                                    "properties": {
-                                                                        "x": {
-                                                                            "$id": "#/properties/nodes/properties/node/properties/connections/properties/output/items/anyOf/0/properties/points/items/anyOf/0/properties/x",
-                                                                            "default": 0.0,
-                                                                            "description": "Auxiliary point x-position.",
-                                                                            "examples": [
-                                                                                100.1
-                                                                            ],
-                                                                            "title": "The x schema",
-                                                                            "type": "number"
+                                                        }
+                                                    ],
+                                                    "required": [
+                                                        "node"
+                                                    ],
+                                                    "properties": {
+                                                        "node": {
+                                                            "$id": "#/properties/nodes/items/anyOf/0/properties/connections/properties/input/items/anyOf/0/properties/node",
+                                                            "default": 0,
+                                                            "description": "Input node ID.",
+                                                            "examples": [
+                                                                1
+                                                            ],
+                                                            "title": "The node schema",
+                                                            "type": "integer"
+                                                        },
+                                                        "points": {
+                                                            "$id": "#/properties/nodes/items/anyOf/0/properties/connections/properties/input/items/anyOf/0/properties/points",
+                                                            "default": [],
+                                                            "description": "Contains a list of all auxiliary connection points.",
+                                                            "examples": [
+                                                                [
+                                                                    {
+                                                                        "x": 100.1,
+                                                                        "y": 100.1
+                                                                    }
+                                                                ]
+                                                            ],
+                                                            "title": "The points schema",
+                                                            "type": "array",
+                                                            "additionalItems": true,
+                                                            "items": {
+                                                                "$id": "#/properties/nodes/items/anyOf/0/properties/connections/properties/input/items/anyOf/0/properties/points/items",
+                                                                "anyOf": [
+                                                                    {
+                                                                        "$id": "#/properties/nodes/items/anyOf/0/properties/connections/properties/input/items/anyOf/0/properties/points/items/anyOf/0",
+                                                                        "type": "object",
+                                                                        "title": "The first anyOf schema",
+                                                                        "description": "An explanation about the purpose of this instance.",
+                                                                        "default": {},
+                                                                        "examples": [
+                                                                            {
+                                                                                "x": 100.1,
+                                                                                "y": 100.1
+                                                                            }
+                                                                        ],
+                                                                        "required": [
+                                                                            "x",
+                                                                            "y"
+                                                                        ],
+                                                                        "properties": {
+                                                                            "x": {
+                                                                                "$id": "#/properties/nodes/items/anyOf/0/properties/connections/properties/input/items/anyOf/0/properties/points/items/anyOf/0/properties/x",
+                                                                                "default": 0.0,
+                                                                                "description": "Auxiliary point x-position.",
+                                                                                "examples": [
+                                                                                    100.1
+                                                                                ],
+                                                                                "title": "The x schema",
+                                                                                "type": "number"
+                                                                            },
+                                                                            "y": {
+                                                                                "$id": "#/properties/nodes/items/anyOf/0/properties/connections/properties/input/items/anyOf/0/properties/points/items/anyOf/0/properties/y",
+                                                                                "default": 0.0,
+                                                                                "description": "Auxiliary point y-position.",
+                                                                                "examples": [
+                                                                                    100.1
+                                                                                ],
+                                                                                "title": "The y schema",
+                                                                                "type": "number"
+                                                                            }
                                                                         },
-                                                                        "y": {
-                                                                            "$id": "#/properties/nodes/properties/node/properties/connections/properties/output/items/anyOf/0/properties/points/items/anyOf/0/properties/y",
-                                                                            "default": 0.0,
-                                                                            "description": "Auxiliary point y-position.",
-                                                                            "examples": [
-                                                                                100.1
-                                                                            ],
-                                                                            "title": "The y schema",
-                                                                            "type": "number"
-                                                                        }
-                                                                    },
-                                                                    "additionalProperties": false
+                                                                        "additionalProperties": false
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "output": {
+                                        "$id": "#/properties/nodes/items/anyOf/0/properties/connections/properties/output",
+                                        "default": [],
+                                        "description": "Contains a list of all outgoing connections for the node.",
+                                        "examples": [
+                                            [
+                                                {
+                                                    "node": 3,
+                                                    "points": [
+                                                        {
+                                                            "x": 100.1,
+                                                            "y": 100.1
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        ],
+                                        "title": "The output schema",
+                                        "type": "array",
+                                        "additionalItems": true,
+                                        "items": {
+                                            "$id": "#/properties/nodes/items/anyOf/0/properties/connections/properties/output/items",
+                                            "anyOf": [
+                                                {
+                                                    "$id": "#/properties/nodes/items/anyOf/0/properties/connections/properties/output/items/anyOf/0",
+                                                    "type": "object",
+                                                    "title": "The first anyOf schema",
+                                                    "description": "An explanation about the purpose of this instance.",
+                                                    "default": {},
+                                                    "examples": [
+                                                        {
+                                                            "node": 3,
+                                                            "points": [
+                                                                {
+                                                                    "x": 100.1,
+                                                                    "y": 100.1
                                                                 }
                                                             ]
                                                         }
-                                                    }
-                                                },
-                                                "additionalProperties": false
-                                            }
-                                        ]
+                                                    ],
+                                                    "required": [
+                                                        "node"
+                                                    ],
+                                                    "properties": {
+                                                        "node": {
+                                                            "$id": "#/properties/nodes/items/anyOf/0/properties/connections/properties/output/items/anyOf/0/properties/node",
+                                                            "default": 0,
+                                                            "description": "Output node ID.",
+                                                            "examples": [
+                                                                3
+                                                            ],
+                                                            "title": "The node schema",
+                                                            "type": "integer"
+                                                        },
+                                                        "points": {
+                                                            "$id": "#/properties/nodes/items/anyOf/0/properties/connections/properties/output/items/anyOf/0/properties/points",
+                                                            "default": [],
+                                                            "description": "Contains a list of all auxiliary connection points.",
+                                                            "examples": [
+                                                                [
+                                                                    {
+                                                                        "x": 100.1,
+                                                                        "y": 100.1
+                                                                    }
+                                                                ]
+                                                            ],
+                                                            "title": "The points schema",
+                                                            "type": "array",
+                                                            "additionalItems": true,
+                                                            "items": {
+                                                                "$id": "#/properties/nodes/items/anyOf/0/properties/connections/properties/output/items/anyOf/0/properties/points/items",
+                                                                "anyOf": [
+                                                                    {
+                                                                        "$id": "#/properties/nodes/items/anyOf/0/properties/connections/properties/output/items/anyOf/0/properties/points/items/anyOf/0",
+                                                                        "type": "object",
+                                                                        "title": "The first anyOf schema",
+                                                                        "description": "An explanation about the purpose of this instance.",
+                                                                        "default": {},
+                                                                        "examples": [
+                                                                            {
+                                                                                "x": 100.1,
+                                                                                "y": 100.1
+                                                                            }
+                                                                        ],
+                                                                        "required": [
+                                                                            "x",
+                                                                            "y"
+                                                                        ],
+                                                                        "properties": {
+                                                                            "x": {
+                                                                                "$id": "#/properties/nodes/items/anyOf/0/properties/connections/properties/output/items/anyOf/0/properties/points/items/anyOf/0/properties/x",
+                                                                                "default": 0.0,
+                                                                                "description": "Auxiliary point x-position.",
+                                                                                "examples": [
+                                                                                    100.1
+                                                                                ],
+                                                                                "title": "The x schema",
+                                                                                "type": "number"
+                                                                            },
+                                                                            "y": {
+                                                                                "$id": "#/properties/nodes/items/anyOf/0/properties/connections/properties/output/items/anyOf/0/properties/points/items/anyOf/0/properties/y",
+                                                                                "default": 0.0,
+                                                                                "description": "Auxiliary point y-position.",
+                                                                                "examples": [
+                                                                                    100.1
+                                                                                ],
+                                                                                "title": "The y schema",
+                                                                                "type": "number"
+                                                                            }
+                                                                        },
+                                                                        "additionalProperties": false
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
+                                                }
+                                            ]
+                                        }
                                     }
-                                }
+                                },
+                                "additionalProperties": false
                             },
-                            "additionalProperties": false
+                            "data": {
+                                "$id": "#/properties/nodes/items/anyOf/0/properties/data",
+                                "default": "",
+                                "description": "Node data (text).",
+                                "examples": [
+                                    "Текст ноды"
+                                ],
+                                "title": "The data schema",
+                                "type": "string"
+                            },
+                            "link": {
+                                "$id": "#/properties/nodes/items/anyOf/0/properties/link",
+                                "default": 0,
+                                "description": "Link to another node (only for the link node).",
+                                "examples": [
+                                    1
+                                ],
+                                "title": "The link schema",
+                                "type": "integer"
+                            },
+                            "x": {
+                                "$id": "#/properties/nodes/items/anyOf/0/properties/x",
+                                "default": 0.0,
+                                "description": "Node x-position.",
+                                "examples": [
+                                    100.1
+                                ],
+                                "title": "The x schema",
+                                "type": "number"
+                            },
+                            "y": {
+                                "$id": "#/properties/nodes/items/anyOf/0/properties/y",
+                                "default": 0.0,
+                                "description": "Node y-position.",
+                                "examples": [
+                                    100.1
+                                ],
+                                "title": "The y schema",
+                                "type": "number"
+                            }
                         },
-                        "data": {
-                            "$id": "#/properties/nodes/properties/node/properties/data",
-                            "description": "Node data (text).",
-                            "examples": [
-                                "Текст ноды"
-                            ],
-                            "title": "The data schema",
-                            "type": "string"
-                        },
-                        "link": {
-                            "$id": "#/properties/nodes/properties/node/properties/link",
-                            "description": "Link to another node (only for the link node).",
-                            "examples": [
-                                1
-                            ],
-                            "title": "The link schema",
-                            "type": "integer"
-                        },
-                        "x": {
-                            "$id": "#/properties/nodes/properties/node/properties/x",
-                            "default": 0.0,
-                            "description": "Node x-position.",
-                            "examples": [
-                                100.1
-                            ],
-                            "title": "The x schema",
-                            "type": "number"
-                        },
-                        "y": {
-                            "$id": "#/properties/nodes/properties/node/properties/y",
-                            "default": 0.0,
-                            "description": "Node y-position.",
-                            "examples": [
-                                100.1
-                            ],
-                            "title": "The y schema",
-                            "type": "number"
-                        }
-                    },
-                    "additionalProperties": false
-                }
-            },
-            "additionalProperties": false
+                        "additionalProperties": false
+                    }
+                ]
+            }
         }
     },
     "additionalProperties": false

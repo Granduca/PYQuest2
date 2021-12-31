@@ -554,9 +554,34 @@ function changeMode(option) {
 }
 
 function export_json() {
+    let export_data = editor.export();
+    let nodes = [];
+    if(export_data["drawflow"][editor.module]["data"] !== undefined) {
+        for(let key in export_data["drawflow"][editor.module]["data"]) {
+            let value = export_data["drawflow"][editor.module]["data"][key];
+            let node = {"connections": {"input": [], "output": []}};
+            if("id" in value) {
+                node["id"] = value["id"];
+            }
+            if("class" in value) {
+                node["class"] = value["class"];
+            }
+            if("pos_x" in value) {
+                node["x"] = value["pos_x"];
+            }
+            if("pos_y" in value) {
+                node["y"] = value["pos_y"];
+            }
+            //TODO: доделать коннекшны
+            nodes.push(node);
+        }
+    };
+
+    let converted_data = {"quest": editor.module, "description": "", "nodes": nodes};
+
     $.ajax({url: 'data',
             method: 'POST',
-            data: JSON.stringify(editor.export()),
+            data: JSON.stringify(converted_data),
             contentType: 'application/json;charset=UTF-8',
             success: function(response) {
                 pyq_console.log(response.category.toUpperCase() + ' [' + response.status + ']: ' + response.message);
