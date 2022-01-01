@@ -15,6 +15,10 @@ class NodeType(enum. Enum):
 
 
 class Quest(Base):
+    """
+    Main quest object
+    Keeps list of networks
+    """
     __tablename__ = "quests"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -25,6 +29,10 @@ class Quest(Base):
 
 
 class Network(Base):
+    """
+    Network of nodes in quest
+    Keeps nodes list
+    """
     __tablename__ = "networks"
 
     # Foreign
@@ -43,6 +51,10 @@ class Network(Base):
 
 
 class Node(Base):
+    """
+    Node of quest
+    Represents basic object of quest
+    """
     __tablename__ = "nodes"
 
     # Foreign
@@ -63,6 +75,7 @@ class Node(Base):
 
 
 class NodeCoordinates(Base):
+    """Coordinates of node"""
     __tablename__ = "nodes_coordinates"
 
     # Foreign
@@ -81,6 +94,7 @@ class NodeCoordinates(Base):
 
 
 class Connection(Base):
+    """Connection between two nodes"""
     __tablename__ = "connections"
 
     # Foreign
