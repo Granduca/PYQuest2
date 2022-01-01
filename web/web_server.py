@@ -81,50 +81,79 @@ def data_post():
         return server_response.response('error', 'bad_request', msg='JSON data validation failed')
 
     # logger.info(data)
-    quest = Quest('Test Quest 01')
+    quest = Quest(data['quest'])
     questions = []
     answers = []
 
-    for node in data['drawflow']['Home']['data'].values():
-        if node['class'] == 'question' or node['class'] == 'question_not_connected':
+    node_types = {
+        "question": ['question', 'question_not_connected', 'start'],
+        "answer": ['answer', 'answer_not_connected', 'finish', 'link']
+    }
+
+    first = None
+
+    max_text_length = 4000  # В телеграме ограничение 4096 символов на сообщение
+
+    for node in data['nodes']:
+        if node['class'] not in node_types['question'] and node['class'] not in node_types['answer']:
+            return server_response.internal_server_error(msg="Bad node type")
+        if node['class'] in node_types['question']:
             inputs = []
             outputs = []
-            q = quest.add_question(text=node['data']['template'])
-            q.id = int(node['id'])
+            text = node['data']
 
-            if node['inputs']['input_1']['connections']:
-                for connection in node['inputs']['input_1']['connections']:
-                    inputs.append((int(connection['node']), int(node['id'])))
+            if len(text) > max_text_length:
+                return server_response.internal_server_error(msg="The maximum permissible text length has been exceeded")
 
-            if node['outputs']['output_1']['connections']:
-                for connection in node['outputs']['output_1']['connections']:
-                    outputs.append((int(node['id']), int(connection['node'])))
+            q = quest.add_question(text=node['data'])
+            q.id = node['id']
+
+            if node['connections']['input']:
+                for connection in node['connections']['input']:
+                    inputs.append((connection['node'], node['id']))
+
+            if node['connections']['output']:
+                for connection in node['connections']['output']:
+                    outputs.append((node['id'], connection['node']))
             question = {
                 'node': q,
                 'inputs': inputs,
                 'outputs': outputs,
             }
             questions.append(question)
+            if node['class'] == 'start':
+                first = question['node']
 
-        if node['class'] == 'answer' or node['class'] == 'answers_not_connected':
+        if node['class'] in node_types['answer']:
             inputs = []
             outputs = []
-            a = quest.add_answer(text=node['data']['template'])
-            a.id = int(node['id'])
+            if node['class'] != 'link':
+                text = node['data']
+            else:
+                text = f"LINK: {node['link']}"  # для дебага
 
-            if node['inputs']['input_1']['connections']:
-                for connection in node['inputs']['input_1']['connections']:
-                    inputs.append((int(connection['node']), int(node['id'])))
+            if len(text) > max_text_length:
+                return server_response.internal_server_error(msg="The maximum permissible text length has been exceeded")
 
-            if node['outputs']['output_1']['connections']:
-                for connection in node['outputs']['output_1']['connections']:
-                    outputs.append((int(node['id']), int(connection['node'])))
+            a = quest.add_answer(text=text)
+            a.id = node['id']
+
+            if node['connections']['input']:
+                for connection in node['connections']['input']:
+                    inputs.append((connection['node'], node['id']))
+
+            if node['connections']['output']:
+                for connection in node['connections']['output']:
+                    outputs.append((node['id'], connection['node']))
             answer = {
                 'node': a,
                 'inputs': inputs,
                 'outputs': outputs,
             }
             answers.append(answer)
+            if node['class'] == 'finish' or node['class'] == 'link':
+                answer['node'].is_end = True
+            # в будущем линки надо отдельно обрабатывать
 
     for item in questions:
         if item['outputs']:
@@ -145,10 +174,10 @@ def data_post():
             answer['node'].set_depth()
             answer['node'].is_end = True
 
-    first = None
-    for question in questions:
-        if not question['inputs']:
-            first = question['node']
+    if not first:
+        for question in questions:
+            if not question['inputs']:
+                first = question['node']
 
     if first:
         first.get_tree()

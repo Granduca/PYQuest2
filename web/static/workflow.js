@@ -554,6 +554,7 @@ function changeMode(option) {
 }
 
 function export_json() {
+    //pyq_console.log(JSON.stringify(editor.export()));
     let export_data = editor.export();
     let nodes = [];
     if(export_data["drawflow"][editor.module]["data"] !== undefined) {
@@ -565,6 +566,13 @@ function export_json() {
             }
             if("class" in value) {
                 node["class"] = value["class"];
+                if("data" in value) {
+                    if(node["class"] == "link") {
+                        node["link"] = parseInt(value["data"]["template"]);
+                    } else {
+                        node["data"] = value["data"]["template"];
+                    }
+                }
             }
             if("pos_x" in value) {
                 node["x"] = value["pos_x"];
@@ -572,29 +580,60 @@ function export_json() {
             if("pos_y" in value) {
                 node["y"] = value["pos_y"];
             }
-            //TODO: доделать коннекшны
+            if(value["inputs"]["input_1"] !== undefined) {
+                if(value["inputs"]["input_1"]["connections"].length !== 0) {
+                    for(let item in value["inputs"]["input_1"]["connections"]) {
+                        let connection = value["inputs"]["input_1"]["connections"][item];
+                        if(connection["points"] !== undefined) {
+                            if(connection["points"].length !== 0) {
+                                let points = [];
+                                for(let i in connection["points"]) {
+                                    let point = connection["points"][i];
+                                    points.push({"x": point["pos_x"], "y": point["pos_y"]});
+                                }
+                                node["connections"]["input"].push({"node": parseInt(connection["node"]), "points": points});
+                            }
+                        } else {
+                            node["connections"]["input"].push({"node": parseInt(connection["node"])});
+                        }
+                    }
+                }
+            }
+            if(value["outputs"]["output_1"] !== undefined) {
+                if(value["outputs"]["output_1"]["connections"].length !== 0) {
+                    for(let item in value["outputs"]["output_1"]["connections"]) {
+                        let connection = value["outputs"]["output_1"]["connections"][item];
+                        if(connection["points"] !== undefined) {
+                            if(connection["points"].length !== 0) {
+                                let points = [];
+                                for(let i in connection["points"]) {
+                                    let point = connection["points"][i];
+                                    points.push({"x": point["pos_x"], "y": point["pos_y"]});
+                                }
+                                node["connections"]["output"].push({"node": parseInt(connection["node"]), "points": points});
+                            }
+                        } else {
+                            node["connections"]["output"].push({"node": parseInt(connection["node"])});
+                        }
+                    }
+                }
+            }
             nodes.push(node);
         }
     };
 
     let converted_data = {"quest": editor.module, "description": "", "nodes": nodes};
 
-    $.ajax({url: 'data',
-            method: 'POST',
-            data: JSON.stringify(converted_data),
-            contentType: 'application/json;charset=UTF-8',
-            success: function(response) {
-                pyq_console.log(response.category.toUpperCase() + ' [' + response.status + ']: ' + response.message);
-                if(response.status == 200) {
-                    pyq_console.save(true);
-                    Swal.fire({title: 'Export',
-                               html: '<textarea rows="30" cols="50">'+JSON.stringify(editor.export(),null,4).replace(/<[^>]*>/g, '')+'</textarea>'})
-                } else if(response.status == 500) {
-                    pyq_console.error(response.category.toUpperCase() + ' [' + response.status + ']: ' + response.message);
-                } else {
-                    pyq_console.error(response.category.toUpperCase() + ' [' + response.status + ']: ' + response.message);
-                }
-            }});
+    //pyq_console.log(JSON.stringify(converted_data));
+
+    pyq_console.post({
+        "url": 'data',
+        "data": JSON.stringify(converted_data),
+        "success": function() {
+            pyq_console.save(true);
+            Swal.fire({title: 'Export', html: '<textarea rows="30" cols="50">'+JSON.stringify(converted_data, null, 4).replace(/<[^>]*>/g, '')+'</textarea>'})
+        }
+    });
 }
 
 function editor_clear() {

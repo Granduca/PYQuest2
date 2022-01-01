@@ -74,4 +74,28 @@ class Console {
             console.log(msg);
         }
     }
+
+    post(params) {
+        params["self"] = this;
+        $.ajax({url: params["url"],
+                method: 'POST',
+                data: params["data"],
+                contentType: 'application/json;charset=UTF-8',
+                success: function(response) {
+                    params["self"].log(response.category.toUpperCase() + ' [' + response.status + ']: ' + response.message);
+                    if(response.status == 200) {
+                        params["success"]();
+                    } else if(response.status == 500) {
+                        params["self"].error(response.category.toUpperCase() + ' [' + response.status + ']: ' + response.message);
+                    } else {
+                        params["self"].error(response.category.toUpperCase() + ' [' + response.status + ']: ' + response.message);
+                    }
+                },
+                statusCode: {
+                    500: function(response) {
+                        params["self"].error('[' + response.status + ']: ' + response.statusText);
+                    }
+                }
+        });
+    }
 }
