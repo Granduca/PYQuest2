@@ -1,9 +1,10 @@
 from core import Quest
 
 
-def test_quest(memory_session):
+def test_quest(mem_session_maker):
+    """Quest creation"""
     title = "Первый квест"
-    Quest.session = memory_session
+    Quest.session = mem_session_maker
     quest = Quest(title)
     quest.save()
 

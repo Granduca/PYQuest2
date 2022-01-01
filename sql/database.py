@@ -33,6 +33,7 @@ def init_db(_engine: Engine = None):
     if engine_path and engine_path != ":memory:":
         if not os.path.exists(os.path.dirname(engine_path)):
             os.mkdir(os.path.dirname(engine_path))
+
     if not database_exists(engine_url):
         create_database(engine_url)
 

@@ -1,31 +1,49 @@
-from sql.models import Quest, Network, Node, NodeType, Connection
+from sql.models import Quest, Network, Node, NodeCoordinates, NodeType, Connection
 
 
-def test_quest_creation(db_session):
-    """Test quest creation and it's modules"""
+def test_session_maker_fixture(mem_session_maker):
+    """Test session maker for memory bind and models"""
+    session = mem_session_maker()
+    bind = session.get_bind()
+    assert not bind.url.database or bind.url.database == ":memory:", "Session is not :memory: type"
+
+    # Models imported
+    assert len(bind.table_names()) > 0
+    models = Quest, Network, Node, Connection, NodeCoordinates
+    assert set(bind.table_names()) == {table.__tablename__ for table in models}
+
+
+def test_session_fixture(session):
+    """Test session for memory bind"""
+    bind = session.get_bind()
+    assert not bind.url.database or bind.url.database == ":memory:", "Session is not :memory: type"
+
+
+def test_quest_creation(session):
+    """Test quest creation and it's relations"""
     # Quest
     quest = Quest(title="Первый квест")
-    db_session.add(quest)
+    session.add(quest)
 
     # Network
     network = Network(name="New", quest=quest)
-    db_session.add(network)
+    session.add(network)
 
     # Nodes
     question = Node(network=network, text="Что было раньше?", type=NodeType.question)
     answers = [Node(network=network, text="Курица", type=NodeType.answer),
                Node(network=network, text="Яйцо", type=NodeType.answer)]
 
-    db_session.add(question)
-    db_session.add_all(answers)
+    session.add(question)
+    session.add_all(answers)
 
     # Connection
     connections = [Connection(node_in=question, node_out=answers[0]),
                    Connection(node_in=question, node_out=answers[1])]
-    db_session.add_all(connections)
+    session.add_all(connections)
 
     # Flush all orm objects
-    db_session.flush()
+    session.flush()
 
     # Tests
     assert quest.id == 1, "Quest id is not 1"
