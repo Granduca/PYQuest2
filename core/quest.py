@@ -1,4 +1,5 @@
 from typing import List
+
 from pref import Preferences
 
 from core.base import DatabaseObject
@@ -17,6 +18,7 @@ logger = logging.getLogger(f"{Preferences.app_name} Quest")
 
 class Quest(DatabaseObject):
     db_object = QuestDB
+    session = Session
 
     def __init__(self, title: str):
         self.id = None
@@ -40,42 +42,24 @@ class Quest(DatabaseObject):
     def save(self):
         """Save Quest to database"""
         save_object = self.db_object(title=self.title)
-        with Session() as session:
+        with self.session() as session:
             session.add(save_object)
             session.commit()
-
-        self.id = save_object.id
+            self.id = save_object.id
 
     def update(self):
         update_object = self.db_object(id=self.id, title=self.title)
-        with Session() as session:
+        with self.session() as session:
             session.add(update_object)
             session.commit()
 
     @classmethod
     def load(cls, quest_id: int):
         """Load Quest object from database"""
-        with Session as session:
+        with cls.session() as session:
             quest_db = session.query(cls.db_object).filter_by(id=quest_id).one()
             networks = quest_db.networks
             quest = cls(quest_db.title)
             quest.id = quest_db.id
             quest.extend_networks(networks)
         return quest
-
-
-""" DEBUG """
-if __name__ == "__main__":
-    from sql.database import init_db
-
-    def debug():
-        title = "Первый квест"
-        quest = Quest(title)
-        quest.save()
-
-        quest = Quest.load(quest.id)
-        assert quest.title == title, "Название квеста не соответствует"
-        assert not quest.get_networks(), "У нового квеста существуют сети нод"
-
-    init_db()
-    debug()

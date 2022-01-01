@@ -1,6 +1,7 @@
 from sqlalchemy import MetaData
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.engine import Engine
 from sqlalchemy.ext.declarative import declarative_base
 
 from pref.prefs import Preferences
@@ -21,15 +22,17 @@ Base = declarative_base(metadata=metadata)
 Session = sessionmaker(bind=engine)
 
 
-def init_db():
+def init_db(_engine: Engine = None):
     """Initialize database"""
     import os.path
     from sqlalchemy_utils import database_exists, create_database
 
-    engine_url = engine.url
+    _engine = _engine or engine
+    engine_url = _engine.url
     engine_path = engine_url.database
-    if not os.path.exists(os.path.dirname(engine_path)):
-        os.mkdir(os.path.dirname(engine_path))
+    if engine_path and engine_path != ":memory:":
+        if not os.path.exists(os.path.dirname(engine_path)):
+            os.mkdir(os.path.dirname(engine_path))
     if not database_exists(engine_url):
         create_database(engine_url)
 
@@ -37,4 +40,4 @@ def init_db():
     # noinspection PyUnresolvedReferences
     import sql.models
 
-    metadata.create_all(bind=engine)
+    metadata.create_all(bind=_engine)

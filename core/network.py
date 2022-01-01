@@ -16,6 +16,7 @@ logger = logging.getLogger(f"{Preferences.app_name} Network")
 
 class Connection(DatabaseObject):
     db_object = ConnectionDB
+    session = Session
 
     def __init__(self):
         self.inputNode = None
@@ -32,6 +33,7 @@ class Connection(DatabaseObject):
 
 class Network(DatabaseObject):
     db_object = NetworkDB
+    session = Session
 
     def __init__(self, quest_id: int, name: str = "Default", network_id: int = None):
         self.id = network_id
@@ -67,7 +69,7 @@ class Network(DatabaseObject):
 
     def save(self):
         save_object = self.db_object(name=self.name, quest_id=self.quest_id)
-        with Session() as session:
+        with self.session() as session:
             session.add(save_object)
             session.commit()
 
@@ -78,7 +80,7 @@ class Network(DatabaseObject):
 
     @classmethod
     def load(cls, network_id: int):
-        with Session as session:
+        with cls.session as session:
             network_db = session.query(cls.db_object).filter_by(id=network_id).one()
 
         return cls(network_db.id)

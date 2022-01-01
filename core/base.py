@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 
 class DatabaseObject(ABC):
     db_object = None
+    session = None
 
     @abstractmethod
     def save(self, *args, **kwargs):
