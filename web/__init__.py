@@ -33,7 +33,7 @@ def data_post():
         if node['class'] == 'question':
             inputs = []
             outputs = []
-            q = quest.add_question(text=node['data']['template'])
+            q = quest.create_question(text=node['data']['template'])
             q.id = int(node['id'])
 
             if node['inputs']['input_1']['connections']:
@@ -53,7 +53,7 @@ def data_post():
         if node['class'] == 'answer':
             inputs = []
             outputs = []
-            a = quest.add_answer(text=node['data']['template'])
+            a = quest.create_answer(text=node['data']['template'])
             a.id = int(node['id'])
 
             if node['inputs']['input_1']['connections']:

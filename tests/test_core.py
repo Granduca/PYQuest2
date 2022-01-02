@@ -1,21 +1,18 @@
-from core import Quest, Network, Node, Connection, Answer, Question
+from core import Quest, Network, Answer, Question
 
 
-def test_quest(mem_session_maker):
+def test_quest(session):
     """Quest creation"""
 
-    title = "Первый квест"
-    quest = Quest(title)
-
     # SetUp
-    Quest.session = mem_session_maker
-    Network.session = mem_session_maker
-    Node.session = mem_session_maker
-    Connection.session = mem_session_maker
+    Quest.set_session(session)
+
+    title = "Первый квест"
+    quest = Quest.create(title=title)
 
     quest.save()
 
-    quest = Quest.load(quest.id)
+    quest = Quest.find(quest.id)
     assert quest.title == title, "Название квеста не соответствует"
     assert not quest.get_networks(), "У нового квеста существуют сети нод"
 
@@ -30,11 +27,9 @@ def test_quest(mem_session_maker):
     network_nodes = network.get_nodes()
     assert len(network_nodes) == 2
 
-    network = Network.load(quest, network.id)
+    network = Network.find(network.id)
     assert network.id == 1
-    question = Question.load(network, question.id)
-    answer = Answer.load(network, answer.id)
+    question = Question.find(question.id)
+    answer = Answer.find(answer.id)
     assert question.id == 1
     assert answer.id == 2
-
-    network.create_connection(question, answer)

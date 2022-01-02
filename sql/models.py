@@ -3,7 +3,7 @@ import enum
 from sqlalchemy import Column, Integer, String, ForeignKey, Enum
 from sqlalchemy.orm import relationship
 
-from sql.database import Base
+from sql.database import Base, ActiveRecordMixin
 
 
 class NodeType(enum. Enum):
@@ -14,7 +14,7 @@ class NodeType(enum. Enum):
         return self.value
 
 
-class Quest(Base):
+class Quest(Base, ActiveRecordMixin):
     """
     Main quest object
     Keeps list of networks
@@ -28,7 +28,7 @@ class Quest(Base):
         return f"<Quest({self.id}) «{self.title}»>"
 
 
-class Network(Base):
+class Network(Base, ActiveRecordMixin):
     """
     Network of nodes in quest
     Keeps nodes list
@@ -50,7 +50,7 @@ class Network(Base):
         return f"<Network({self.id}) «{self.name}»>"
 
 
-class Node(Base):
+class Node(Base, ActiveRecordMixin):
     """
     Node of quest
     Represents basic object of quest
@@ -69,11 +69,13 @@ class Node(Base):
     # Relations
     network = relationship(Network, foreign_keys=[network_id], backref="nodes")
 
+    __mapper_args__ = {'polymorphic_on': type}
+
     def __repr__(self):
         return f"<Node({self.id}) {self.type} «{self.text}»>"
 
 
-class NodeCoordinates(Base):
+class NodeCoordinates(Base, ActiveRecordMixin):
     """Coordinates of node"""
     __tablename__ = "nodes_coordinates"
 
@@ -92,7 +94,7 @@ class NodeCoordinates(Base):
         return f"<Coordinates({self.id}): {self.x}, {self.y}>"
 
 
-class Connection(Base):
+class Connection(Base, ActiveRecordMixin):
     """Connection between two nodes"""
     __tablename__ = "connections"
 

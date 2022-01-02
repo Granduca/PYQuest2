@@ -11,7 +11,6 @@ logger = logging.getLogger(f"{Preferences.app_name} Question")
 
 
 class Question(Node):
-    type = NodeType.question
+    _type = NodeType.question
 
-    def __init__(self, network, question: str):
-        super().__init__(network, question)
+    __mapper_args__ = {'polymorphic_identity': _type}

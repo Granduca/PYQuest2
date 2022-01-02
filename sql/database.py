@@ -1,8 +1,10 @@
 from sqlalchemy import MetaData
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.engine import Engine
 from sqlalchemy.ext.declarative import declarative_base
+
+from sqlalchemy_mixins.activerecord import ActiveRecordMixin
 
 from pref.prefs import Preferences
 
@@ -19,7 +21,11 @@ naming_convention = {
 engine = create_engine(Preferences.SQLALCHEMY_DATABASE_URI)
 metadata = MetaData(naming_convention=naming_convention)
 Base = declarative_base(metadata=metadata)
-Session = sessionmaker(bind=engine)
+session_factory = sessionmaker(bind=engine)
+Session = scoped_session(session_factory)
+
+# Конфигурируем сессию для Session Mixin
+ActiveRecordMixin.set_session(Session())
 
 
 def init_db(_engine: Engine = None):

@@ -22,28 +22,21 @@ def test_session_fixture(session):
 def test_quest_creation(session):
     """Test quest creation and it's relations"""
     # Quest
-    quest = Quest(title="Первый квест")
-    session.add(quest)
+    Quest.set_session(session)
+
+    quest = Quest.create(title="Первый квест")
 
     # Network
-    network = Network(name="New", quest=quest)
-    session.add(network)
+    network = Network.create(name="New", quest=quest)
 
     # Nodes
-    question = Node(network=network, text="Что было раньше?", type=NodeType.question)
-    answers = [Node(network=network, text="Курица", type=NodeType.answer),
-               Node(network=network, text="Яйцо", type=NodeType.answer)]
-
-    session.add(question)
-    session.add_all(answers)
+    question = Node.create(network=network, text="Что было раньше?", type=NodeType.question)
+    answers = [Node.create(network=network, text="Курица", type=NodeType.answer),
+               Node.create(network=network, text="Яйцо", type=NodeType.answer)]
 
     # Connection
-    connections = [Connection(node_in=question, node_out=answers[0]),
-                   Connection(node_in=question, node_out=answers[1])]
-    session.add_all(connections)
-
-    # Flush all orm objects
-    session.flush()
+    connections = [Connection.create(node_in=question, node_out=answers[0]),
+                   Connection.create(node_in=question, node_out=answers[1])]
 
     # Tests
     assert quest.id == 1, "Quest id is not 1"
