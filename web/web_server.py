@@ -102,7 +102,7 @@ def data_post():
             outputs = []
             text = node['data']
 
-            if len(text) > max_text_length:
+            if len(f'{text}') > max_text_length:
                 return server_response.internal_server_error(msg="The maximum permissible text length has been exceeded")
 
             q = quest.add_question(text=node['data'])
@@ -132,7 +132,7 @@ def data_post():
             else:
                 text = f"LINK: {node['link']}"  # для дебага
 
-            if len(text) > max_text_length:
+            if len(f'{text}') > max_text_length:
                 return server_response.internal_server_error(msg="The maximum permissible text length has been exceeded")
 
             a = quest.add_answer(text=text)
