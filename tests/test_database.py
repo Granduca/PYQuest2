@@ -49,7 +49,9 @@ def test_quest_creation(session):
     assert quest.id == 1, "Quest id is not 1"
     assert network.id == 1, "Network id is not 1"
     assert question.id == 1, "Node id is not 1"
-    assert len(question.connection_out) == 2, "Question doesn't have 2 connections"
+    assert len(question.connections_out) == 2, "Question doesn't have 2 connections"
     assert len(network.nodes) == 3, "Created 3 nodes"
+    assert len(answers[0].connections_in) == 1
+    assert len(answers[1].connections_in) == 1
     assert answers[0].id == 2, "Node id is not 2"
     assert answers[1].id == 3, "Node id is not 3"

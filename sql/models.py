@@ -65,7 +65,6 @@ class Node(Base):
     network_id = Column(Integer, fk_network_id, nullable=False)
     text = Column(String)
     type = Column(Enum(NodeType))
-    front_id = Column(Integer)
 
     # Relations
     network = relationship(Network, foreign_keys=[network_id], backref="nodes")
@@ -106,8 +105,8 @@ class Connection(Base):
     node_out_id = Column(Integer, fk_node_out_id, primary_key=True)
 
     # Relations
-    node_in = relationship(Node, foreign_keys=[node_in_id], backref="connection_out")
-    node_out = relationship(Node, foreign_keys=[node_out_id], backref="connection_in")
+    node_in = relationship(Node, foreign_keys=[node_in_id], backref="connections_out")
+    node_out = relationship(Node, foreign_keys=[node_out_id], backref="connections_in")
 
     def __repr__(self):
         return f"<Connection: {self.node_in} -> {self.node_out}>"

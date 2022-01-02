@@ -23,21 +23,31 @@ class Quest(DatabaseObject):
     def __init__(self, title: str):
         self.id = None
         self.title = title
-        self._networks = []
+        self._networks: List[Network] = list()
 
     def create_network(self, name: str):
-        network = Network(self.id, name=name)
+        network = Network(self, name=name)
         network.save()
         self._networks.append(network)
         return network
 
-    def extend_networks(self, networks: List[NetworkDB]):
-        for network in networks:
-            network = Network(self.id, name=network.name, network_id=network.id)
-            self._networks.append(network)
-
     def get_networks(self):
         return self._networks
+
+    def _extend_networks(self, networks_db: List[NetworkDB]):
+        for network_db in networks_db:
+            network = Network(self, name=network_db.name, network_id=network_db.id)
+            self._networks.append(network)
+
+    def create_question(self, text: str):
+        """Add question shortcut"""
+        network = self.get_networks()[0]
+        return network.create_question(text)
+
+    def create_answer(self, text: str):
+        """Add answer shortcut"""
+        network = self.get_networks()[0]
+        return network.create_answer(text)
 
     def save(self):
         """Save Quest to database"""
@@ -58,8 +68,8 @@ class Quest(DatabaseObject):
         """Load Quest object from database"""
         with cls.session() as session:
             quest_db = session.query(cls.db_object).filter_by(id=quest_id).one()
-            networks = quest_db.networks
+            networks_db = quest_db.networks
             quest = cls(quest_db.title)
             quest.id = quest_db.id
-            quest.extend_networks(networks)
+            quest._extend_networks(networks_db)
         return quest

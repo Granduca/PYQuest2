@@ -1,6 +1,8 @@
 from .node import Node
 from pref import Preferences
 
+from sql.models import NodeType
+
 import logging
 
 
@@ -9,5 +11,7 @@ logger = logging.getLogger(f"{Preferences.app_name} Answer")
 
 
 class Answer(Node):
-    def __init__(self):
-        super().__init__()
+    type = NodeType.answer
+
+    def __init__(self, network, answer: str):
+        super().__init__(network, answer)
