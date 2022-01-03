@@ -18,16 +18,18 @@ body {
   text-align: center;
 }
 .title {
-  font-size: 3em;
+  font-size: 7em;
   text-align: center;
   line-height: 0em;
-  color: grey;
+  color: lightgrey;
+  margin: 0.5em;
 }
 .text {
   text-align: center;
 }
 p{
   text-align: center;
+  color: lightgrey;
 }
 
 a{

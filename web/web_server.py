@@ -6,7 +6,7 @@ from flask import Flask, render_template, request
 import logging
 
 logging.basicConfig(level=Preferences.logging_level_core)
-logger = logging.getLogger(f"{Preferences.app_name} Flask")
+logger = logging.getLogger(f"{Preferences.app_name} Flask Server")
 
 app = Flask(f"{Preferences.app_name} Editor")
 app.secret_key = "PyQuest2"
@@ -27,11 +27,13 @@ def index():
 
 @app.errorhandler(404)
 def page_not_found(e):
+    logger.info(e)
     return render_template('404.html'), 404
 
 
 @app.errorhandler(500)
 def page_not_found(e):
+    logger.info(e)
     return render_template('500.html'), 500
 
 
