@@ -25,6 +25,9 @@
             <div class="col-12 col-md-4 col-lg-3   h-50 ">
                 <div class="card shadow">
                     <div class="card-body mx-auto">
+                        {% if login_is_required %}
+                        <p class="text-center" style="color: red!important;">Сначала нужно выполнить вход!</p>
+                        {% endif %}
                         {% if title %}
                         <h4 class="card-title mt-3 text-center">{{title}} | Quest Editor</h4>
                         {% else %}
@@ -32,9 +35,9 @@
                         {% endif %}
                         <p class="text-center">Войти через социальные сети</p>
                         <p>
-                            <a href="{{ url_for('quest_editor') }}" class="btn btn-block" style="color: #ffffff!important; background-color: #0088cc!important;">
+                            <a href="{{ url_for('quest_editor.quest_editor') }}" class="btn btn-block" style="color: #ffffff!important; background-color: #0088cc!important;">
                                 <i class="fab fa-telegram-plane mr-2"></i>Войти через Telegram</a>
-                            <a href="{{ url_for('login') }}" class="btn btn-block" style="color: #ffffff!important; background-color: #DB4437!important;">
+                            <a href="{{ url_for('google_auth.login') }}" class="btn btn-block" style="color: #ffffff!important; background-color: #DB4437!important;">
                                 <i class="fab fa-google mr-2"></i>Войти через Google</a>
                         </p>
                         <p class="text-muted font-weight-bold ">

@@ -37,7 +37,7 @@
                 <div class="Header-item google-hello"><b>{{google_uname}}</b></div>
                 <div class="Header-item">
                     <img class="google-user-pic" src="{{google_upic}}">
-                    <div class="Header-item google-logout"><a href="{{ url_for('logout') }}">Выйти</a></div>
+                    <div class="Header-item google-logout"><a href="{{ url_for('google_auth.logout') }}">Выйти</a></div>
                 </div>
             </div>
             {% else %}
