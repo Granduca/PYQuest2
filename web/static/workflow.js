@@ -627,7 +627,7 @@ function export_json() {
     //pyq_console.log(JSON.stringify(converted_data));
 
     pyq_console.post({
-        "url": 'data',
+        "url": 'quest_editor/data',
         "data": JSON.stringify(converted_data),
         "success": function() {
             pyq_console.save(true);

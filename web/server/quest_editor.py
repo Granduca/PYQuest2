@@ -34,11 +34,14 @@ def quest_editor():
     return render_template('quest_editor.html', title=title, editor_version=editor_version, quest_name=quest_name, google_uname=google_uname, google_upic=google_upic)
 
 
-@app.route('/data', methods=['GET', 'POST'])
+@app.route('/quest_editor/data', methods=['GET', 'POST'])
 def data_post():
     # TODO: добавить сессию
     if request.method == 'GET':
-        logger.warning(f"Illegal attempt to get request [{request.args}]")
+        args = []
+        for key in request.args:
+            args.append([key, request.args.getlist(key)[0]])
+        logger.warning(f"Illegal attempt to get request {args}")
         return render_template('404.html'), 404
 
     if request.method != 'POST':

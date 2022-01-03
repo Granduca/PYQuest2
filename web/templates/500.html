@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>500 Error</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='error.css')}}">
+</head>
+<body class="centered">
+<div class="emoji"><img src="{{ url_for('static', filename='img/500.gif')}}" width=250></div>
+<p class="title">Ooooops!</p>
+<p class="text">Кажется сервер сломался 🙀<br>
+    Мы обязательно всё починим в ближайшее время.</p>
+<br>
+<p><b><a href="{{ url_for('index') }}" class="underline">Домой / Home</a></b></p>
+</body>
