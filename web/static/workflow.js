@@ -177,16 +177,28 @@ editor.on('moduleChanged', function(name) {
 })
 
 editor.on('connectionCreated', function(connection) {
-    node_output_class = editor.getNodeFromId(connection['output_id']).class
-    node_input_class = editor.getNodeFromId(connection['input_id']).class
-    if(node_output_class.includes('question') || node_output_class.includes('start')) {
-        if(node_input_class.includes('question') || node_input_class.includes('start') || node_input_class.includes('link')) {
+    node_output = editor.getNodeFromId(connection['output_id']);
+    node_input = editor.getNodeFromId(connection['input_id']);
+
+    if(node_output.class.includes('answer')) {
+        if(node_output['outputs']['output_1']['connections'].length > 1) {
             editor.removeSingleConnection(connection['output_id'], connection['input_id'], 'output_1', 'input_1');
-            pyq_console.info('Невозможно соединить вопрос с вопросом');
+            pyq_console.info('Ответ может ссылаться только на один вопрос');
         }
     }
-    if(node_output_class.includes('answer')) {
-        if(node_input_class.includes('answer') || node_input_class.includes('finish')) {
+
+    if(node_output.class.includes('question') || node_output.class.includes('start')) {
+        if(node_input.class.includes('question') || node_input.class.includes('start') || node_input.class.includes('link')) {
+            editor.removeSingleConnection(connection['output_id'], connection['input_id'], 'output_1', 'input_1');
+            let text = 'вопросом';
+            if(node_input.class.includes('link') == true) {
+                text = "переходом на вопрос";
+            }
+            pyq_console.info('Невозможно соединить вопрос с ' + text);
+        }
+    }
+    if(node_output.class.includes('answer')) {
+        if(node_input.class.includes('answer') || node_input.class.includes('finish')) {
             editor.removeSingleConnection(connection['output_id'], connection['input_id'], 'output_1', 'input_1');
             pyq_console.info('Невозможно соединить ответ с ответом');
         }

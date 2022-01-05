@@ -121,6 +121,10 @@ def data_post():
             if node['connections']['output']:
                 for connection in node['connections']['output']:
                     outputs.append((node['id'], connection['node']))
+
+            if node['class'] == 'link':
+                outputs.append((node['id'], node['link']))
+
             answer = {
                 'node': a,
                 'inputs': inputs,
