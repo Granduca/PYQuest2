@@ -41,7 +41,7 @@ var retrievedObject = localStorage.getItem(pyq_console.local_storage_var);
 if (typeof retrievedObject !== 'undefined') {
     if (retrievedObject != null) {
         editor.import(JSON.parse(retrievedObject));
-        pyq_console.log(retrievedObject);
+        //pyq_console.log(retrievedObject);
     } else {
         pyq_console.save();
         retrievedObject = localStorage.getItem(pyq_console.local_storage_var);
@@ -167,11 +167,13 @@ editor.on('nodeDataChanged', function(id) {
 })
 
 editor.on('moduleCreated', function(name) {
-    pyq_console.log("Module Created " + name);
+    //pyq_console.log("Module Created " + name);
+    //pass
 })
 
 editor.on('moduleChanged', function(name) {
-    pyq_console.log("Module Changed " + name);
+    //pyq_console.log("Module Changed " + name);
+    //pass
 })
 
 editor.on('connectionCreated', function(connection) {
@@ -247,18 +249,19 @@ editor.on('translate', function(position) {
 })
 
 editor.on('addReroute', function(id) {
-    pyq_console.log("Reroute added " + id);
+    //pyq_console.log("Reroute added " + id);
     pyq_console.save();
 })
 
 editor.on('removeReroute', function(id) {
-    pyq_console.log("Reroute removed " + id);
+    //pyq_console.log("Reroute removed " + id);
     pyq_console.save();
 })
 
 editor.on("connectionCancel", function(e) {
-      console.log("connectionCancel");
-      console.log(e);
+      //console.log("connectionCancel");
+      //console.log(e);
+      //pass
 })
 
 document.getElementById('drawflow').addEventListener('dblclick', clear_selection, false);
@@ -313,10 +316,10 @@ editor.on('click', (e) => {
         if(target != null) {
             let node = editor.getNodeFromId(active_link_node);
             let id = parseInt(target.id.split('-')[1]);
-            if(id != active_link_node && !target.classList.contains('link')) {
+            if(id != active_link_node && !target.classList.contains('link') && !target.classList.contains('answer') && !target.classList.contains('finish')) {
                 node.data['template'] = id;
                 editor.drawflow.drawflow.Home.data[active_link_node].data['template'] = id;
-                pyq_console.log('node-' + node.id + ' link setted as ' + 'node-' + node.data['template']);
+                //pyq_console.log('node-' + node.id + ' link setted as ' + 'node-' + node.data['template']);
                 // document.querySelector('.parent-drawflow').style.filter = "saturate(1)";
                 let text = set_node_template('link', node.data['template']);
                 document.getElementById(`node-${active_link_node}`).children[1].innerHTML = text;
@@ -547,7 +550,7 @@ function showpopup(e) {
     editor.precanvas.style.transform = '';
     editor.precanvas.style.left = editor.canvas_x +'px';
     editor.precanvas.style.top = editor.canvas_y +'px';
-    pyq_console.log(transform);
+    //pyq_console.log(transform);
 
     //e.target.children[0].style.top  =  -editor.canvas_y - editor.container.offsetTop +'px';
     //e.target.children[0].style.left  =  -editor.canvas_x  - editor.container.offsetLeft +'px';
@@ -585,6 +588,11 @@ function changeMode(option) {
 
 function export_json() {
     //pyq_console.log(JSON.stringify(editor.export()));
+    if(start_indicated_id == -1) {
+        pyq_console.info("Невозможно опубликовать квест, в котором отсутствует стартовый вопрос." + "<br>" +
+            "Чтобы назначить стартовый вопрос щёлкните дважды по заголовку соответствующего вопроса.", 15000);
+        return false;
+    }
     let export_data = editor.export();
     let nodes = [];
     if(export_data["drawflow"][editor.module]["data"] !== undefined) {
@@ -595,10 +603,25 @@ function export_json() {
                 node["id"] = value["id"];
             }
             if("class" in value) {
+                if(value["class"] == "question_not_connected") {
+                    pyq_console.info("Невозможно опубликовать квест, в котором есть не подключенные вопросы (с желтым заголовком).", 15000);
+                    return false;
+                }
+                if(value["class"] == "answer_not_connected") {
+                    pyq_console.info("Невозможно опубликовать квест, в котором есть не подключенные ответы (с желтым заголовком)." + "<br>" +
+                        "Если такой ответ является концовкой вашего квеста, то вам нужно щёлкнуть дважды по его заголовку, чтобы он стал конечным.", 15000);
+                    return false;
+                }
                 node["class"] = value["class"];
                 if("data" in value) {
                     if(node["class"] == "link") {
-                        node["link"] = parseInt(value["data"]["template"]);
+                        if(value["data"]["template"] == "") {
+                            pyq_console.info("Невозможно опубликовать квест, в котором есть не назначенные переходы." + "<br>" +
+                                "Чтобы назначить переход дважды щёлкните по его заголовку и затем выберите нужный вопрос.", 15000);
+                            return false;
+                        } else {
+                            node["link"] = parseInt(value["data"]["template"]);
+                        }
                     } else {
                         node["data"] = value["data"]["template"];
                     }

@@ -66,10 +66,10 @@ class Console {
         });
     }
 
-    info(msg="...") {
+    info(msg="...", timeout=10000) {
         iziToast.info({
-            title: 'Инфо',
             message: msg,
+            timeout: timeout
         });
     }
 
