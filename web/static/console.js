@@ -64,7 +64,14 @@ class Console {
             position: 'center',
             timeout: 10000
         });
-    }  
+    }
+
+    info(msg="...") {
+        iziToast.info({
+            title: 'Инфо',
+            message: msg,
+        });
+    }
 
     log(msg) {
         if(typeof msg === 'string') {

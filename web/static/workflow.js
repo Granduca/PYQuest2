@@ -175,6 +175,20 @@ editor.on('moduleChanged', function(name) {
 })
 
 editor.on('connectionCreated', function(connection) {
+    node_output_class = editor.getNodeFromId(connection['output_id']).class
+    node_input_class = editor.getNodeFromId(connection['input_id']).class
+    if(node_output_class.includes('question') || node_output_class.includes('start')) {
+        if(node_input_class.includes('question') || node_input_class.includes('start') || node_input_class.includes('link')) {
+            editor.removeSingleConnection(connection['output_id'], connection['input_id'], 'output_1', 'input_1');
+            pyq_console.info('Невозможно соединить вопрос с вопросом');
+        }
+    }
+    if(node_output_class.includes('answer')) {
+        if(node_input_class.includes('answer') || node_input_class.includes('finish')) {
+            editor.removeSingleConnection(connection['output_id'], connection['input_id'], 'output_1', 'input_1');
+            pyq_console.info('Невозможно соединить ответ с ответом');
+        }
+    }
     //pyq_console.log('Connection created');
     //pyq_console.log(connection);
     check_connection(connection['input_id']);
@@ -185,8 +199,8 @@ editor.on('connectionCreated', function(connection) {
 })
 
 editor.on('connectionRemoved', function(connection) {
-    pyq_console.log('Connection removed');
-    pyq_console.log(connection);
+    //pyq_console.log('Connection removed');
+    //pyq_console.log(connection);
     check_connection(connection['input_id']);
     check_connection(connection['output_id']);
     dr.disable(); dr.enable();
@@ -240,6 +254,11 @@ editor.on('addReroute', function(id) {
 editor.on('removeReroute', function(id) {
     pyq_console.log("Reroute removed " + id);
     pyq_console.save();
+})
+
+editor.on("connectionCancel", function(e) {
+      console.log("connectionCancel");
+      console.log(e);
 })
 
 document.getElementById('drawflow').addEventListener('dblclick', clear_selection, false);
@@ -303,6 +322,7 @@ editor.on('click', (e) => {
                 document.getElementById(`node-${active_link_node}`).children[1].innerHTML = text;
                 editor.drawflow.drawflow.Home.data[active_link_node].html = text;
                 document.getElementById("node-" + active_link_node).classList.remove('link-mode');
+                editor.updateConnectionNodes("node-" + active_link_node);
                 active_link_node = null;
                 link_mode = false;
                 dr.disable(); dr.enable();
@@ -396,7 +416,8 @@ function addNodeToDrawFlow(name, pos_x, pos_y, data='', auto=false) {
 //MISC
 function check_connection(id) {
     let node = editor.getNodeFromId(id);
-    let elem = document.getElementById("node-"+id).children[1];
+    let parent_node = document.getElementById("node-"+id);
+    let elem = parent_node.children[1];
     let height = null;
     if(!elem.parentElement.classList.contains('link')) {
         height = parseInt(elem.querySelector('.vertical').style.height);
@@ -406,24 +427,32 @@ function check_connection(id) {
             let text = set_node_template('question_not_connected', node.data['template'], height);
             elem.innerHTML = text;
             editor.drawflow.drawflow.Home.data[id].html = text;
+            editor.drawflow.drawflow.Home.data[id].name = 'question_not_connected';
             editor.drawflow.drawflow.Home.data[id].class = 'question_not_connected';
+            parent_node.classList.replace('question','question_not_connected');
         } else {
             let text = set_node_template('question', node.data['template'], height);
             elem.innerHTML = text;
             editor.drawflow.drawflow.Home.data[id].html = text;
+            editor.drawflow.drawflow.Home.data[id].name = 'question';
             editor.drawflow.drawflow.Home.data[id].class = 'question';
+            parent_node.classList.replace('question_not_connected', 'question');
         }
     }else if (node.class.includes('answer') == true) {
         if ((node.inputs['input_1']['connections'].length == 0) || (node.outputs['output_1']['connections'].length == 0)) {
             let text = set_node_template('answer_not_connected', node.data['template'], height);
             elem.innerHTML = text;
             editor.drawflow.drawflow.Home.data[id].html = text;
+            editor.drawflow.drawflow.Home.data[id].name = 'answer_not_connected';
             editor.drawflow.drawflow.Home.data[id].class = 'answer_not_connected';
+            parent_node.classList.replace('answer','answer_not_connected');
         } else {
             let text = set_node_template('answer', node.data['template'], height);
             elem.innerHTML = text;
             editor.drawflow.drawflow.Home.data[id].html = text;
+            editor.drawflow.drawflow.Home.data[id].name = 'answer';
             editor.drawflow.drawflow.Home.data[id].class = 'answer';
+            parent_node.classList.replace('answer_not_connected', 'answer');
         }
     }
     editor.updateConnectionNodes("node-"+id);
@@ -440,6 +469,7 @@ function set_link(e) {
         document.getElementById(`node-${active_link_node}`).children[1].innerHTML = text;
         editor.drawflow.drawflow.Home.data[active_link_node].html = text;
         target.classList.add('link-mode');
+        editor.updateConnectionNodes("node-" + active_link_node);
     }
 }
 
