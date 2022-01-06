@@ -21,7 +21,6 @@ class Quest(QuestDB):
     def create_node(self, node_cls, text: str):
         """Create node builder"""
         node = node_cls.create(quest_id=self.id, type=node_cls.node_type, text=text)
-        node.save()
         return node
 
     def create_question(self, text: str):
@@ -41,4 +40,5 @@ class Quest(QuestDB):
         if node_to.quest_id != self.id:
             raise ValueError(f"Node {node_to} is not from this network")
 
-        return Connection.create(node_in_id=node_from.id, node_out_id=node_to.id)
+        connection = Connection.create(node_in_id=node_from.id, node_out_id=node_to.id)
+        return connection

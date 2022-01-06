@@ -58,7 +58,7 @@ class Node(Base, ActiveRecordMixin):
     __mapper_args__ = {'polymorphic_on': type}
 
     def __repr__(self):
-        return f"<Node({self.id}) {self.type} «{self.text}»>"
+        return f"<{self.__class__.__name__}({self.id}) {self.type} «{self.text}»>"
 
 
 class NodeAttributes(Base, ActiveRecordMixin):

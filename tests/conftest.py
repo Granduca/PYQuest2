@@ -1,4 +1,11 @@
 import pytest
+import json
+
+
+@pytest.fixture()
+def json_request():
+    with open("tests/requests/post_data.json", encoding="utf-8") as json_obj:
+        return json.loads(json_obj.read())
 
 
 @pytest.fixture()

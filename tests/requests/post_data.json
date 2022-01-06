@@ -1,0 +1,58 @@
+{
+    "quest": "Важный вопрос",
+    "description": "",
+    "nodes": [
+      {
+        "id":  1,
+        "class": "question",
+        "connections": {
+          "input": [],
+          "output": [
+            {
+              "node": 2
+            },
+            {
+              "node": 3
+            }
+          ]
+        },
+        "data": "Кто был первым?",
+        "x": 100,
+        "y": 100
+      },
+      {
+        "id": 2,
+        "class": "answer",
+        "connections": {
+            "input": [
+                {
+                    "node": 1,
+                    "points": []
+                }
+            ],
+            "output": []
+        },
+        "data": "Курица",
+        "link": 1,
+        "x": 100.1,
+        "y": 100.1
+      },
+      {
+        "id": 3,
+        "class": "answer",
+        "connections": {
+          "input": [
+            {
+              "node": 1,
+              "points": []
+            }
+          ],
+          "output": []
+        },
+        "data": "Яйцо",
+        "link": 1,
+        "x": 100,
+        "y": 100
+      }
+    ]
+}
