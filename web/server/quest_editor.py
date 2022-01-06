@@ -1,3 +1,5 @@
+import json
+
 from pref import Preferences
 from web.server.rsp import ServerResponse
 import web.server.google_auth as google_auth
@@ -5,7 +7,6 @@ from web.server.save_data import save_quest_data, QuestDataError
 
 from flask import Blueprint, render_template, session, request
 from jsonschema import Draft7Validator
-import json
 import logging
 
 logging.basicConfig(level=Preferences.logging_level_core)
@@ -21,20 +22,19 @@ def quest_editor():
     title = Preferences.app_name
     editor_version = '1.0'
     quest_name = 'New Quest 01'
+
+    google_uname = ""
+    google_upic = ""
     if session:
         if 'google_uname' in session and 'google_upic' in session:
             google_uname = session['google_uname']
             google_upic = session['google_upic']
-        else:
-            google_uname = ""
-            google_upic = ""
-    else:
-        google_uname = ""
-        google_upic = ""
-    return render_template('quest_editor.html', title=title, editor_version=editor_version, quest_name=quest_name, google_uname=google_uname, google_upic=google_upic)
+
+    return render_template('quest_editor.html', title=title, editor_version=editor_version, quest_name=quest_name,
+                           google_uname=google_uname, google_upic=google_upic)
 
 
-@app.route('/quest_editor/data', methods=['GET', 'POST'])
+@app.route('/data', methods=['GET', 'POST'])
 def data_post():
     # TODO: добавить сессию
     if request.method == 'GET':
@@ -50,6 +50,7 @@ def data_post():
     try:
         data = json.loads(request.data.decode('utf-8'))
     except Exception as e:
+        # TODO Может только определённые эксшепшены сюда засунуть?
         logger.warning(e)
         return render_template('404.html'), 404
     else:
@@ -72,6 +73,7 @@ def validate_json(data):
     try:
         errors = Draft7Validator(schema).iter_errors(data)
     except Exception as e:
+        # TODO Может только определённые эксшепшены сюда засунуть?
         logger.warning(f' JSON error -> {e}')
         return False
     validated = True
