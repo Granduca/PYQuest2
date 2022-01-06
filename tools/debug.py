@@ -9,7 +9,7 @@ logging.basicConfig(level=Preferences.logging_level_core)
 logger = logging.getLogger(f"{Preferences.app_name} Test")
 
 
-def test_quest_generator(quest: Quest, max_questions: int, max_answers_per_question: int):
+def debug_quest_generator(quest: Quest, max_questions: int, max_answers_per_question: int):
 
     logger.info(f"Quest name: \"{quest.title}\"")
 

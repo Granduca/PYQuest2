@@ -1,54 +1,44 @@
-from . import Network, Question, Answer
 from pref import Preferences
 
-import logging
+from sql.models import Quest as QuestDB
 
+from core.node import Node
+from core.connection import Connection
+from core.question import Question
+from core.answer import Answer
+
+import logging
 
 logging.basicConfig(level=Preferences.logging_level_core)
 logger = logging.getLogger(f"{Preferences.app_name} Quest")
 
 
-class Quest:
-    def __init__(self, title: str):
-        self._title = title
-        self._networks = []
+class Quest(QuestDB):
 
-    @property
-    def title(self):
-        return self._title
+    def get_nodes(self):
+        return self.nodes
 
-    @title.setter
-    def title(self, title: str):
-        self._title = title
+    def create_node(self, node_cls, text: str):
+        """Create node builder"""
+        node = node_cls.create(quest_id=self.id, type=node_cls.node_type, text=text)
+        return node
 
-    def add_network(self):
-        n = Network()
-        self._networks.append(n)
-        return n
+    def create_question(self, text: str):
+        """Add question shortcut"""
+        return self.create_node(Question, text)
 
-    def add_question(self, **kwargs):
-        text = None
-        if not self._networks:
-            network = self.add_network()
-        else:
-            network = self._networks[0]
-        if 'text' in kwargs:
-            text = kwargs['text']
-        q = Question()
-        q.network = network
-        q.text = text
-        return q
+    def create_answer(self, text: str):
+        """Add answer shortcut"""
+        return self.create_node(Answer, text)
 
-    def add_answer(self, **kwargs):
-        text = None
-        if not self._networks:
-            network = self.add_network()
-        else:
-            network = self._networks[0]
-        if 'text' in kwargs:
-            text = kwargs['text']
-        a = Answer()
-        a.network = network
-        a.text = text
-        return a
+    def connect_nodes(self, node_from: Node, node_to: Node):
+        """Connect nodes"""
+        if node_from.quest_id != node_to.quest_id:
+            raise ValueError(f"Nodes {node_from} and {node_to} is not from same network")
+        if node_from.quest_id != self.id:
+            raise ValueError(f"Node {node_from} is not from this network")
+        if node_to.quest_id != self.id:
+            raise ValueError(f"Node {node_to} is not from this network")
 
+        connection = Connection.create(node_in_id=node_from.id, node_out_id=node_to.id)
+        return connection
