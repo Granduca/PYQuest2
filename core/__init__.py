@@ -1,6 +1,6 @@
-__all__ = ["Quest", "Network", "Connection", "Node", "Question", "Answer"]
-from core.network import Network, Connection
+__all__ = ["Quest", "Node", "Connection", "Question", "Answer"]
+from core.quest import Quest
 from core.node import Node
+from core.connection import Connection
 from core.question import Question
 from core.answer import Answer
-from core.quest import Quest

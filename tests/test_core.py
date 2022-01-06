@@ -1,4 +1,4 @@
-from core import Quest, Network, Answer, Question
+from core import Quest, Answer, Question
 
 
 def test_quest(session):
@@ -14,21 +14,23 @@ def test_quest(session):
 
     quest = Quest.find(quest.id)
     assert quest.title == title, "Название квеста не соответствует"
-    assert not quest.get_networks(), "У нового квеста существуют сети нод"
-
-    network = quest.create_network("First")
-    assert quest.get_networks()
+    # assert not quest.get_nodes(), "У нового квеста существуют ноды"
 
     question = quest.create_question("Вопрос")
     assert question.text == "Вопрос"
     answer = quest.create_answer("Ответ")
     assert answer.text == "Ответ"
 
-    network_nodes = network.get_nodes()
-    assert len(network_nodes) == 2
+    quest_nodes = quest.get_nodes()
+    assert len(quest_nodes) == 2
 
-    network = Network.find(network.id)
-    assert network.id == 1
+    connection = quest.connect_nodes(question, answer)
+    assert connection.node_out
+    assert connection.node_in
+
+    quest = Quest.find(quest.id)
+    assert quest.id == 1
+    assert len(quest.get_nodes()) == 2
     question = Question.find(question.id)
     answer = Answer.find(answer.id)
     assert question.id == 1

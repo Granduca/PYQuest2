@@ -1,4 +1,4 @@
-from .node import Node
+from core.node import Node
 from pref import Preferences
 
 from sql.models import NodeType
@@ -11,6 +11,6 @@ logger = logging.getLogger(f"{Preferences.app_name} Question")
 
 
 class Question(Node):
-    _type = NodeType.question
+    node_type = NodeType.question
 
-    __mapper_args__ = {'polymorphic_identity': _type}
+    __mapper_args__ = {'polymorphic_identity': node_type}

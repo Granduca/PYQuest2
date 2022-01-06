@@ -11,6 +11,6 @@ logger = logging.getLogger(f"{Preferences.app_name} Answer")
 
 
 class Answer(Node):
-    _type = NodeType.answer
+    node_type = NodeType.answer
 
-    __mapper_args__ = {'polymorphic_identity': _type}
+    __mapper_args__ = {'polymorphic_identity': node_type}
