@@ -1,5 +1,6 @@
 import json
 
+from sql.database import init_db
 from pref import Preferences
 from web.server.rsp import ServerResponse
 import web.server.google_auth as google_auth
@@ -34,8 +35,9 @@ def quest_editor():
                            google_uname=google_uname, google_upic=google_upic)
 
 
-@app.route('/data', methods=['GET', 'POST'])
+@app.route('/quest_editor/data', methods=['GET', 'POST'])
 def data_post():
+    init_db()
     # TODO: добавить сессию
     if request.method == 'GET':
         args = []
