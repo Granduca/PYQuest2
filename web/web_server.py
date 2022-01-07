@@ -2,6 +2,7 @@ from pref import Preferences
 import server.google_auth as google_auth
 import server.quest_editor as quest_editor
 
+from sql.database import create_db
 from flask import Flask, render_template, request
 import logging
 
@@ -10,6 +11,9 @@ logger = logging.getLogger(f"{Preferences.app_name} Flask Server")
 
 app = Flask(f"{Preferences.app_name} Editor")
 app.secret_key = "PyQuest2"
+
+# Create database directory and file
+create_db()
 
 app.register_blueprint(google_auth.app)
 app.register_blueprint(quest_editor.app)
