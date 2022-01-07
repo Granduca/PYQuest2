@@ -67,5 +67,6 @@ def save_quest_data(data: dict, commit: bool = True):
 
     if commit:
         quest.session.commit()
+        quest.session.close()
 
     return

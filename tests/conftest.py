@@ -18,7 +18,7 @@ def mem_session_maker():
     session_factory = sessionmaker(bind=memory_engine)
 
     from sql.database import init_db
-    init_db(_engine=memory_engine)
+    init_db(memory_engine)
     return session_factory
 
 

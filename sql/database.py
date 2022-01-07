@@ -28,8 +28,8 @@ Session = scoped_session(session_factory)
 ActiveRecordMixin.set_session(Session())
 
 
-def init_db(_engine: Engine = None):
-    """Initialize database"""
+def create_db(_engine: Engine = None):
+    """Create database"""
     import os.path
     from sqlalchemy_utils import database_exists, create_database
 
@@ -44,8 +44,11 @@ def init_db(_engine: Engine = None):
     if not database_exists(engine_url):
         create_database(engine_url)
 
+
+def init_db(bind: Engine):
+    """Initialize database"""
     # Importing models
     # noinspection PyUnresolvedReferences
     import sql.models
 
-    metadata.create_all(bind=_engine)
+    metadata.create_all(bind=bind)
