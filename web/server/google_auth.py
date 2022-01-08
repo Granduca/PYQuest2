@@ -38,7 +38,7 @@ def login_is_required(function):
     @wraps(function)
     def wrapper(*args, **kwargs):
         if "google_id" not in session:
-            return redirect(url_for('index', login_is_required='true'))  # Authorization required
+            return redirect(url_for('index.index', login_is_required='true'))  # Authorization required
         else:
             return function(*args, **kwargs)
     return wrapper
@@ -73,7 +73,7 @@ def callback():
     session["google_uname"] = id_info.get("name")
     session["google_upic"] = id_info.get("picture")
 
-    return redirect("/quest_editor")
+    return redirect("/")
 
 
 @bp.route("/google/logout")
