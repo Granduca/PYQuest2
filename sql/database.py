@@ -1,3 +1,5 @@
+import os
+
 from sqlalchemy import MetaData
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -5,9 +7,6 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.ext.declarative import declarative_base
 
 from sqlalchemy_mixins.activerecord import ActiveRecordMixin
-
-from pref.prefs import Preferences
-
 
 naming_convention = {
     "ix": 'ix_%(column_0_label)s',
@@ -17,8 +16,8 @@ naming_convention = {
     "pk": "pk_%(table_name)s"
 }
 
-
-engine = create_engine(Preferences.SQLALCHEMY_DATABASE_URI)
+database_url = os.environ.get('DATABASE_URL', "sqlite:///")
+engine = create_engine(database_url)
 metadata = MetaData(naming_convention=naming_convention)
 Base = declarative_base(metadata=metadata)
 session_factory = sessionmaker(bind=engine)

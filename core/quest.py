@@ -14,9 +14,16 @@ logger = logging.getLogger(f"{Preferences.app_name} Quest")
 
 
 class Quest(QuestDB):
+    def get_owner(self):
+        return self.owner
 
     def get_nodes(self):
         return self.nodes
+
+    def get_connections(self):
+        nodes = self.get_nodes()
+        connections = [node.connections_out for node in nodes]
+        return connections
 
     def create_node(self, node_cls, text: str):
         """Create node builder"""

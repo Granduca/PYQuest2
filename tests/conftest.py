@@ -1,5 +1,7 @@
-import pytest
 import json
+import pytest
+
+from core import User
 
 
 @pytest.fixture()
@@ -8,7 +10,7 @@ def json_request():
         return json.loads(json_obj.read())
 
 
-@pytest.fixture()
+@pytest.fixture(scope="session")
 def mem_session_maker():
     """Represents session maker with memory engine bind"""
     # SetUp
@@ -22,7 +24,7 @@ def mem_session_maker():
     return session_factory
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def session(mem_session_maker):
     """Create session and roll it back on teardown"""
     from sql.database import ActiveRecordMixin
@@ -36,3 +38,9 @@ def session(mem_session_maker):
 
         # Teardown
         session.rollback()
+
+
+@pytest.fixture(scope="module")
+def user(session):
+    user = User.create(username="tester")
+    return user

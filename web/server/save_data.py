@@ -2,6 +2,7 @@ from collections import defaultdict
 from typing import List, Dict
 
 from core import Quest
+from core import User
 from core import Node
 
 
@@ -10,7 +11,7 @@ class QuestDataError(ValueError):
     pass
 
 
-def save_quest_data(data: dict, commit: bool = True):
+def save_quest_data(user_id: int, data: dict, commit: bool = True):
     """
     Saves all data of quest from json
     :param: json request -> data
@@ -25,7 +26,7 @@ def save_quest_data(data: dict, commit: bool = True):
 
     # Create quest object
     quest_name = data["quest"]
-    quest = Quest.create(title=quest_name)
+    quest = Quest.create(owner_id=user_id, title=quest_name)
 
     nodes = data['nodes']
     node_object: Dict[int, Node] = dict()  # Link front-end objects to back-end objects
@@ -70,3 +71,16 @@ def save_quest_data(data: dict, commit: bool = True):
         quest.session.close()
 
     return
+
+
+def get_user_quests(user_id: int):
+    user = User.find(user_id)
+    user_quests = user.get_quests()
+    return {"user": user, "quests": user_quests}
+
+
+def get_quest_data(quest_id: int):
+    quest = Quest.find(quest_id)
+    quest_nodes = quest.get_nodes()
+    quest_connections = quest.get_connections()
+    return {"quest": quest, "nodes": quest_nodes, "connections": quest_connections}

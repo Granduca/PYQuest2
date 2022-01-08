@@ -1,14 +1,18 @@
 from core import Quest, Answer, Question
 
 
-def test_quest(session):
+def test_user(user):
+    assert user.id == 1
+
+
+def test_quest(session, user):
     """Quest creation"""
 
     # SetUp
-    Quest.set_session(session)
+    # Quest.set_session(session)
 
     title = "Первый квест"
-    quest = Quest.create(title=title)
+    quest = Quest.create(owner_id=user.id, title=title)
 
     quest.save()
 

@@ -10,10 +10,10 @@ def test_json_fixture(json_request):
     assert len(json_request["nodes"]) == 3
 
 
-def test_save_quest_data(session, json_request):
-    Quest.set_session(session)
+def test_save_quest_data(session, user, json_request):
     # TODO Mock commit
-    assert not save_quest_data(json_request, commit=False)
+    assert not save_quest_data(user.id, json_request, commit=False)
     quest = Quest.find(1)
     assert len(quest.get_nodes()) == 3
     assert quest.title == "Важный вопрос"
+    assert quest.owner_id == 1

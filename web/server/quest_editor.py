@@ -61,7 +61,8 @@ def data_post():
     logger.debug(data)
     try:
         init_db(engine)
-        save_quest_data(data)
+        google_id = session["google_id"]
+        save_quest_data(google_id, data)
     except QuestDataError as e:
         logger.error(e)
         return server_response.internal_server_error(msg=e)

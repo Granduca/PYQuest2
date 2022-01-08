@@ -1,5 +1,4 @@
 import pytest
-from web.web_server import create_app
 
 
 def response_text(data: bytes):
@@ -19,8 +18,9 @@ def google_log_out(client):
     return client
 
 
-@pytest.fixture()
+@pytest.fixture(scope="class")
 def flask_client():
+    from web.web_server import create_app
     flask_app = create_app()
 
     # Create a test client using the Flask application configured for testing

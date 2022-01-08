@@ -1,4 +1,5 @@
-__all__ = ["Quest", "Node", "Connection", "Question", "Answer"]
+__all__ = ["User", "Quest", "Node", "Connection", "Question", "Answer"]
+from core.user import User
 from core.quest import Quest
 from core.node import Node
 from core.connection import Connection
