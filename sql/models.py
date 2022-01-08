@@ -17,7 +17,8 @@ class NodeType(enum. Enum):
 class User(Base, ActiveRecordMixin):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    role = Column(String, nullable=False)
+    username = Column(String)
+    password = Column(String)   # Must be hash
     telegram_id = Column(Integer)
     google_id = Column(Integer)
 
@@ -29,8 +30,13 @@ class Quest(Base, ActiveRecordMixin):
     """
     __tablename__ = "quests"
 
+    fk_user_id = ForeignKey(User.id)
+
     id = Column(Integer, primary_key=True, autoincrement=True)
     title = Column(String, nullable=False)
+    owner_id = Column(Integer, fk_user_id, nullable=False)
+
+    owner = relationship(User, foreign_keys=[owner_id], backref="quests")
 
     def __repr__(self):
         return f"<Quest({self.id}) «{self.title}»>"

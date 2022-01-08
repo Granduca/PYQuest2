@@ -13,11 +13,11 @@ import logging
 logging.basicConfig(level=Preferences.logging_level_core)
 logger = logging.getLogger(f"{Preferences.app_name} Flask QuestEditor")
 
-app = Blueprint('quest_editor', f"{Preferences.app_name} Editor")
+bp = Blueprint('quest_editor', __name__)
 server_response = ServerResponse()
 
 
-@app.route('/quest_editor')
+@bp.route('/quest_editor')
 @google_auth.login_is_required
 def quest_editor():
     title = Preferences.app_name
@@ -35,9 +35,8 @@ def quest_editor():
                            google_uname=google_uname, google_upic=google_upic)
 
 
-@app.route('/quest_editor/data', methods=['GET', 'POST'])
+@bp.route('/quest_editor/data', methods=['GET', 'POST'])
 def data_post():
-    init_db(engine)
     # TODO: добавить сессию
     if request.method == 'GET':
         args = []
@@ -61,7 +60,9 @@ def data_post():
 
     logger.debug(data)
     try:
-        save_quest_data(data)
+        init_db(engine)
+        google_id = session["google_id"]
+        save_quest_data(google_id, data)
     except QuestDataError as e:
         logger.error(e)
         return server_response.internal_server_error(msg=e)
@@ -70,7 +71,7 @@ def data_post():
 
 
 def validate_json(data):
-    with open('schema/schema.json', encoding='utf-8') as f:
+    with open('web/schema/schema.json', encoding='utf-8') as f:
         schema = json.load(f)
     try:
         errors = Draft7Validator(schema).iter_errors(data)

@@ -19,12 +19,12 @@ def test_session_fixture(session):
     assert not bind.url.database or bind.url.database == ":memory:", "Session is not :memory: type"
 
 
-def test_quest_creation(session):
+def test_quest_creation(session, user):
     """Test quest creation and it's relations"""
     # Quest
     Quest.set_session(session)
 
-    quest = Quest.create(title="Первый квест")
+    quest = Quest.create(owner_id=user.id, title="Первый квест")
 
     assert not quest.nodes
 
