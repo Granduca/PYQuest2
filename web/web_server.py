@@ -1,45 +1,34 @@
-from pref import Preferences
-import server.google_auth as google_auth
-import server.quest_editor as quest_editor
-
-from sql.database import create_db
-from flask import Flask, render_template, request
 import logging
+from flask import Flask
+
+from pref import Preferences
+from sql.database import create_db
+from .config import ConfigBase, ProductionConfig
 
 logging.basicConfig(level=Preferences.logging_level_core)
 logger = logging.getLogger(f"{Preferences.app_name} Flask Server")
 
-app = Flask(f"{Preferences.app_name} Editor")
-app.secret_key = "PyQuest2"
 
-# Create database directory and file
-create_db()
+def create_app(config: ConfigBase = None):
+    """Creating Flask app with specified config"""
 
-app.register_blueprint(google_auth.app)
-app.register_blueprint(quest_editor.app)
+    app = Flask(__name__)
+    config = config or ProductionConfig
+    app.config.from_object(config)
 
+    # Create database directory and file
+    create_db()
 
-@app.route('/', methods=['GET'])
-def index():
-    login_is_required = ''
-    if "login_is_required" in request.args:
-        login_is_required = request.args['login_is_required']
-    title = Preferences.app_name
-    editor_version = '1.0'
-    return render_template('index.html', title=title, editor_version=editor_version, login_is_required=login_is_required)
+    from .server.error import bp as error_bp
+    app.register_blueprint(error_bp)
 
+    from .server.login import bp as login_bp
+    app.register_blueprint(login_bp)
 
-@app.errorhandler(404)
-def page_not_found(e):
-    logger.info(e)
-    return render_template('404.html'), 404
+    from .server.google_auth import bp as google_bp
+    app.register_blueprint(google_bp)
 
+    from .server.quest_editor import bp as quest_editor_bp
+    app.register_blueprint(quest_editor_bp)
 
-@app.errorhandler(500)
-def page_not_found(e):
-    logger.info(e)
-    return render_template('500.html'), 500
-
-
-if __name__ == '__main__':
-    app.run()
+    return app
