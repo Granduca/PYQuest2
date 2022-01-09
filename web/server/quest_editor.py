@@ -1,6 +1,7 @@
 import json
 import logging
 from jsonschema import Draft7Validator
+from flask import current_app
 from flask import Blueprint, render_template, session, request
 
 from pref import Preferences
@@ -63,7 +64,7 @@ def data_post():
     try:
         init_db(engine)
         user_id = session["user_id"]
-        save_quest_data(user_id, data)
+        save_quest_data(user_id, data, debug=current_app.config.get("DEBUG"))
     except QuestDataError as e:
         logger.error(e)
         return server_response.internal_server_error(msg=e)

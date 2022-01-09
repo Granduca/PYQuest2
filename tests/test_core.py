@@ -5,7 +5,7 @@ def test_user(user):
     assert user.id == 1
 
 
-def test_quest(session, user):
+def test_simple_quest(session, user):
     """Quest creation"""
 
     # SetUp
@@ -13,8 +13,6 @@ def test_quest(session, user):
 
     title = "Первый квест"
     quest = Quest.create(owner_id=user.id, title=title)
-
-    quest.save()
 
     quest = Quest.find(quest.id)
     assert quest.title == title, "Название квеста не соответствует"
@@ -39,3 +37,28 @@ def test_quest(session, user):
     answer = Answer.find(answer.id)
     assert question.id == 1
     assert answer.id == 2
+
+
+def test_complex_quest(session, user):
+    title = "Первый квест"
+    quest = Quest.create(owner_id=user.id, title=title)
+
+    first_question = quest.create_question("Что было раньше?")
+    first_answers = list()
+    first_answers.append(quest.create_answer("Курица"))
+    first_answers.append(quest.create_answer("Яйцо"))
+    for answer in first_answers:
+        quest.connect_nodes(first_question, answer)
+
+    second_question = quest.create_question("Она вкусная?")
+    quest.connect_nodes(first_answers[0], second_question)
+    second_answers = list()
+    second_answers.append(quest.create_answer("Да"))
+    second_answers.append(quest.create_answer("Нет"))
+    second_answers.append(quest.create_answer("Сочная"))
+    for answer in second_answers:
+        quest.connect_nodes(second_question, answer)
+
+    assert len(quest.get_nodes()) == 7
+    assert len(quest.get_starts()) == 1
+    assert len(quest.get_ends()) == 4

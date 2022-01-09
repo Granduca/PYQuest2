@@ -12,7 +12,7 @@ def test_json_fixture(json_request):
 
 def test_save_quest_data(session, user, json_request):
     # TODO Mock commit
-    assert not save_quest_data(user.id, json_request, commit=False)
+    assert not save_quest_data(user.id, json_request)
     quest = Quest.find(1)
     assert len(quest.get_nodes()) == 3
     assert quest.title == "Важный вопрос"
