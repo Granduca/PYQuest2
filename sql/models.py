@@ -20,7 +20,10 @@ class User(Base, ActiveRecordMixin):
     username = Column(String)
     password = Column(String)   # Must be hash
     telegram_id = Column(Integer)
-    google_id = Column(Integer)
+    google_id = Column(String)
+
+    def __repr__(self):
+        return f"<User({self.id}) «{self.username}» - g: {self.google_id}>"
 
 
 class Quest(Base, ActiveRecordMixin):

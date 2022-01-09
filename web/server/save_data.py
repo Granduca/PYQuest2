@@ -66,10 +66,6 @@ def save_quest_data(user_id: int, data: dict, commit: bool = True):
             connected_node = node_object[connected_id]
             node_obj.set_child(connected_node)
 
-    if commit:
-        quest.session.commit()
-        quest.session.close()
-
     return
 
 

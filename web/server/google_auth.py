@@ -4,6 +4,7 @@ import os
 import pathlib
 from functools import wraps
 import logging
+# import time
 
 from flask import Blueprint, session, abort, redirect, request, url_for
 
@@ -12,6 +13,9 @@ from google.oauth2 import id_token
 from google_auth_oauthlib.flow import Flow
 from pip._vendor import cachecontrol
 import google.auth.transport.requests
+
+from sql.database import engine, init_db
+from core.user import User
 
 
 logging.basicConfig(level=Preferences.logging_level_core)
@@ -37,10 +41,18 @@ flow = Flow.from_client_secrets_file(
 def login_is_required(function):
     @wraps(function)
     def wrapper(*args, **kwargs):
-        if "google_id" not in session:
-            return redirect(url_for('index.index', login_is_required='true'))  # Authorization required
-        else:
+        # Find user
+        user_id = session.get("user_id")
+        init_db(engine)
+        user = User.find(user_id)
+
+        if user:
+            logger.debug(f"User found: {user}")
             return function(*args, **kwargs)
+        else:
+            logger.debug(f"User session is empty")
+            return redirect(url_for('index.index', login_is_required='true'))  # Authorization required
+
     return wrapper
 
 
@@ -69,9 +81,24 @@ def callback():
         audience=flow.client_config['client_id']
     )
 
-    session["google_id"] = id_info.get("sub")
-    session["google_uname"] = id_info.get("name")
+    # time.sleep(.5)  # FIXME Иногда возникает ошибка
+
+    # Store google information
+    google_id = id_info.get("sub")
+    google_uname = id_info.get("name")
     session["google_upic"] = id_info.get("picture")
+
+    if google_id:
+        # Find or create user
+        init_db(engine)
+        user = User.query.filter_by(google_id=google_id).one_or_none()
+        if not user:
+            user = User.create(google_id=google_id, username=google_uname)
+            logger.info(f"New user is created: {user}")
+        else:
+            logger.debug(f"User is found: {user}")
+
+        session["user_id"] = user.id
 
     return redirect("/")
 
