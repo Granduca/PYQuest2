@@ -3,13 +3,21 @@ from flask import Blueprint
 
 from pref import Preferences
 
+from sql.database import engine, init_db
+from core.user import User
+
 bp = Blueprint("index", __name__)
 
 
 @bp.route('/', methods=['GET'])
 @bp.route('/index', methods=["GET"])
 def index():
-    if session.get("google_id"):
+    # Find user
+    user_id = session.get("user_id")
+    init_db(engine)
+    user = User.find(user_id)
+
+    if user:
         return redirect("/quest_editor")
 
     title = Preferences.app_name

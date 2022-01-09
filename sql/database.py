@@ -20,11 +20,11 @@ database_url = os.environ.get('DATABASE_URL', "sqlite:///")
 engine = create_engine(database_url)
 metadata = MetaData(naming_convention=naming_convention)
 Base = declarative_base(metadata=metadata)
-session_factory = sessionmaker(bind=engine)
-Session = scoped_session(session_factory)
+session_factory = sessionmaker(bind=engine, autocommit=True)
+sc_session = scoped_session(session_factory)
 
 # Конфигурируем сессию для Session Mixin
-ActiveRecordMixin.set_session(Session())
+ActiveRecordMixin.set_session(sc_session)
 
 
 def create_db(_engine: Engine = None):

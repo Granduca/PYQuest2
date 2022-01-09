@@ -1,14 +1,15 @@
 import json
+import logging
+from jsonschema import Draft7Validator
+from flask import Blueprint, render_template, session, request
 
-from sql.database import init_db, engine
 from pref import Preferences
 from web.server.rsp import ServerResponse
 import web.server.google_auth as google_auth
 from web.server.save_data import save_quest_data, QuestDataError
 
-from flask import Blueprint, render_template, session, request
-from jsonschema import Draft7Validator
-import logging
+from sql.database import init_db, engine
+from core.user import User
 
 logging.basicConfig(level=Preferences.logging_level_core)
 logger = logging.getLogger(f"{Preferences.app_name} Flask QuestEditor")
@@ -24,20 +25,20 @@ def quest_editor():
     editor_version = '1.0'
     quest_name = 'New Quest 01'
 
-    google_uname = ""
-    google_upic = ""
-    if session:
-        if 'google_uname' in session and 'google_upic' in session:
-            google_uname = session['google_uname']
-            google_upic = session['google_upic']
+    username = ""
+    google_upic = session.get("google_upic", "default_pic.jpg")
+
+    user_id = session.get("user_id")
+    if user_id:
+        user = User.find(user_id)
+        username = user.username
 
     return render_template('quest_editor.html', title=title, editor_version=editor_version, quest_name=quest_name,
-                           google_uname=google_uname, google_upic=google_upic)
+                           google_uname=username, google_upic=google_upic)
 
 
 @bp.route('/quest_editor/data', methods=['GET', 'POST'])
 def data_post():
-    # TODO: добавить сессию
     if request.method == 'GET':
         args = []
         for key in request.args:
@@ -61,8 +62,8 @@ def data_post():
     logger.debug(data)
     try:
         init_db(engine)
-        google_id = session["google_id"]
-        save_quest_data(google_id, data)
+        user_id = session["user_id"]
+        save_quest_data(user_id, data)
     except QuestDataError as e:
         logger.error(e)
         return server_response.internal_server_error(msg=e)
