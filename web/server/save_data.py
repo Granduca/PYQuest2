@@ -11,7 +11,7 @@ class QuestDataError(ValueError):
     pass
 
 
-def save_quest_data(user_id: int, data: dict, commit: bool = True):
+def save_quest_data(user_id: int, data: dict, debug: bool = False):
     """
     Saves all data of quest from json
     :param: json request -> data
@@ -65,6 +65,9 @@ def save_quest_data(user_id: int, data: dict, commit: bool = True):
         for connected_id in node_connections[node_id]:
             connected_node = node_object[connected_id]
             node_obj.set_child(connected_node)
+
+    if debug:
+        quest.show_debug_tree()
 
     return
 
