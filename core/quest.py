@@ -67,7 +67,11 @@ class Quest(QuestDB):
             logger.debug(self.get_tree_from(start_node))
 
     def get_tree_from(self, node: Node, depth: int = 0):
-        text = f"«{node.text}»"
+        text = ""
+        if not node.connections_in:
+            text = "(START) "
+
+        text += f"«{node.text}»"
         node_out_connections = node.connections_out
         if node_out_connections:
             text += "-> "
