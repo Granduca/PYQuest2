@@ -16,3 +16,6 @@
 
 ### Google
 1. Положи google secret в `project\web\secret\client_secret.json`
+
+### Environment
+`DATABASE_URL` = `sqlite:///[path_to_database]` 
