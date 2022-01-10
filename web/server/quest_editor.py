@@ -47,9 +47,6 @@ def data_post():
         logger.warning(f"Illegal attempt to get request {args}")
         return render_template('404.html'), 404
 
-    if request.method != 'POST':
-        return render_template('404.html'), 404
-
     try:
         data = json.loads(request.data.decode('utf-8'))
     except Exception as e:

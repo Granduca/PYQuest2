@@ -48,6 +48,10 @@ class TestNotLogin:
         assert "index" in response.location
         assert "?login_is_required=true" in response.location
 
+    def test_quest_editor_redirect_delete(self, flask_client):
+        response = flask_client.delete('/quest_editor')
+        assert response.status_code == 405
+
     def test_quest_editor_redirection(self, flask_client):
         response = flask_client.get('/quest_editor', follow_redirects=True)
         assert response.status_code == 200

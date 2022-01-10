@@ -41,7 +41,11 @@ var retrievedObject = localStorage.getItem(pyq_console.local_storage_var);
 if (typeof retrievedObject !== 'undefined') {
     if (retrievedObject != null) {
         editor.import(JSON.parse(retrievedObject));
-        //pyq_console.log(retrievedObject);
+//        $.getJSON('static/test_nodes.json', function(data) {
+//            console.log(data)
+//            editor.import(data);
+//        });
+        pyq_console.log(retrievedObject);
     } else {
         pyq_console.save();
         retrievedObject = localStorage.getItem(pyq_console.local_storage_var);
