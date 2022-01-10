@@ -1,5 +1,6 @@
 import logging
 from flask import Flask
+from flask import render_template
 
 from pref import Preferences
 from sql.database import create_db
@@ -9,8 +10,26 @@ logging.basicConfig(level=Preferences.logging_level_core)
 logger = logging.getLogger(f"{Preferences.app_name} Flask Server")
 
 
+""" Error handlers """
+
+
+def page_not_found(e):
+    """Page not found handler"""
+    logger.info(e)
+    return render_template("404.html"), 404
+
+
+def internal_error(e):
+    """Internal error handler"""
+    logger.info(e)
+    return render_template("500.html"), 500
+
+
 def create_app(config: ConfigBase = None):
-    """Creating Flask app with specified config"""
+    """
+    Creating Flask app with specified config
+    :param config: Configuration class from config.py or specify with FLASK_ENV
+    """
 
     app = Flask(__name__)
     config = config or ProductionConfig
@@ -19,8 +38,13 @@ def create_app(config: ConfigBase = None):
     # Create database directory and file
     create_db()
 
-    from .server.error import bp as error_bp
-    app.register_blueprint(error_bp)
+    """ App Handlers """
+
+    # Error handlers
+    app.register_error_handler(404, page_not_found)
+    app.register_error_handler(500, internal_error)
+
+    """ Blueprints """
 
     from .server.login import bp as login_bp
     app.register_blueprint(login_bp)
