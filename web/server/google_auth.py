@@ -4,7 +4,6 @@ import os
 import pathlib
 from functools import wraps
 import logging
-# import time
 
 from flask import Blueprint, session, abort, redirect, request, url_for
 
@@ -38,6 +37,27 @@ flow = Flow.from_client_secrets_file(
 )
 
 
+def sync_time(function):
+    @wraps(function)
+    def wrapper(*args, **kwargs):
+        time_offset = 0
+        try:
+            import ntplib
+            ntpc = ntplib.NTPClient()
+            response = ntpc.request('europe.pool.ntp.org', version=3)
+        except Exception as e:
+            logger.error(e)
+            abort(500)
+        else:
+            if response.offset > 0:
+                import time
+                logger.warning('Local clock synchronization required')
+                time_offset = response.offset
+        
+        return function(*args, time_offset=time_offset, **kwargs)
+    return wrapper
+
+
 def login_is_required(function):
     @wraps(function)
     def wrapper(*args, **kwargs):
@@ -64,7 +84,12 @@ def login():
 
 
 @bp.route("/google/callback")
-def callback():
+@sync_time
+def callback(**kwargs):
+    time_offset = 0
+    if 'time_offset' in kwargs:
+        time_offset = kwargs['time_offset']
+
     flow.fetch_token(authorization_response=request.url)
 
     if not session["state"] == request.args["state"]:
@@ -78,10 +103,9 @@ def callback():
     id_info = id_token.verify_oauth2_token(
         id_token=credentials._id_token,
         request=token_request,
-        audience=flow.client_config['client_id']
+        audience=flow.client_config['client_id'],
+        clock_skew_in_seconds=time_offset
     )
-
-    # time.sleep(.5)  # FIXME Иногда возникает ошибка
 
     # Store google information
     google_id = id_info.get("sub")
