@@ -14,7 +14,7 @@ def index():
     # Find user
     user_id = session.get("user_id")
     init_db(engine)
-    user = User.find(user_id)
+    user = User.find(user_id) if user_id else None
 
     if user:
         return redirect(url_for("quest_editor.quest_editor"))

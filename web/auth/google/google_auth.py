@@ -64,14 +64,17 @@ def login_is_required(function):
         # Find user
         user_id = session.get("user_id")
         init_db(engine)
-        user = User.find(user_id)
 
-        if user:
-            logger.debug(f"User found: {user}")
-            return function(*args, **kwargs)
-        else:
-            logger.debug(f"User session is empty")
-            return redirect(url_for('auth.index', login_is_required='true'))  # Authorization required
+        if user_id:
+            user = User.find(user_id)
+            if user:
+                logger.debug(f"User found: {user}")
+                return function(*args, **kwargs)
+            else:
+                logger.warning(f"User session is not empty, but user {user_id} doesn't exist")
+
+        logger.debug("User session is empty")
+        return redirect(url_for('auth.index', login_is_required='true'))  # Authorization required
 
     return wrapper
 

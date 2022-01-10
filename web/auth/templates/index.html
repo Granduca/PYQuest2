@@ -36,8 +36,12 @@
                         {% endif %}
                         <p class="text-center">Войти через социальные сети</p>
                         <p>
+                            <!---
+                            # TODO REMOVE
                             <a href="{{ url_for('quest_editor.quest_editor') }}" class="btn btn-block" style="color: #ffffff!important; background-color: #0088cc!important;">
                                 <i class="fab fa-telegram-plane mr-2"></i>Войти через Telegram</a>
+                            --->
+                            {% include 'telegram_widget.html' %}
                             <a href="{{ url_for('auth.google.login') }}" class="btn btn-block" style="color: #ffffff!important; background-color: #DB4437!important;">
                                 <i class="fab fa-google mr-2"></i>Войти через Google</a>
                         </p>

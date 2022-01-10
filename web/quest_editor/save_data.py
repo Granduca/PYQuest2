@@ -73,12 +73,17 @@ def save_quest_data(user_id: int, data: dict, debug: bool = False):
 
 
 def get_user_quests(user_id: int):
+    if not isinstance(user_id, int):
+        raise TypeError(f"User id must be int, got: {type(user_id)} {user_id}")
     user = User.find(user_id)
     user_quests = user.get_quests()
     return {"user": user, "quests": user_quests}
 
 
 def get_quest_data(quest_id: int):
+    if not isinstance(quest_id, int):
+        raise TypeError(f"Quest id must be int, got: {type(quest_id)} {quest_id}")
+
     quest = Quest.find(quest_id)
     quest_nodes = quest.get_nodes()
     quest_connections = quest.get_connections()
