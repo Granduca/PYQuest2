@@ -1,4 +1,4 @@
-from flask import render_template, redirect, request, session
+from flask import render_template, redirect, url_for, request, session
 from flask import Blueprint
 
 from pref import Preferences
@@ -17,7 +17,7 @@ def index():
     user = User.find(user_id)
 
     if user:
-        return redirect("/quest_editor/")
+        return redirect(url_for("quest_editor.quest_editor"))
 
     title = Preferences.app_name
     editor_version = '1.0'

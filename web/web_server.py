@@ -1,6 +1,6 @@
 import logging
 from flask import Flask
-from flask import render_template, redirect
+from flask import render_template, redirect, url_for
 
 from pref import Preferences
 from sql.database import create_db
@@ -17,6 +17,12 @@ def page_not_found(e):
     """Page not found handler"""
     logger.info(e)
     return render_template("404.html"), 404
+
+
+def method_not_allowed(e):
+    """Page not found handler"""
+    logger.info(e)
+    return "ПО ГОЛОВЕ СЕБЕ ПОДЕЛИТЬ", 405
 
 
 def internal_error(e):
@@ -41,12 +47,13 @@ def create_app(config: ConfigBase = None):
     # index
     @app.route('/')
     def index():
-        return redirect('/auth')
+        return redirect(url_for('auth.index'))
 
     """ App Handlers """
 
     # Error handlers
     app.register_error_handler(404, page_not_found)
+    app.register_error_handler(405, method_not_allowed)
     app.register_error_handler(500, internal_error)
 
     """ Blueprints """

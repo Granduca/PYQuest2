@@ -86,9 +86,7 @@ def login():
 @bp.route("/callback")
 @sync_time
 def callback(**kwargs):
-    time_offset = 0
-    if 'time_offset' in kwargs:
-        time_offset = kwargs['time_offset']
+    time_offset = kwargs.get("time_offset", 0)
 
     flow.fetch_token(authorization_response=request.url)
 
@@ -110,7 +108,6 @@ def callback(**kwargs):
     # Store google information
     google_id = id_info.get("sub")
     google_uname = id_info.get("name")
-    session["google_upic"] = id_info.get("picture")
 
     if google_id:
         # Find or create user
@@ -123,11 +120,12 @@ def callback(**kwargs):
             logger.debug(f"User is found: {user}")
 
         session["user_id"] = user.id
+        session["google_upic"] = id_info.get("picture")
 
-    return redirect("/auth")
+    return redirect(url_for("auth.index"))
 
 
 @bp.route("/logout")
 def logout():
     session.clear()
-    return redirect('/auth')
+    return redirect(url_for("auth.index"))
