@@ -20,11 +20,11 @@ from core.user import User
 logging.basicConfig(level=Preferences.logging_level_core)
 logger = logging.getLogger(f"{Preferences.app_name} Flask Google OAuth")
 
-bp = Blueprint('google_auth', __name__)
+bp = Blueprint('google', __name__, template_folder='quest_editor/templates', static_folder='quest_editor/static')
 
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
-client_secrets_file = os.path.abspath(os.path.join(pathlib.Path(__file__).parent, "../secret/client_secret.json"))
+client_secrets_file = os.path.abspath(os.path.join(pathlib.Path(__file__).parent, "secret/client_secret.json"))
 
 flow = Flow.from_client_secrets_file(
     client_secrets_file=client_secrets_file,
@@ -33,7 +33,7 @@ flow = Flow.from_client_secrets_file(
         "https://www.googleapis.com/auth/userinfo.email",
         "openid"
     ],
-    redirect_uri="http://127.0.0.1:5000/google/callback"
+    redirect_uri="http://127.0.0.1:5000/auth/google/callback"
 )
 
 
@@ -71,19 +71,19 @@ def login_is_required(function):
             return function(*args, **kwargs)
         else:
             logger.debug(f"User session is empty")
-            return redirect(url_for('index.index', login_is_required='true'))  # Authorization required
+            return redirect(url_for('auth.index', login_is_required='true'))  # Authorization required
 
     return wrapper
 
 
-@bp.route("/google/login")
+@bp.route("/login")
 def login():
     authorization_url, state = flow.authorization_url()
     session["state"] = state
     return redirect(authorization_url)
 
 
-@bp.route("/google/callback")
+@bp.route("/callback")
 @sync_time
 def callback(**kwargs):
     time_offset = 0
@@ -124,10 +124,10 @@ def callback(**kwargs):
 
         session["user_id"] = user.id
 
-    return redirect("/")
+    return redirect("/auth")
 
 
-@bp.route("/google/logout")
+@bp.route("/logout")
 def logout():
     session.clear()
-    return redirect('/')
+    return redirect('/auth')

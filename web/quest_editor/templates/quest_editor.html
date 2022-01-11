@@ -14,21 +14,21 @@
     <title>PyQuest2 | Quest Editor</title>
     {% endif %}
     <meta name="description" content="Node editor">
-    <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/izitoast/dist/css/iziToast.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('quest_editor.static', filename='node_modules/izitoast/dist/css/iziToast.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('quest_editor.static', filename='node_modules/drawflow/dist/drawflow.min.css')}}">
+    <link rel="stylesheet" href="{{ url_for('quest_editor.static', filename='node_modules/@fortawesome/fontawesome-free/css/all.min.css')}}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('quest_editor.static', filename='node_modules/selectables/selectables.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('quest_editor.static', filename='style.css')}}" />
 </head>
 <body>
-    <script src="{{ url_for('static', filename='node_modules/izitoast/dist/js/iziToast.min.js')}}" type="text/javascript"></script>
-    <script src="{{ url_for('static', filename='node_modules/drawflow/dist/drawflow.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='node_modules/@fortawesome/fontawesome-free/js/all.min.js')}}"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/drawflow/dist/drawflow.min.css')}}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/@fortawesome/fontawesome-free/css/all.min.css')}}">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-    <script src="{{ url_for('static', filename='node_modules/sweetalert2/dist/sweetalert2.all.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='node_modules/micromodal/dist/micromodal.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='node_modules/jquery/dist/jquery.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='node_modules/selectables/selectables.js')}}"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/selectables/selectables.css')}}">
-    <link rel="stylesheet" type="text/css" href="static/style.css" />
+    <script src="{{ url_for('quest_editor.static', filename='node_modules/izitoast/dist/js/iziToast.min.js')}}" type="text/javascript"></script>
+    <script src="{{ url_for('quest_editor.static', filename='node_modules/drawflow/dist/drawflow.min.js')}}"></script>
+    <script src="{{ url_for('quest_editor.static', filename='node_modules/@fortawesome/fontawesome-free/js/all.min.js')}}"></script>
+    <script src="{{ url_for('quest_editor.static', filename='node_modules/sweetalert2/dist/sweetalert2.all.min.js')}}"></script>
+    <script src="{{ url_for('quest_editor.static', filename='node_modules/micromodal/dist/micromodal.min.js')}}"></script>
+    <script src="{{ url_for('quest_editor.static', filename='node_modules/jquery/dist/jquery.min.js')}}"></script>
+    <script src="{{ url_for('quest_editor.static', filename='node_modules/selectables/selectables.js')}}"></script>
     <header>
         <nav>
             {% if google_uname %}
@@ -37,7 +37,7 @@
                 <div class="Header-item google-hello"><b>{{google_uname}}</b></div>
                 <div class="Header-item">
                     <img class="google-user-pic" src="{{google_upic}}">
-                    <div class="Header-item google-logout"><a href="{{ url_for('google_auth.logout') }}">Выйти</a></div>
+                    <div class="Header-item google-logout"><a href="{{ url_for('auth.google.logout') }}">Выйти</a></div>
                 </div>
             </div>
             {% else %}

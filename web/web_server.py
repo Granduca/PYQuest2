@@ -1,6 +1,6 @@
 import logging
 from flask import Flask
-from flask import render_template
+from flask import render_template, redirect
 
 from pref import Preferences
 from sql.database import create_db
@@ -38,6 +38,11 @@ def create_app(config: ConfigBase = None):
     # Create database directory and file
     create_db()
 
+    # index
+    @app.route('/')
+    def index():
+        return redirect('/auth')
+
     """ App Handlers """
 
     # Error handlers
@@ -46,13 +51,13 @@ def create_app(config: ConfigBase = None):
 
     """ Blueprints """
 
-    from .server.login import bp as login_bp
-    app.register_blueprint(login_bp)
+    from web.auth.login import bp as login_bp
+    from web.auth.google.google_auth import bp as google_bp
 
-    from .server.google_auth import bp as google_bp
-    app.register_blueprint(google_bp)
+    login_bp.register_blueprint(google_bp, url_prefix='/google')
+    app.register_blueprint(login_bp, url_prefix='/auth')
 
-    from .server.quest_editor import bp as quest_editor_bp
-    app.register_blueprint(quest_editor_bp)
+    from web.quest_editor.quest_editor import bp as quest_editor_bp
+    app.register_blueprint(quest_editor_bp, url_prefix='/quest_editor')
 
     return app

@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="{{ url_for('static', filename='node_modules/jquery/dist/jquery.min.js')}}"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.min.css')}}">
-    <script src="{{ url_for('static', filename='node_modules/bootstrap/dist/js/bootstrap.min.js')}}"></script>
-    <script src="{{ url_for('static', filename='node_modules/@fortawesome/fontawesome-free/js/all.min.js')}}"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/@fortawesome/fontawesome-free/css/all.min.css')}}">
+    <script src="{{ url_for('auth.static', filename='node_modules/jquery/dist/jquery.min.js')}}"></script>
+    <link rel="stylesheet" href="{{ url_for('auth.static', filename='node_modules/bootstrap/dist/css/bootstrap.min.css')}}">
+    <script src="{{ url_for('auth.static', filename='node_modules/bootstrap/dist/js/bootstrap.min.js')}}"></script>
+    <script src="{{ url_for('auth.static', filename='node_modules/@fortawesome/fontawesome-free/js/all.min.js')}}"></script>
+    <link rel="stylesheet" href="{{ url_for('auth.static', filename='node_modules/@fortawesome/fontawesome-free/css/all.min.css')}}">
     {% if title %}
     {% if editor_version %}
     <title>{{title}} | Quest Editor v{{editor_version}}</title>
@@ -37,7 +37,7 @@
                         <p>
                             <a href="{{ url_for('quest_editor.quest_editor') }}" class="btn btn-block" style="color: #ffffff!important; background-color: #0088cc!important;">
                                 <i class="fab fa-telegram-plane mr-2"></i>Войти через Telegram</a>
-                            <a href="{{ url_for('google_auth.login') }}" class="btn btn-block" style="color: #ffffff!important; background-color: #DB4437!important;">
+                            <a href="{{ url_for('auth.google.login') }}" class="btn btn-block" style="color: #ffffff!important; background-color: #DB4437!important;">
                                 <i class="fab fa-google mr-2"></i>Войти через Google</a>
                         </p>
                         <p class="text-muted font-weight-bold ">

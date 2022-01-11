@@ -87,8 +87,8 @@ function set_node_template(key, text='', height='100') {
 
 function node_html_setter(title_box, node_func, node_icon, node_text, text, height) {
     let header = `<div class="${title_box}" ondblclick="${node_func}"><i class="${node_icon}"></i> ${node_text}</div>`;
-    let body = `<div class="box noselect">` + textarea_setter(text, height) + `</div>`;
-    if(title_box.includes('link') == true) {body = `<div class="box noselect">${text}</div>`;}
+    let body = `<div class="box">` + textarea_setter(text, height) + `</div>`;
+    if(title_box.includes('link') == true) {body = `<div class="box">${text}</div>`;}
     let template = `<div>` + header + body + `</div>`;
     return template;
 }
@@ -696,7 +696,7 @@ function export_json() {
     //pyq_console.log(JSON.stringify(converted_data));
 
     pyq_console.post({
-        "url": 'quest_editor/data',
+        "url": 'data',
         "data": JSON.stringify(converted_data),
         "success": function() {
             pyq_console.save(true);

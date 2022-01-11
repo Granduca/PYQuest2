@@ -1,4 +1,4 @@
-from web.server.save_data import save_quest_data
+from web.quest_editor.save_data import save_quest_data
 from core.quest import Quest
 
 

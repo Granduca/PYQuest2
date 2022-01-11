@@ -6,11 +6,10 @@ from pref import Preferences
 from sql.database import engine, init_db
 from core.user import User
 
-bp = Blueprint("index", __name__)
+bp = Blueprint("auth", __name__, template_folder='templates', static_folder='static')
 
 
-@bp.route('/', methods=['GET'])
-@bp.route('/index', methods=["GET"])
+@bp.route('/', methods=["GET"])
 def index():
     # Find user
     user_id = session.get("user_id")
@@ -18,7 +17,7 @@ def index():
     user = User.find(user_id)
 
     if user:
-        return redirect("/quest_editor")
+        return redirect("/quest_editor/")
 
     title = Preferences.app_name
     editor_version = '1.0'

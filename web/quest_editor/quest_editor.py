@@ -2,12 +2,12 @@ import json
 import logging
 from jsonschema import Draft7Validator
 from flask import current_app
-from flask import Blueprint, render_template, session, request
+from flask import Blueprint, render_template, session, request, abort
 
 from pref import Preferences
 from web.server.rsp import ServerResponse
-import web.server.google_auth as google_auth
-from web.server.save_data import save_quest_data, QuestDataError
+import web.auth.google.google_auth as google_auth
+from web.quest_editor.save_data import save_quest_data, QuestDataError
 
 from sql.database import init_db, engine
 from core.user import User
@@ -15,11 +15,11 @@ from core.user import User
 logging.basicConfig(level=Preferences.logging_level_core)
 logger = logging.getLogger(f"{Preferences.app_name} Flask QuestEditor")
 
-bp = Blueprint('quest_editor', __name__)
+bp = Blueprint('quest_editor', __name__, template_folder='templates', static_folder='static')
 server_response = ServerResponse()
 
 
-@bp.route('/quest_editor')
+@bp.route('/')
 @google_auth.login_is_required
 def quest_editor():
     title = Preferences.app_name
@@ -38,21 +38,21 @@ def quest_editor():
                            google_uname=username, google_upic=google_upic)
 
 
-@bp.route('/quest_editor/data', methods=['GET', 'POST'])
+@bp.route('/data', methods=['GET', 'POST'])
 def data_post():
     if request.method == 'GET':
         args = []
         for key in request.args:
             args.append([key, request.args.getlist(key)[0]])
         logger.warning(f"Illegal attempt to get request {args}")
-        return render_template('404.html'), 404
+        abort(404)
 
     try:
         data = json.loads(request.data.decode('utf-8'))
     except Exception as e:
         # TODO Может только определённые эксшепшены сюда засунуть?
         logger.warning(e)
-        return render_template('404.html'), 404
+        abort(404)
     else:
         if not validate_json(data):
             return server_response.response('error', 'bad_request', msg='JSON data validation failed')
@@ -70,7 +70,7 @@ def data_post():
 
 
 def validate_json(data):
-    with open('web/schema/schema.json', encoding='utf-8') as f:
+    with open('web/quest_editor/schema/schema.json', encoding='utf-8') as f:
         schema = json.load(f)
     try:
         errors = Draft7Validator(schema).iter_errors(data)

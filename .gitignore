@@ -224,6 +224,12 @@ data/
 
 #Node.js
 web/static/node_modules/*
+web/auth/static/node_modules/*
+web/auth/google/static/node_modules/*
+web/quest_editor/static/node_modules/*
 
 #oauth secret
-web/secret/*
+web/auth/google/secret/*
+
+#test_nodes.json
+web/quest_editor/static/test_nodes.json
