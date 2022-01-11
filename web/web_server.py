@@ -41,6 +41,10 @@ def create_app(config: ConfigBase = None):
     config = config or ProductionConfig
     app.config.from_object(config)
 
+    # JS minification
+    if app.config['MIN_JS']:
+        js_min_generator()
+
     # Create database directory and file
     create_db()
 
@@ -68,3 +72,29 @@ def create_app(config: ConfigBase = None):
     app.register_blueprint(quest_editor_bp, url_prefix='/quest_editor')
 
     return app
+
+
+def js_min_generator():
+    import requests
+    from pathlib import Path
+
+    routes = {'web/quest_editor/static/': ['workflow.js', 'multiselect.js', 'console.js']}
+
+    for path in routes:
+        Path(f"{path}min/").mkdir(parents=True, exist_ok=True)
+
+        for js_file in routes[path]:
+
+            with open(f'{path}{js_file}', 'r', encoding="utf8") as c:
+                js = c.read()
+
+            payload = {'input': js}
+            url = 'https://www.toptal.com/developers/javascript-minifier/raw'
+            logger.debug("Requesting mini-me of {}. . .".format(c.name))
+            r = requests.post(url, payload)
+
+            minified = js_file.rstrip('.js') + '.min.js'
+            with open(f'{path}min/{minified}', 'w', encoding="utf8") as m:
+                m.write(r.text)
+
+            logger.debug("Minification complete. See {}".format(m.name))

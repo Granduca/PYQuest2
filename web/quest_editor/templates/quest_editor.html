@@ -114,10 +114,21 @@
         </div>
     </div>
 
-
+    {% if min_js %}
+    {% if min_js == 'true' %}
+    <script src="static/min/console.min.js" type="text/javascript"></script>
+    <script src="static/min/workflow.min.js" type="text/javascript"></script>
+    <script src="static/min/multiselect.min.js" type="text/javascript"></script>
+    {% else %}
     <script src="static/console.js" type="text/javascript"></script>
     <script src="static/workflow.js" type="text/javascript"></script>
     <script src="static/multiselect.js" type="text/javascript"></script>
+    {% endif %}
+    {% else %}
+    <script src="static/min/console.min.js" type="text/javascript"></script>
+    <script src="static/min/workflow.min.js" type="text/javascript"></script>
+    <script src="static/min/multiselect.min.js" type="text/javascript"></script>
+    {% endif %}
 
     <!-- Preloader -->
     <script type="text/javascript">

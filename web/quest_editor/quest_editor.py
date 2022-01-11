@@ -1,8 +1,8 @@
 import json
 import logging
-from jsonschema import Draft7Validator, ValidationError, SchemaError
+from jsonschema import Draft7Validator, SchemaError
 from flask import current_app
-from flask import Blueprint, render_template, session, request, abort
+from flask import Blueprint, render_template, session, request
 
 from pref import Preferences
 from web.server.rsp import ServerResponse
@@ -38,8 +38,14 @@ def quest_editor():
         user = User.find(user_id)
         username = user.username
 
+    # check min_js
+    min_js = 'false'
+
+    if current_app.config['MIN_JS']:
+        min_js = 'true'
+
     return render_template('quest_editor.html', title=title, editor_version=editor_version, quest_name=quest_name,
-                           google_uname=username, google_upic=google_upic)
+                           google_uname=username, google_upic=google_upic, min_js=min_js)
 
 
 @bp.route('/data', methods=["POST"])

@@ -233,3 +233,6 @@ web/auth/google/secret/*
 
 #test_nodes.json
 web/quest_editor/static/test_nodes.json
+
+#min
+web/quest_editor/static/min/*
