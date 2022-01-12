@@ -332,7 +332,8 @@ editor.on('click', (e) => {
         if(target != null) {
             let node = editor.getNodeFromId(active_link_node);
             let id = parseInt(target.id.split('-')[1]);
-            if(id != active_link_node && !target.classList.contains('link') && !target.classList.contains('answer') && !target.classList.contains('finish')) {
+            if(id != active_link_node && !target.classList.contains('link') && !target.classList.contains('answer') && !target.classList.contains('finish') && !target.classList.contains('start')) {
+                //TODO сделать кейсы и сообщеньки о том почему нельзя выбрать определенную ноду
                 node.data['template'] = id;
                 editor.drawflow.drawflow.Home.data[active_link_node].data['template'] = id;
                 //pyq_console.log('node-' + node.id + ' link setted as ' + 'node-' + node.data['template']);
@@ -636,7 +637,8 @@ function export_json() {
                                 "Чтобы назначить переход дважды щёлкните по его заголовку и затем выберите нужный вопрос.", 15000);
                             return false;
                         } else {
-                            node["link"] = parseInt(value["data"]["template"]);
+                            node["connections"]["output"].push({"node": parseInt(value["data"]["template"])});
+                            node["data"] = value["data"]["template"].toString();
                         }
                     } else {
                         node["data"] = value["data"]["template"];

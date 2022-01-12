@@ -37,8 +37,8 @@ def save_quest_data(user_id: int, data: dict, debug: bool = False):
         text = node['data']
         output_connections = node["connections"]["output"]
 
-        if node['class'] == "link":
-            text = f"LINK: {node['link']}"
+        # if node['class'] == "link":
+        #     text = f"LINK: {node['link']}"
 
         if len(text) > max_text_length:
             raise QuestDataError("The maximum permissible text length has been exceeded")
