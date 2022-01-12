@@ -1,34 +1,3 @@
-// lang init
-class PYQLang {
-    constructor(lang) {
-        this.lang = lang;
-        this.path = 'http://127.0.0.1:5000/static/lang/';
-        this.translation = {};
-    }
-
-    async init() {
-        let data = await this.load_json();
-        this.translation = data;
-    }
-
-    async load_json() {
-        const data = await $.getJSON(this.path + this.lang + '.json');
-        return data
-    }
-
-    t(key) {
-        return this.translation[key];
-    }
-
-    change_lang(lang) {
-        this.lang = lang;
-        this.init();
-    }
-}
-
-var lang = new PYQLang('ru');
-lang.init();
-
 // drawflow init
 var id = document.getElementById("drawflow");
 
@@ -647,7 +616,7 @@ function changeMode(option) {
 }
 
 function export_json() {
-    pyq_console.log(JSON.stringify(editor.export()));
+    //pyq_console.log(JSON.stringify(editor.export()));
     if(start_indicated_id == -1) {
         pyq_console.info(lang.t("console_info_publish_error_no_start") + "<br>" + lang.t("console_info_publish_error_no_start_tip"), 15000);
         return false;

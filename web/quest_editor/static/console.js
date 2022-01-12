@@ -11,16 +11,16 @@ class Console {
         localStorage.setItem(this.local_storage_var, JSON.stringify(editor.export()));
         if(logging === true) {
             iziToast.success({
-                title: 'Сохранение',
-                message: 'Квест успешно сохранен!',
+                title: lang.t("console_save"),
+                message: lang.t("console_save_quest_success"),
             });
         }
     }
 
     import() {
         iziToast.success({
-            title: 'Импорт',
-            message: 'Cохраненные данные успешно импортированы!',
+            title: lang.t("console_import"),
+            message: lang.t("console_import_success"),
         });
     }
 
@@ -32,24 +32,24 @@ class Console {
             displayMode: 'once',
             id: 'question',
             zindex: 999,
-            title: 'Очистка',
-            message: 'Вы уверены, что хотите очистить редактор? Все несохраненные изменения будут потеряны!',
+            title: lang.t("console_clear"),
+            message: lang.t("console_clear_warning"),
             position: 'center',
             buttons: [
-                ['<button>ДА</button>', function (instance, toast) {
+                ['<button>' + lang.t("console_btn_yes") + '</button>', function (instance, toast) {
                     instance.hide({ transitionOut: 'fadeOut' }, toast, 'btn_accept');
                     editor.clearModuleSelected();
                     pyq_console.save();
                 }, true],
-                ['<button><b>НЕТ</b></button>', function (instance, toast) {
+                ['<button><b>' + lang.t("console_btn_no") + '</b></button>', function (instance, toast) {
                     instance.hide({ transitionOut: 'fadeOut' }, toast, 'btn_cancel');
                 }],
             ],
             onClosing: function(instance, toast, closedBy){
                 if(closedBy == 'btn_accept') {
                     iziToast.success({
-                        title: 'Очистка',
-                        message: 'Редактор успешно очищен!',
+                        title: lang.t("console_clear"),
+                        message: lang.t("console_clear_success"),
                     });
                 }
             }
@@ -58,7 +58,7 @@ class Console {
 
     error(msg="Undefined error") {
         iziToast.error({
-            title: 'Ошибка',
+            title: lang.t("console_error"),
             message: msg,
             overlay: true,
             position: 'center',
