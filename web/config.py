@@ -16,10 +16,10 @@ class ConfigBase:
 
 class ProductionConfig(ConfigBase):
     DEBUG = False
-    MIN_JS = True
+    MIN_JS = False
 
 
 class DevelopmentConfig(ConfigBase):
     DEVELOPMENT = True
     DEBUG = True
-    MIN_JS = True
+    MIN_JS = False

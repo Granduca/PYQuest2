@@ -1,4 +1,35 @@
-//drawflow init
+// lang init
+class PYQLang {
+    constructor(lang) {
+        this.lang = lang;
+        this.path = 'http://127.0.0.1:5000/static/lang/';
+        this.translation = {};
+    }
+
+    async init() {
+        let data = await this.load_json();
+        this.translation = data;
+    }
+
+    async load_json() {
+        const data = await $.getJSON(this.path + this.lang + '.json');
+        return data
+    }
+
+    t(key) {
+        return this.translation[key];
+    }
+
+    change_lang(lang) {
+        this.lang = lang;
+        this.init();
+    }
+}
+
+var lang = new PYQLang('ru');
+lang.init();
+
+// drawflow init
 var id = document.getElementById("drawflow");
 
 const editor = new Drawflow(id);
@@ -45,7 +76,7 @@ if (typeof retrievedObject !== 'undefined') {
 //            console.log(data)
 //            editor.import(data);
 //        });
-        pyq_console.log(retrievedObject);
+        //pyq_console.log(retrievedObject);
     } else {
         pyq_console.save();
         retrievedObject = localStorage.getItem(pyq_console.local_storage_var);
@@ -67,20 +98,17 @@ function check_start_node() {
 check_start_node();
 
 //Templates
-var textarea_template = 'Введите ваш текст...';
-var link_template = 'Двойной клик, чтобы назначить переход...';
-
 function set_node_template(key, text='', height='100') {
     let link_status = ' not_connected';
-    if(key == 'link'){if(text != ''){text = 'node-' + text; link_status = '';}else{text = link_template;}}
+    if(key == 'link'){if(text != ''){text = 'node-' + text; link_status = '';}else{text = lang.t("node_link_data_template");}}
     let nodes_template = {
-        'start': node_html_setter("title-box start noselect", "set_start(event)", "fas fa-play-circle", "Начало", text, height),
-        'finish': node_html_setter("title-box finish noselect", "set_finish(event)", "fas fa-stop-circle", "Конец", text, height),
-        'question': node_html_setter("title-box noselect", "set_start(event)", "fas fa-question-circle", "Вопрос", text, height),
-        'question_not_connected': node_html_setter("title-box not_connected noselect", "set_start(event)", "fas fa-question-circle", "Вопрос", text, height),
-        'answer': node_html_setter("title-box noselect", "set_finish(event)", "fas fa-comment-dots", "Ответ", text, height),
-        'answer_not_connected': node_html_setter("title-box not_connected noselect", "set_finish(event)", "fas fa-comment-dots", "Ответ", text, height),
-        'link': node_html_setter("title-box link" + link_status + " noselect", "set_link(event)", "fas fa-link", "Переход", text, height),
+        'start': node_html_setter("title-box start noselect", "set_start(event)", "fas fa-play-circle", lang.t("node_title_start"), text, height),
+        'finish': node_html_setter("title-box finish noselect", "set_finish(event)", "fas fa-stop-circle", lang.t("node_title_finish"), text, height),
+        'question': node_html_setter("title-box noselect", "set_start(event)", "fas fa-question-circle", lang.t("node_title_question"), text, height),
+        'question_not_connected': node_html_setter("title-box not_connected noselect", "set_start(event)", "fas fa-question-circle", lang.t("node_title_question"), text, height),
+        'answer': node_html_setter("title-box noselect", "set_finish(event)", "fas fa-comment-dots", lang.t("node_title_answer"), text, height),
+        'answer_not_connected': node_html_setter("title-box not_connected noselect", "set_finish(event)", "fas fa-comment-dots", lang.t("node_title_answer"), text, height),
+        'link': node_html_setter("title-box link" + link_status + " noselect", "set_link(event)", "fas fa-link", lang.t("node_title_link"), text, height),
     }
     return nodes_template[key];
 }
@@ -96,7 +124,7 @@ function node_html_setter(title_box, node_func, node_icon, node_text, text, heig
 function textarea_setter(t, h) {
     let text = '';
     if (t != '') { text = t;}
-    return `<textarea df-template class="vertical" style="height:${h}px;" placeholder="${textarea_template}">${text}</textarea>`;
+    return `<textarea df-template class="vertical" style="height:${h}px;" placeholder="${lang.t("node_textarea_template")}">${text}</textarea>`;
 }
 
 
@@ -187,24 +215,24 @@ editor.on('connectionCreated', function(connection) {
     if(node_output.class.includes('answer')) {
         if(node_output['outputs']['output_1']['connections'].length > 1) {
             editor.removeSingleConnection(connection['output_id'], connection['input_id'], 'output_1', 'input_1');
-            pyq_console.info('Ответ может ссылаться только на один вопрос');
+            pyq_console.info(lang.t("console_info_set_error_answer_solo"));
         }
     }
 
     if(node_output.class.includes('question') || node_output.class.includes('start')) {
         if(node_input.class.includes('question') || node_input.class.includes('start') || node_input.class.includes('link')) {
             editor.removeSingleConnection(connection['output_id'], connection['input_id'], 'output_1', 'input_1');
-            let text = 'вопросом';
+            let text = lang.t("console_info_set_error_to_question");
             if(node_input.class.includes('link') == true) {
-                text = "переходом на вопрос";
+                text = lang.t("console_info_set_error_to_link");
             }
-            pyq_console.info('Невозможно соединить вопрос с ' + text);
+            pyq_console.info(lang.t("console_info_set_error_answer_to_") + text);
         }
     }
     if(node_output.class.includes('answer')) {
         if(node_input.class.includes('answer') || node_input.class.includes('finish')) {
             editor.removeSingleConnection(connection['output_id'], connection['input_id'], 'output_1', 'input_1');
-            pyq_console.info('Невозможно соединить ответ с ответом');
+            pyq_console.info(lang.t("console_info_set_error_answer_to_answer"));
         }
     }
     //pyq_console.log('Connection created');
@@ -332,8 +360,21 @@ editor.on('click', (e) => {
         if(target != null) {
             let node = editor.getNodeFromId(active_link_node);
             let id = parseInt(target.id.split('-')[1]);
-            if(id != active_link_node && !target.classList.contains('link') && !target.classList.contains('answer') && !target.classList.contains('finish') && !target.classList.contains('start')) {
-                //TODO сделать кейсы и сообщеньки о том почему нельзя выбрать определенную ноду
+            if(id != active_link_node) {
+                switch(true) {
+                    case target.classList.contains("link"):
+                        pyq_console.info(lang.t("console_info_set_error_link_to_link"));
+                        return false;
+                    case target.classList.contains("answer") || target.classList.contains("answer_not_connected"):
+                        pyq_console.info(lang.t("console_info_set_error_link_to_answer"));
+                        return false;
+                    case target.classList.contains("start"):
+                        pyq_console.info(lang.t("console_info_set_error_link_to_start"));
+                        return false;
+                    case target.classList.contains("finish"):
+                        pyq_console.info(lang.t("console_info_set_error_link_to_finish"));
+                        return false;
+                }
                 node.data['template'] = id;
                 editor.drawflow.drawflow.Home.data[active_link_node].data['template'] = id;
                 //pyq_console.log('node-' + node.id + ' link setted as ' + 'node-' + node.data['template']);
@@ -347,6 +388,8 @@ editor.on('click', (e) => {
                 link_mode = false;
                 dr.disable(); dr.enable();
                 pyq_console.save();
+            } else {
+                pyq_console.info(lang.t("console_info_set_error_link_to_self"));
             }
         }
     }
@@ -604,10 +647,9 @@ function changeMode(option) {
 }
 
 function export_json() {
-    //pyq_console.log(JSON.stringify(editor.export()));
+    pyq_console.log(JSON.stringify(editor.export()));
     if(start_indicated_id == -1) {
-        pyq_console.info("Невозможно опубликовать квест, в котором отсутствует стартовый вопрос." + "<br>" +
-            "Чтобы назначить стартовый вопрос щёлкните дважды по заголовку соответствующего вопроса.", 15000);
+        pyq_console.info(lang.t("console_info_publish_error_no_start") + "<br>" + lang.t("console_info_publish_error_no_start_tip"), 15000);
         return false;
     }
     let export_data = editor.export();
@@ -621,20 +663,18 @@ function export_json() {
             }
             if("class" in value) {
                 if(value["class"] == "question_not_connected") {
-                    pyq_console.info("Невозможно опубликовать квест, в котором есть не подключенные вопросы (с желтым заголовком).", 15000);
+                    pyq_console.info(lang.t("console_info_publish_error_question_not_connected"), 15000);
                     return false;
                 }
                 if(value["class"] == "answer_not_connected") {
-                    pyq_console.info("Невозможно опубликовать квест, в котором есть не подключенные ответы (с желтым заголовком)." + "<br>" +
-                        "Если такой ответ является концовкой вашего квеста, то вам нужно щёлкнуть дважды по его заголовку, чтобы он стал конечным.", 15000);
+                    pyq_console.info(lang.t("console_info_publish_error_answer_not_connected") + "<br>" + lang.t("console_info_publish_error_answer_not_connected_tip"), 15000);
                     return false;
                 }
                 node["class"] = value["class"];
                 if("data" in value) {
                     if(node["class"] == "link") {
                         if(value["data"]["template"] == "") {
-                            pyq_console.info("Невозможно опубликовать квест, в котором есть не назначенные переходы." + "<br>" +
-                                "Чтобы назначить переход дважды щёлкните по его заголовку и затем выберите нужный вопрос.", 15000);
+                            pyq_console.info(lang.t("console_info_publish_error_link_not_connected") + "<br>" + lang.t("console_info_publish_error_link_not_connected_tip"), 15000);
                             return false;
                         } else {
                             node["connections"]["output"].push({"node": parseInt(value["data"]["template"])});
