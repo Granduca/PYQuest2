@@ -1,0 +1,29 @@
+<link rel="stylesheet" href="{{ url_for('profile.static', filename='style.css')}}">
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="card p-3">
+        <div class="d-flex align-items-center">
+            {% if google_upic %}
+            <div class="image"> <img src="{{google_upic}}" class="rounded" width="155"> </div>
+            {% endif %}
+            <div class="ml-3 w-100">
+                {% if user_name %}
+                {% if user_status %}
+                <h4 class="mb-0 mt-0">{{user_name}}</h4> <span class="user_status">{{user_status}}</span>
+                {% endif %}
+                {% endif %}
+                <div class="p-2 mt-2 bg-primary d-flex justify-content-between rounded text-white stats">
+                    {% if user_num_quests %}
+                    {% if user_num_readers %}
+                    {% if user_rating %}
+                    <div class="d-flex flex-column"> <span class="articles">Квесты</span> <span class="number1">{{user_num_quests}}</span> </div>
+                    <div class="d-flex flex-column"> <span class="followers">Читатели</span> <span class="number2">{{user_num_readers}}</span> </div>
+                    <div class="d-flex flex-column"> <span class="rating">Рейтинг</span> <span class="number3">{{user_rating}}</span> </div>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                </div>
+                <div class="button mt-2 d-flex flex-row align-items-center"> <button class="btn btn-sm btn-outline-primary w-100">Квесты</button> <button class="btn btn-sm btn-primary w-100 ml-2">Публикации</button> </div>
+            </div>
+        </div>
+    </div>
+</div>

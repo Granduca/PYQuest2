@@ -6,6 +6,9 @@ CALL :INSTALL_AUTH_GOOGLE
 CALL :CHECK_FAIL
 CALL :INSTALL_QUEST_EDITOR
 CALL :CHECK_FAIL
+CALL :INSTALL_PROFILE
+CALL :CHECK_FAIL
+CD %~dp0
 pause
 
 :: /// check if the app has failed
@@ -28,4 +31,8 @@ CALL npm install
 
 :INSTALL_QUEST_EDITOR
 CD %~dp0\web\quest_editor\static
+CALL npm install
+
+:INSTALL_PROFILE
+CD %~dp0\web\profile\static
 CALL npm install

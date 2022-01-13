@@ -71,6 +71,9 @@ def create_app(config: ConfigBase = None):
     from web.quest_editor.quest_editor import bp as quest_editor_bp
     app.register_blueprint(quest_editor_bp, url_prefix='/quest_editor')
 
+    from web.profile.profile import bp as profile_bp
+    app.register_blueprint(profile_bp, url_prefix='/profile')
+
     return app
 
 

@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="{{ url_for('auth.static', filename='img/favicon.ico') }}">
-    <script src="{{ url_for('auth.static', filename='node_modules/jquery/dist/jquery.min.js')}}"></script>
-    <link rel="stylesheet" href="{{ url_for('auth.static', filename='node_modules/bootstrap/dist/css/bootstrap.min.css')}}">
-    <script src="{{ url_for('auth.static', filename='node_modules/bootstrap/dist/js/bootstrap.min.js')}}"></script>
-    <script src="{{ url_for('auth.static', filename='node_modules/@fortawesome/fontawesome-free/js/all.min.js')}}"></script>
-    <link rel="stylesheet" href="{{ url_for('auth.static', filename='node_modules/@fortawesome/fontawesome-free/css/all.min.css')}}">
+    <script src="{{ url_for('static', filename='node_modules/jquery/dist/jquery.min.js')}}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.min.css')}}">
+    <script src="{{ url_for('static', filename='node_modules/bootstrap/dist/js/bootstrap.min.js')}}"></script>
+    <script src="{{ url_for('static', filename='node_modules/@fortawesome/fontawesome-free/js/all.min.js')}}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/@fortawesome/fontawesome-free/css/all.min.css')}}">
     {% if title %}
     {% if editor_version %}
     <title>{{title}} | Quest Editor v{{editor_version}}</title>
