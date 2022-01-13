@@ -25,6 +25,7 @@
 <body>
     <script src="{{ url_for('static', filename='lang/lang.js')}}" type="text/javascript"></script>
     <script type="text/javascript">var lang = new PYQLang('ru', '../static/lang/');lang.init();</script>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
     <script src="{{ url_for('quest_editor.static', filename='node_modules/izitoast/dist/js/iziToast.min.js')}}" type="text/javascript"></script>
     <script src="{{ url_for('quest_editor.static', filename='node_modules/drawflow/dist/drawflow.min.js')}}"></script>
     <script src="{{ url_for('quest_editor.static', filename='node_modules/@fortawesome/fontawesome-free/js/all.min.js')}}"></script>
@@ -101,7 +102,7 @@
                 </ul>
             </div>
             <div id="drawflow" ondrop="drop(event)" ondragover="allowDrop(event)">
-                <div class="btn-export" onclick="export_json()">Опубликовать</div>
+                <div class="btn-export" onclick="publish()">Опубликовать</div>
                 <div class="btn-save" onclick="export_json()">Сохранить</div>
                 <div class="btn-clear" onclick="editor_clear()">Очистить</div>
                 <div class="btn-lock">

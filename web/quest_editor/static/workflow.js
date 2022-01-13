@@ -716,6 +716,36 @@ function export_json() {
     });
 }
 
+function publish() {
+    Swal.fire({
+        title: lang.t("swal_captcha_verification"),
+        html: '<div id="recaptcha"></div>',
+        didOpen: () => {
+            grecaptcha.render('recaptcha', {
+                'sitekey': '6LdTZA4eAAAAAGKOuQR4REfWIUclk5R7hG8NBzne',
+                'callback': captcha_callback
+            })
+        },
+        showCancelButton: false,
+        showConfirmButton: false,
+        cancelButtonText: lang.t("swal_captcha_btn_cancel"),
+        footer: lang.t("swal_captcha_footer")
+    })
+}
+
+var captcha_callback = function(response) {
+    if (response != "") {
+        swal.close();
+        pyq_console.post({
+            "url": 'captcha',
+            "data": response,
+            "success": function() {
+                export_json();
+            }
+        });
+    }
+};
+
 function editor_clear() {
     pyq_console.clear();
 }

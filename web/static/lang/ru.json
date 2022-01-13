@@ -34,5 +34,9 @@
     "console_clear_warning": "Вы уверены, что хотите очистить редактор? Все несохраненные изменения будут потеряны!",
     "console_btn_yes": "ДА",
     "console_btn_no": "НЕТ",
-    "console_error": "Ошибка"
+    "console_error": "Ошибка",
+
+    "swal_captcha_verification": "Верификация",
+    "swal_captcha_footer": "Перед публикацией подтвердите, что вы не робот \uD83E\uDD16",
+    "swal_captcha_btn_cancel": "Отмена"
 }

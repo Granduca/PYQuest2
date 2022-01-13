@@ -27,6 +27,10 @@
 	margin:-100px 0 0 -100px; /* is width and height divided by two */
 }
 
+#recaptcha > div {
+  margin: 0 auto .5em;
+}
+
 html, body {
   margin: 0px;
   padding: 0px;

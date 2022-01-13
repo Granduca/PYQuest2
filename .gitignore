@@ -230,6 +230,7 @@ web/quest_editor/static/node_modules/*
 
 #oauth secret
 web/auth/google/secret/*
+web/secret/*
 
 #test_nodes.json
 web/quest_editor/static/test_nodes.json

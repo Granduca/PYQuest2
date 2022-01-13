@@ -12,11 +12,17 @@ from web.quest_editor.save_data import save_quest_data, QuestDataError
 from sql.database import init_db, engine
 from core.user import User
 
+import requests
+import os
+import pathlib
+
 logging.basicConfig(level=Preferences.logging_level_core)
 logger = logging.getLogger(f"{Preferences.app_name} Flask QuestEditor")
 
 bp = Blueprint('quest_editor', __name__, template_folder='templates', static_folder='static')
 server_response = ServerResponse()
+
+captcha_secrets_file = os.path.abspath(os.path.join(pathlib.Path(__file__).parent, "../secret/captcha_secret.json"))
 
 
 class JSONValidateError(ValueError):
@@ -69,6 +75,28 @@ def data_post():
         return server_response.internal_server_error(msg=e)
     else:
         return server_response.response('success', 'ok', msg='The quest has been successfully saved')
+
+
+@bp.route('/captcha', methods=["POST"])
+def captcha_post():
+    f = open(captcha_secrets_file)
+    secret = json.load(f)['server_secret']
+
+    data = {
+        'secret': secret,
+        'response': request.data
+    }
+
+    try:
+        response = requests.post('https://www.google.com/recaptcha/api/siteverify', data=data).json()
+        if response['success']:
+            return server_response.response('success', 'ok', msg=f"Captcha successfully completed at {response['challenge_ts']}")
+        else:
+            return server_response.response('error', 'forbidden', msg='Captcha not completed')
+
+    except Exception as e:
+        logger.error(e)
+        return server_response.internal_server_error(msg=e)
 
 
 def validate_json(data):
