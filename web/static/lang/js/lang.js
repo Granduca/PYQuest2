@@ -1,8 +1,8 @@
 // lang init
 class PYQLang {
-    constructor(lang, path) {
+    constructor(lang) {
         this.lang = lang;
-        this.path = path;
+        this.path = "http://127.0.0.1:5000/static/lang/js/";
         this.translation = {};
     }
 
@@ -34,3 +34,6 @@ class PYQLang {
         this.init();
     }
 }
+
+var lang = new PYQLang('ru');
+lang.init();
