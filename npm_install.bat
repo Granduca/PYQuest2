@@ -17,6 +17,7 @@ exit
 if NOT ["%errorlevel%"]==["0"] (
     pause
 )
+EXIT /B 0
 
 :INSTALL_INDEX
 CD %~dp0\web\static
