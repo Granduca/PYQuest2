@@ -180,13 +180,26 @@ cursor: pointer;
   z-index: 5;
 }
 
+.btn-save {
+  float: right;
+  position: absolute;
+  top: 10px;
+  right: 145px;
+  color: white;
+  border: 1px solid #0e5ba3;
+  background: #82bd2a;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 5;
+}
+
 .btn-clear {
   float: right;
   position: absolute;
   top: 10px;
-  right: 120px;
+  right: 254px;
   color: white;
-  font-weight: bold;
   border: 1px solid #96015b;
   background: #e3195a;
   padding: 5px 10px;
