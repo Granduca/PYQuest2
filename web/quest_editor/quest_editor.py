@@ -50,8 +50,16 @@ def quest_editor():
     if current_app.config['MIN_JS']:
         min_js = 'true'
 
+    user_status = "Заслуженный автор и Бог"
+
+    user_num_quests = 17
+    user_num_readers = 567
+    user_rating = 9.8
+
     return render_template('quest_editor.html', title=title, editor_version=editor_version, quest_name=quest_name,
-                           google_uname=username, google_upic=google_upic, min_js=min_js)
+                           google_uname=username, google_upic=google_upic, user_name=username, user_status=user_status,
+                           user_num_quests=user_num_quests, user_num_readers=user_num_readers, user_rating=user_rating,
+                           min_js=min_js)
 
 
 @bp.route('/data', methods=["POST"])

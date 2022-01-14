@@ -38,6 +38,8 @@ html, body {
   height: 100vh;
   overflow: hidden;
   font-family: 'Roboto', sans-serif;
+  font-size: 15px;
+  background-color: #f2f5f8;
 }
 
 header {
@@ -46,12 +48,18 @@ header {
   padding-left: 20px;
   padding-top: 5px;
 }
+
 header h2 {
   margin: 0px;
   line-height: 66px;
 }
+
 header a {
   color: black;
+}
+
+textarea {
+    font-size: 14px;
 }
 
 .hotkeys {
@@ -61,6 +69,7 @@ header a {
   padding-left: 20px;
   font-family: monospace;
   color: #999999;
+  font-size: 12px;
 }
 
 #s-rectBox {
@@ -169,47 +178,20 @@ cursor: pointer;
   font-weight: bold;
 }
 
-.btn-export {
+.btn-block {
+  width: 20%;
   float: right;
   position: absolute;
   top: 10px;
-  right: 10px;
-  color: white;
-  font-weight: bold;
-  border: 1px solid #0e5ba3;
-  background: #4ea9ff;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
+  right: 20px;
   z-index: 5;
+  padding: .175rem .45rem;
 }
 
-.btn-save {
-  float: right;
-  position: absolute;
-  top: 10px;
-  right: 145px;
-  color: white;
-  border: 1px solid #0e5ba3;
-  background: #82bd2a;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  z-index: 5;
+.nav-block {
+  padding: .175rem .45rem;
 }
 
-.btn-clear {
-  float: right;
-  position: absolute;
-  top: 10px;
-  right: 254px;
-  color: white;
-  border: 1px solid #96015b;
-  background: #e3195a;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  z-index: 5;
 }
 .swal-wide{
     width:80% !important;
@@ -432,7 +414,7 @@ cursor: pointer;
 }
 
 .drawflow-node textarea {
-  height: 100px;
+  min-height: 100px;
 }
 
 
@@ -466,6 +448,7 @@ cursor: pointer;
 
 
 /* Modal */
+/*
 .modal {
   display: none;
   position: fixed;
@@ -483,13 +466,18 @@ cursor: pointer;
 .modal-content {
   position: relative;
   background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
+  margin: 15% auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 400px; /* Could be more or less, depending on screen size */
+  width: 400px;
+}
+*/
+/* The Close Button */
+
+.modal-title {
+    color: #c1c1c1;
 }
 
-/* The Close Button */
 .modal .close {
   color: #aaa;
   float: right;
@@ -502,30 +490,4 @@ cursor: pointer;
   .modal-content {
     width: 80%;
   }
-}
-
-.Header-item {
-    display: flex;
-    align-self: stretch;
-    align-items: center;
-    flex-wrap: nowrap;
-}
-
-.google-hello {
-    font-family: 'Roboto', sans-serif;
-    font-size: 12px;
-    position: relative;
-    padding-right: 8px;
-}
-
-.google-user-pic {
-    border-radius: 50%;
-    width: 32px;
-}
-
-.google-logout {
-    font-family: 'Roboto', sans-serif;
-    font-size: 10px;
-    position: absolute;
-    padding-top: 32px;
 }
