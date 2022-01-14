@@ -1,0 +1,26 @@
+{% if quest_name %}
+<div class="btn-group">
+    {% if active == true %}
+    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        {{quest_name}}
+    </button>
+    <div class="dropdown-menu">
+        <a class="dropdown-item" href="#">Сохранить</a>
+        <a class="dropdown-item" href="#">Переименовать</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">Удалить</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">Закрыть</a>
+    </div>
+    {% else %}
+    <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        {{quest_name}}
+    </button>
+    <div class="dropdown-menu">
+        <a class="dropdown-item" href="#">Открыть</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">Закрыть</a>
+    </div>
+    {% endif %}
+</div>
+{% endif %}

@@ -40,7 +40,6 @@
     <script src="{{ url_for('quest_editor.static', filename='node_modules/drawflow/dist/drawflow.min.js')}}"></script>
     <script src="{{ url_for('quest_editor.static', filename='node_modules/@fortawesome/fontawesome-free/js/all.min.js')}}"></script>
     <script src="{{ url_for('quest_editor.static', filename='node_modules/sweetalert2/dist/sweetalert2.all.min.js')}}"></script>
-    <script src="{{ url_for('quest_editor.static', filename='node_modules/micromodal/dist/micromodal.min.js')}}"></script>
     <script src="{{ url_for('quest_editor.static', filename='node_modules/selectables/selectables.js')}}"></script>
 
     <!-- Header -->
@@ -49,7 +48,7 @@
             {% if google_uname %}
             {% if google_upic %}
             <div class="button d-flex flex-row align-items-center nav-block">
-                <button type="button" class="btn btn-outline-info" data-toggle="modal">{{google_uname}}</button>
+                <button type="button" class="btn btn-outline-info" data-toggle="modal" data-target="#profileModal">{{google_uname}}</button>
                 <div class="image btn" data-toggle="tooltip" data-target="#profileModal" data-custom-class="tooltip-secondary" title="Открыть карточку вашего профиля"> <img src="{{google_upic}}" class="rounded" width="36" data-backdrop="false" data-toggle="modal" data-target="#profileModal"> </div>
                 <a href="{{ url_for('auth.google.logout') }}" role="button" class="btn btn-outline-secondary">Выйти</a>
             </div>
@@ -96,14 +95,24 @@
             </div>
 
             <div class="col-right">
-                <div class="menu">
+                <div class="menu px-1">
                     <ul>
                         {% if quest_name %}
-                        <li onclick="editor.changeModule('{{quest_name}}'); changeModule(event);" class="selected">{{quest_name}}</li>
+                        <!-- Example single danger button -->
+                        {% with quest_name=quest_name, active=true %}
+                            {% include "quest_title_dropdown.html" %}
+                        {% endwith %}
+    <!--                        <li onclick="editor.changeModule('{{quest_name}}'); changeModule(event);" class="selected">{{quest_name}}</li>-->
                         {% else %}
-                        <li onclick="editor.changeModule('{{quest_name}}'); changeModule(event);" class="selected">New Quest</li>
+                        {% with quest_name='quest_name', active=true %}
+                            {% include "quest_title_dropdown.html" %}
+                        {% endwith %}
+    <!--                        <li onclick="editor.changeModule('{{quest_name}}'); changeModule(event);" class="selected">New Quest</li>-->
                         {% endif %}
-                        <!-- <li onclick="editor.changeModule('Other'); changeModule(event);">Other Module</li> -->
+                            <!-- <li onclick="editor.changeModule('Other'); changeModule(event);">Other Module</li> -->
+                        {% with quest_name='Quest_02', active=false %}
+                            {% include "quest_title_dropdown.html" %}
+                        {% endwith %}
                     </ul>
                 </div>
                 <div id="drawflow" ondrop="drop(event)" ondragover="allowDrop(event)">
