@@ -134,6 +134,7 @@ header nav a {
   border-right: 1px solid var(--border-color);
 }
 
+/*
 .drag-drawflow {
   line-height: 50px;
   border-bottom: 1px solid var(--border-color);
@@ -151,6 +152,7 @@ header nav a {
     line-height: 25px;
     background: #F9CACA;
 }
+*/
 
 .menu {
   position: absolute;
@@ -178,18 +180,12 @@ cursor: pointer;
   font-weight: bold;
 }
 
-.btn-block {
-  width: 20%;
+.editor-btn-block {
   float: right;
   position: absolute;
   top: 10px;
   right: 20px;
   z-index: 5;
-  padding: .175rem .45rem;
-}
-
-.nav-block {
-  padding: .175rem .45rem;
 }
 
 }
@@ -197,34 +193,11 @@ cursor: pointer;
     width:80% !important;
 }
 
-.btn-lock {
-  float: right;
-  position: absolute;
-  bottom: 10px;
-  right: 140px;
-  display: flex;
-  font-size: 24px;
-  color: white;
-  padding: 5px 10px;
-  background: #555555;
-  border-radius: 4px;
-  border-right: 1px solid var(--border-color);
-  z-index: 5;
-  cursor: pointer;
-}
-
 .bar-zoom {
   float: right;
   position: absolute;
   bottom: 10px;
-  right: 10px;
-  display: flex;
-  font-size: 24px;
-  color: white;
-  padding: 5px 10px;
-  background: #555555;
-  border-radius: 4px;
-  border-right: 1px solid var(--border-color);
+  right: 20px;
   z-index: 5;
 }
 
@@ -232,6 +205,7 @@ cursor: pointer;
   cursor: pointer;
   padding-left: 10px;
 }
+
 .bar-zoom svg:nth-child(1) {
   padding-left: 0px;
 }
@@ -239,7 +213,7 @@ cursor: pointer;
 .bar-zoom.text {
     bottom: 40px;
     right: 0px;
-    font-size: 18px;
+    font-size: 16px;
 }
 
 #drawflow {
@@ -473,6 +447,10 @@ cursor: pointer;
 }
 */
 /* The Close Button */
+
+.modal-body {
+    padding: 0;
+}
 
 .modal-title {
     color: #c1c1c1;

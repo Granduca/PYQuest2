@@ -604,17 +604,6 @@ function changeModule(event) {
     event.target.classList.add('selected');
 }
 
-function changeMode(option) {
-    //pyq_console.log(lock.id);
-    if(option == 'lock') {
-        lock.style.display = 'none';
-        unlock.style.display = 'block';
-    } else {
-        lock.style.display = 'block';
-        unlock.style.display = 'none';
-    }
-}
-
 function export_json() {
     //pyq_console.log(JSON.stringify(editor.export()));
     if(start_indicated_id == -1) {

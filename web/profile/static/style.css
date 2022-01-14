@@ -6,7 +6,7 @@
 }
 
 .stats {
-    background: #f2f5f8 !important;
+    background: #dce6ef !important;
     color: #000 !important
 }
 
@@ -40,3 +40,14 @@
 .user_status {
     color: #a1aab9;
 }
+
+/* TABLES */
+.table .thead-light th {
+    background-color: #dce6ef;
+}
+
+.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+   background-color: #f7fafd;
+}
+
+.bdr {border-radius: 6px;overflow:hidden;}
