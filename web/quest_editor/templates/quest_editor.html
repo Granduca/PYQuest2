@@ -43,7 +43,7 @@
     <script src="{{ url_for('quest_editor.static', filename='node_modules/selectables/selectables.js')}}"></script>
 
     <!-- Header -->
-    <header>
+    <header class="navbar navbar-expand flex-column flex-md-row border-bottom">
         <nav>
             {% if google_uname %}
             {% if google_upic %}
@@ -71,9 +71,9 @@
     </header>
 
     <!-- MAIN -->
-    <main>
-        <div class="wrapper" id="wrapper">
-            <div class="col">
+    <div class="container-fluid d-flex px-0 h-100 wrapper" id="wrapper">
+        <div class="d-flex align-items-end flex-column bg-light px-4 py-2">
+            <div>
                 <button class="btn btn-lg btn-outline-success w-100 mt-3"  draggable="true" ondragstart="drag(event)" data-node="question_not_connected" type="button">
                     <i class="fas fa-question-circle"></i><span> Вопрос</span>
                 </button>
@@ -83,60 +83,61 @@
                 <button class="btn btn-lg btn-outline-primary w-100 mt-2"  draggable="true" ondragstart="drag(event)" data-node="link" type="button">
                     <i class="fas fa-link"></i><span> Переход на вопрос</span>
                 </button>
-
-                <div class="hotkeys">
-                    <br><br>
-                    <i class="fas fa-trash-alt"></i><b> Delete</b> for remove selected<br>
-                    <i class="fas fa-mouse"></i> Mouse Left Click == Move<br>
-                    <i class="fas fa-times-circle"></i> Mouse Right == Delete Option<br>
-                    <i class="fas fa-search"></i> Ctrl + Wheel == Zoom<br><br>
-                    <i class="fas fa-mobile-alt"></i> Mobile support<br>
-                </div>
             </div>
-
-            <div class="col-right">
-                <div class="menu px-1">
-                    <ul>
-                        <button class="btn btn-outline-primary" type="button">
-                            <i class="far fa-folder-open"></i>
-                        </button>
-                        {% if quest_name %}
-                        {% with quest_name=quest_name, active=true %}
-                            {% include "quest_title_dropdown.html" %}
-                        {% endwith %}
-    <!--                        <li onclick="editor.changeModule('{{quest_name}}'); changeModule(event);" class="selected">{{quest_name}}</li>-->
-                        {% else %}
-                        {% with quest_name='quest_name', active=true %}
-                            {% include "quest_title_dropdown.html" %}
-                        {% endwith %}
-    <!--                        <li onclick="editor.changeModule('{{quest_name}}'); changeModule(event);" class="selected">New Quest</li>-->
-                        {% endif %}
-                            <!-- <li onclick="editor.changeModule('Other'); changeModule(event);">Other Module</li> -->
-                        {% with quest_name='Quest_02', active=false %}
-                            {% include "quest_title_dropdown.html" %}
-                        {% endwith %}
-                    </ul>
-                </div>
-                <div id="drawflow" ondrop="drop(event)" ondragover="allowDrop(event)">
-                    <div class="button d-flex mt-2 editor-btn-block">
-                        <button class="btn btn-sm btn-outline-danger w-100 mr-2" onclick="editor_clear()" data-toggle="tooltip" data-html="true" data-custom-class="tooltip-danger" title="удалить <b>все ноды</b><br><u>безвозвратно</u>!">Очистить</button>
-                        <button class="btn btn-sm btn-success w-100 mr-2" onclick="export_json()" data-toggle="tooltip" data-custom-class="tooltip-success" data-html="true" title="<u>сохранить</u> квест<br><em>без публикации</em>">Сохранить</button>
-                        <button class="btn btn-sm btn-primary w-100" onclick="publish()" data-toggle="tooltip" data-html="true" data-custom-class="tooltip-primary" title="<u>опубликовать</u> квест<br><em>в <u>telegram</u></em>">Опубликовать</button>
-                    </div>
-                    <div class="bar-zoom">
-                        <div class="button flex-raw">
-                            <div class="button d-flex">
-                                <button class="btn btn-sm btn-primary w-100 mr-1" onclick="editor.zoom_out()"><i class="fas fa-search-minus"></i></button>
-                                <button class="btn btn-sm btn-primary w-100 mr-1" onclick="editor.zoom_reset()"><i class="fas fa-search"></i></button>
-                                <button class="btn btn-sm btn-primary w-100" onclick="editor.zoom_in()"><i class="fas fa-search-plus"></i></button>
-                            </div>
-                            <button class="btn btn-sm btn-outline-primary w-100 mt-1" id="bar-zoom text" onclick="editor.zoom_reset()">100%</button>
-                        </div>
+            <div class="mt-auto w-100">
+                <div class="bs-callout bs-callout-info bg-white align-bottom">
+                    <h5>Управление</h5>
+                    <div class="mt-4 hotkeys">
+                        <i class="fas fa-trash-alt"></i><b> Delete</b> for remove selected<br>
+                        <i class="fas fa-mouse"></i> Mouse Left Click == Move<br>
+                        <i class="fas fa-times-circle"></i> Mouse Right == Delete Option<br>
+                        <i class="fas fa-search"></i> Ctrl + Wheel == Zoom<br><br>
+                        <i class="fas fa-mobile-alt"></i> Mobile support<br>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
+
+        <div class="col px-0">
+            <div class="flex-row px-1 py-1 bg-light border-left">
+                <button class="btn btn-outline-primary" type="button">
+                    <i class="far fa-folder-open"></i>
+                </button>
+                {% if quest_name %}
+                {% with quest_name=quest_name, active=true %}
+                    {% include "quest_title_dropdown.html" %}
+                {% endwith %}
+<!--                        <li onclick="editor.changeModule('{{quest_name}}'); changeModule(event);" class="selected">{{quest_name}}</li>-->
+                {% else %}
+                {% with quest_name='quest_name', active=true %}
+                    {% include "quest_title_dropdown.html" %}
+                {% endwith %}
+<!--                        <li onclick="editor.changeModule('{{quest_name}}'); changeModule(event);" class="selected">New Quest</li>-->
+                {% endif %}
+                    <!-- <li onclick="editor.changeModule('Other'); changeModule(event);">Other Module</li> -->
+                {% with quest_name='Quest_02', active=false %}
+                    {% include "quest_title_dropdown.html" %}
+                {% endwith %}
+            </div>
+            <div class="flex-row" id="drawflow" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <div class="button d-flex mt-2 editor-btn-block">
+                    <button class="btn btn-sm btn-outline-danger w-100 mr-2" onclick="editor_clear()" data-toggle="tooltip" data-html="true" data-custom-class="tooltip-danger" title="удалить <b>все ноды</b><br><u>безвозвратно</u>!">Очистить</button>
+                    <button class="btn btn-sm btn-success w-100 mr-2" onclick="export_json()" data-toggle="tooltip" data-custom-class="tooltip-success" data-html="true" title="<u>сохранить</u> квест<br><em>без публикации</em>">Сохранить</button>
+                    <button class="btn btn-sm btn-primary w-100" onclick="publish()" data-toggle="tooltip" data-html="true" data-custom-class="tooltip-primary" title="<u>опубликовать</u> квест<br><em>в <u>telegram</u></em>">Опубликовать</button>
+                </div>
+                <div class="bar-zoom">
+                    <div class="button flex-raw">
+                        <div class="button d-flex">
+                            <button class="btn btn-sm btn-primary w-100 mr-1" onclick="editor.zoom_out()"><i class="fas fa-search-minus"></i></button>
+                            <button class="btn btn-sm btn-primary w-100 mr-1" onclick="editor.zoom_reset()"><i class="fas fa-search"></i></button>
+                            <button class="btn btn-sm btn-primary w-100" onclick="editor.zoom_in()"><i class="fas fa-search-plus"></i></button>
+                        </div>
+                        <button class="btn btn-sm btn-outline-primary w-100 mt-1" id="bar-zoom text" onclick="editor.zoom_reset()">100%</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- PYQ JS -->
     {% if min_js %}
