@@ -43,12 +43,35 @@
     <script src="{{ url_for('quest_editor.static', filename='node_modules/selectables/selectables.js')}}"></script>
 
     <!-- Header -->
-    <header class="navbar navbar-expand flex-column flex-md-row border-bottom">
-        <nav>
+    <header class="navbar navbar-expand flex-row border-bottom">
+        <!-- Brand -->
+        <div class="navbar-brand d-none d-lg-flex">
+            {% if title %}
+            {% if editor_version %}
+            <h2 class="my-0"><i class="fas fa-pen-nib"></i> {{title}} | Quest Editor v{{editor_version}}</h2>
+            {% else %}
+            <h2 class="my-0"><i class="fas fa-pen-nib"></i> PyQuest2 | Quest Editor</h2>
+            {% endif %}
+            {% else %}
+            <h2 class="my-0"><i class="fas fa-pen-nib"></i> PyQuest2 | Quest Editor</h2>
+            {% endif %}
+        </div>
+        <!-- Brand mobile -->
+        <div class="navbar-brand d-block d-lg-none">
+            {% if title %}
+            <h2 class="my-0"><i class="fas fa-pen-nib"></i> {{title}}</h2>
+            {% else %}
+            <h2 class="my-0"><i class="fas fa-pen-nib"></i> PyQuest2</h2>
+            {% endif %}
+        </div>
+        <!-- Profile -->
+        <div class="navbar-nav flex-row ml-auto">
             {% if google_uname %}
             {% if google_upic %}
             <div class="button d-flex flex-row align-items-center nav-block">
-                <button type="button" class="btn btn-outline-info" data-toggle="modal" data-target="#profileModal">{{google_uname}}</button>
+                <div class="d-none d-md-flex">
+                    <button type="button" class="btn btn-outline-info" data-toggle="modal" data-target="#profileModal">{{google_uname}}</button>
+                </div>
                 <div class="image btn" data-toggle="tooltip" data-target="#profileModal" data-custom-class="tooltip-secondary" title="Открыть карточку вашего профиля"> <img src="{{google_upic}}" class="rounded" width="36" data-backdrop="false" data-toggle="modal" data-target="#profileModal"> </div>
                 <a href="{{ url_for('auth.google.logout') }}" role="button" class="btn btn-outline-secondary">Выйти</a>
             </div>
@@ -58,23 +81,15 @@
             {% else %}
             Ошибка авторизации
             {% endif %}
-        </nav>
-        {% if title %}
-        {% if editor_version %}
-        <h2><i class="fas fa-pen-nib"></i> {{title}} | Quest Editor v{{editor_version}}</h2>
-        {% else %}
-        <h2><i class="fas fa-pen-nib"></i> PyQuest2 | Quest Editor</h2>
-        {% endif %}
-        {% else %}
-        <h2><i class="fas fa-pen-nib"></i> PyQuest2 | Quest Editor</h2>
-        {% endif %}
+        </div>
     </header>
 
     <!-- MAIN -->
     <div class="container-fluid d-flex px-0 h-100 wrapper" id="wrapper">
-        <div class="d-flex align-items-end flex-column bg-light px-4 py-2">
-            <div>
-                <button class="btn btn-lg btn-outline-success w-100 mt-3"  draggable="true" ondragstart="drag(event)" data-node="question_not_connected" type="button">
+        <!-- Side menu -->
+        <div class="d-none d-lg-flex align-items-end flex-column bg-light px-4 py-4">
+            <div class="d-flex flex-column w-100 mx-auto">
+                <button class="btn btn-lg btn-outline-success w-100 mt-2"  draggable="true" ondragstart="drag(event)" data-node="question_not_connected" type="button">
                     <i class="fas fa-question-circle"></i><span> Вопрос</span>
                 </button>
                 <button class="btn btn-lg btn-outline-danger w-100 mt-2"  draggable="true" ondragstart="drag(event)" data-node="answer_not_connected" type="button">
@@ -84,8 +99,9 @@
                     <i class="fas fa-link"></i><span> Переход на вопрос</span>
                 </button>
             </div>
-            <div class="mt-auto w-100">
-                <div class="bs-callout bs-callout-info bg-white align-bottom">
+            <!-- Side menu tips -->
+            <div class="d-flex flex-column mt-auto">
+                <div class="bs-callout bs-callout-info bg-white">
                     <h5>Управление</h5>
                     <div class="mt-4 hotkeys">
                         <i class="fas fa-trash-alt"></i><b> Delete</b> for remove selected<br>
@@ -97,7 +113,27 @@
                 </div>
             </div>
         </div>
-
+        <!-- Side menu mobile -->
+        <div class="d-flex d-lg-none align-items-end flex-column bg-light px-1 pb-4">
+            <div class="d-flex flex-column">
+                <button class="btn btn-lg btn-outline-success w-100 mt-1"  draggable="true" ondragstart="drag(event)" data-node="question_not_connected" type="button">
+                    <i class="fas fa-question-circle"></i>
+                </button>
+                <button class="btn btn-lg btn-outline-danger w-100 mt-2"  draggable="true" ondragstart="drag(event)" data-node="answer_not_connected" type="button">
+                    <i class="fas fa-comment-dots"></i>
+                </button>
+                <button class="btn btn-lg btn-outline-primary w-100 mt-2"  draggable="true" ondragstart="drag(event)" data-node="link" type="button">
+                    <i class="fas fa-link"></i>
+                </button>
+            </div>
+            <!-- Side menu tips mobile -->
+            <div class="d-flex flex-column w-100 mt-auto">
+                <button class="btn btn-lg btn-outline-info w-100 mt-2" type="button">
+                    <i class="fas fa-info"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Menu -->
         <div class="col px-0">
             <div class="flex-row px-1 py-1 bg-light border-left">
                 <button class="btn btn-outline-primary" type="button">
@@ -119,7 +155,8 @@
                     {% include "quest_title_dropdown.html" %}
                 {% endwith %}
             </div>
-            <div class="flex-row" id="drawflow" ondrop="drop(event)" ondragover="allowDrop(event)">
+            <!-- Drawflow -->
+            <div class="flex-row w-100" id="drawflow" ondrop="drop(event)" ondragover="allowDrop(event)">
                 <div class="button d-flex mt-2 editor-btn-block">
                     <button class="btn btn-sm btn-outline-danger w-100 mr-2" onclick="editor_clear()" data-toggle="tooltip" data-html="true" data-custom-class="tooltip-danger" title="удалить <b>все ноды</b><br><u>безвозвратно</u>!">Очистить</button>
                     <button class="btn btn-sm btn-success w-100 mr-2" onclick="export_json()" data-toggle="tooltip" data-custom-class="tooltip-success" data-html="true" title="<u>сохранить</u> квест<br><em>без публикации</em>">Сохранить</button>
