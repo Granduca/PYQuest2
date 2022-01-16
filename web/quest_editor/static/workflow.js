@@ -1,3 +1,12 @@
+// Swal styling
+const swalBS = Swal.mixin({
+  customClass: {
+    confirmButton: 'btn btn-success',
+    cancelButton: 'btn btn-danger'
+  },
+  buttonsStyling: false
+})
+
 // drawflow init
 var id = document.getElementById("drawflow");
 
@@ -700,13 +709,13 @@ function export_json() {
         "data": JSON.stringify(converted_data),
         "success": function() {
             pyq_console.save(true);
-            Swal.fire({title: 'Export', html: '<textarea rows="30" cols="50">'+JSON.stringify(converted_data, null, 4).replace(/<[^>]*>/g, '')+'</textarea>'})
+            swalBS.fire({title: 'Export', html: '<textarea rows="30" cols="50">'+JSON.stringify(converted_data, null, 4).replace(/<[^>]*>/g, '')+'</textarea>', heightAuto: false})
         }
     });
 }
 
 function publish() {
-    Swal.fire({
+    swalBS.fire({
         title: lang.t("swal_captcha_verification"),
         html: '<div id="recaptcha"></div>',
         didOpen: () => {
@@ -718,7 +727,8 @@ function publish() {
         showCancelButton: false,
         showConfirmButton: false,
         cancelButtonText: lang.t("swal_captcha_btn_cancel"),
-        footer: lang.t("swal_captcha_footer")
+        footer: lang.t("swal_captcha_footer"),
+        heightAuto: false
     })
 }
 

@@ -3,7 +3,8 @@ class Console {
         this.prefix = prefix;
         this.local_storage_var = local_storage_var;
         iziToast.settings({
-            position: 'bottomLeft'
+            position: 'bottomCenter',
+            displayMode: 'replace',
         });
     }
 
