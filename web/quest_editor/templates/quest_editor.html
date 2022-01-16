@@ -43,9 +43,9 @@
     <script src="{{ url_for('quest_editor.static', filename='node_modules/selectables/selectables.js')}}"></script>
 
     <!-- Header -->
-    <header class="navbar navbar-expand flex-row border-bottom">
+    <header class="navbar navbar-expand flex-row border-bottom px-0">
         <!-- Brand -->
-        <div class="navbar-brand d-none d-lg-flex">
+        <div class="navbar-brand d-none d-lg-flex pl-4">
             {% if title %}
             {% if editor_version %}
             <h2 class="my-0"><i class="fas fa-pen-nib"></i> {{title}} | Quest Editor v{{editor_version}}</h2>
@@ -57,7 +57,7 @@
             {% endif %}
         </div>
         <!-- Brand mobile -->
-        <div class="navbar-brand d-block d-lg-none">
+        <div class="navbar-brand d-block d-lg-none pl-2">
             {% if title %}
             <h2 class="my-0"><i class="fas fa-pen-nib"></i> {{title}}</h2>
             {% else %}
@@ -65,7 +65,7 @@
             {% endif %}
         </div>
         <!-- Profile -->
-        <div class="navbar-nav flex-row ml-auto">
+        <div class="navbar-nav flex-row ml-auto pr-4">
             {% if google_uname %}
             {% if google_upic %}
             <div class="button d-flex flex-row align-items-center nav-block">
@@ -87,7 +87,7 @@
     <!-- MAIN -->
     <div class="container-fluid d-flex px-0 h-100 wrapper" id="wrapper">
         <!-- Side menu -->
-        <div class="d-none d-lg-flex align-items-end flex-column bg-light px-4 py-4">
+        <div class="d-none d-lg-flex align-items-end flex-column bg-light border-right px-4 py-4">
             <div class="d-flex flex-column w-100 mx-auto">
                 <button class="btn btn-lg btn-outline-success w-100 mt-2"  draggable="true" ondragstart="drag(event)" data-node="question_not_connected" type="button">
                     <i class="fas fa-question-circle"></i><span> Вопрос</span>
@@ -100,18 +100,7 @@
                 </button>
             </div>
             <!-- Side menu tips -->
-            <div class="d-flex flex-column mt-auto">
-                <div class="bs-callout bs-callout-info bg-white">
-                    <h5>Управление</h5>
-                    <div class="mt-4 hotkeys">
-                        <i class="fas fa-trash-alt"></i><b> Delete</b> for remove selected<br>
-                        <i class="fas fa-mouse"></i> Mouse Left Click == Move<br>
-                        <i class="fas fa-times-circle"></i> Mouse Right == Delete Option<br>
-                        <i class="fas fa-search"></i> Ctrl + Wheel == Zoom<br><br>
-                        <i class="fas fa-mobile-alt"></i> Mobile support<br>
-                    </div>
-                </div>
-            </div>
+            {% include "quest_editor_tips.html" %}
         </div>
         <!-- Side menu mobile -->
         <div class="d-flex d-lg-none align-items-end flex-column bg-light px-1 pb-4">
@@ -133,9 +122,10 @@
                 </button>
             </div>
         </div>
-        <!-- Menu -->
+        <!-- Editor -->
         <div class="col px-0">
-            <div class="flex-row px-1 py-1 bg-light border-left">
+            <!-- Menu -->
+            <div class="flex-row px-1 py-1 bg-light">
                 <button class="btn btn-outline-primary" type="button">
                     <i class="far fa-folder-open"></i>
                 </button>
@@ -157,12 +147,14 @@
             </div>
             <!-- Drawflow -->
             <div class="flex-row w-100" id="drawflow" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <!-- Clear/Export bar -->
                 <div class="button d-flex mt-2 editor-btn-block">
                     <button class="btn btn-sm btn-outline-danger w-100 mr-2" onclick="editor_clear()" data-toggle="tooltip" data-html="true" data-custom-class="tooltip-danger" title="удалить <b>все ноды</b><br><u>безвозвратно</u>!">Очистить</button>
                     <button class="btn btn-sm btn-success w-100 mr-2" onclick="export_json()" data-toggle="tooltip" data-custom-class="tooltip-success" data-html="true" title="<u>сохранить</u> квест<br><em>без публикации</em>">Сохранить</button>
                     <button class="btn btn-sm btn-primary w-100" onclick="publish()" data-toggle="tooltip" data-html="true" data-custom-class="tooltip-primary" title="<u>опубликовать</u> квест<br><em>в <u>telegram</u></em>">Опубликовать</button>
                 </div>
-                <div class="bar-zoom">
+                <!-- Zoom bar -->
+                <div class="d-flex bar-zoom pb-2">
                     <div class="button flex-raw">
                         <div class="button d-flex">
                             <button class="btn btn-sm btn-primary w-100 mr-1" onclick="editor.zoom_out()"><i class="fas fa-search-minus"></i></button>
