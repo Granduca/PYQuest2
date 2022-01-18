@@ -11,29 +11,32 @@
 }
 
 .articles {
-    font-size: 10px;
+    font-size: 15px;
     color: #a1aab9
 }
 
 .number1 {
+    font-size: 22px;
     font-weight: 500;
 }
 
 .followers {
-    font-size: 10px;
+    font-size: 15px;
     color: #a1aab9
 }
 
 .number2 {
+    font-size: 22px;
     font-weight: 500
 }
 
 .rating {
-    font-size: 10px;
+    font-size: 15px;
     color: #a1aab9
 }
 
 .number3 {
+    font-size: 22px;
     font-weight: 500
 }
 
@@ -51,3 +54,7 @@
 }
 
 .bdr {border-radius: 6px;overflow:hidden;}
+
+.table-row{
+    cursor:pointer;
+}

@@ -202,9 +202,15 @@
         //]]>
     </script>
 
+    <!-- Additional JS -->
     <script>
         $(document).ready(function(){
+            // tooltips
             $('[data-toggle="tooltip"]').tooltip();
+            // table link
+            $(".table-row").click(function() {
+                window.document.location = $(this).data("href");
+            });
         });
     </script>
 
