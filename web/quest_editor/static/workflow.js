@@ -280,6 +280,11 @@ editor.on('removeReroute', function(id) {
     pyq_console.save();
 })
 
+editor.on('rerouteMoved', function(id) {
+    //pyq_console.log("Reroute moved " + id);
+    pyq_console.save();
+})
+
 editor.on("connectionCancel", function(e) {
       //console.log("connectionCancel");
       //console.log(e);
